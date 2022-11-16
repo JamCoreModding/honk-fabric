@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "quilt_loader": {
+    "group": "io.github.jamalam360",
+    "id": "templatemod",
+    "version": "${version}",
+    "metadata": {
+      "name": "Template Mod",
+      "description": "A Quilt mod template",
+      "contributors": {
+        "Jamalam": "Owner"
+      },
+      "contact": {
+        "sources": "https://github.com/JamCoreModding/TemplateMod",
+        "issues": "https://github.com/JamCoreModding/TemplateMod/issues"
+      },
+      "license": "MIT",
+      "icon": "assets/templatemod/icon.png"
+    },
+    "intermediate_mappings": "net.fabricmc:intermediary",
+    "entrypoints": {
+      "init": "io.github.jamalam360.templatemod.TemplateModInit"
+    },
+    "depends": [
+      {
+        "id": "quilt_loader",
+        "versions": ">=0.17.0-"
+      },
+      {
+        "id": "quilted_fabric_api",
+        "versions": ">=4.0.0-"
+      },
+      {
+        "id": "minecraft",
+        "versions": ">=1.19"
+      }
+    ]
+  },
+  "mixin": "templatemod.mixins.json"
+}
