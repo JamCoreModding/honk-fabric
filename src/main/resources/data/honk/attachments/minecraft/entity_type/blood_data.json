@@ -1,0 +1,35 @@
+{
+  "replace": false,
+  "values": {
+    "minecraft:skeleton": {
+      "extractable": false
+    },
+    "minecraft:wither_skeleton": {
+      "extractable": false
+    },
+    "minecraft:stray": {
+      "extractable": false
+    },
+    "minecraft:skeleton_horse": {
+      "extractable": false
+    },
+    "minecraft:snow_golem": {
+      "extractable": false
+    },
+    "minecraft:iron_golem": {
+      "extractable": false
+    },
+    "minecraft:vex": {
+      "extractable": false
+    },
+    "minecraft:warden": {
+      "breakChance": 0.75
+    },
+    "minecraft:ender_dragon": {
+      "breakChance": 0.75
+    },
+    "minecraft:wither": {
+      "breakChance": 0.90
+    }
+  }
+}

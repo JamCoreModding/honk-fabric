@@ -2,24 +2,25 @@
   "schema_version": 1,
   "quilt_loader": {
     "group": "io.github.jamalam360",
-    "id": "templatemod",
+    "id": "honk",
     "version": "${version}",
     "metadata": {
-      "name": "Template Mod",
-      "description": "A Quilt mod template",
+      "name": "Honk",
+      "description": "WIP",
       "contributors": {
         "Jamalam": "Owner"
       },
       "contact": {
-        "sources": "https://github.com/JamCoreModding/TemplateMod",
-        "issues": "https://github.com/JamCoreModding/TemplateMod/issues"
+        "sources": "https://github.com/JamCoreModding/Honk",
+        "issues": "https://github.com/JamCoreModding/Honk/issues"
       },
       "license": "MIT",
-      "icon": "assets/templatemod/icon.png"
+      "icon": "assets/honk/icon.png"
     },
     "intermediate_mappings": "net.fabricmc:intermediary",
     "entrypoints": {
-      "init": "io.github.jamalam360.templatemod.TemplateModInit"
+      "init": "io.github.jamalam360.honk.HonkInit",
+      "client_init": "io.github.jamalam360.honk.HonkClientInit"
     },
     "depends": [
       {
@@ -36,5 +37,5 @@
       }
     ]
   },
-  "mixin": "templatemod.mixins.json"
+  "mixin": "honk.mixins.json"
 }

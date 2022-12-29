@@ -1,5 +1,5 @@
 plugins {
-    id("org.quiltmc.loom") version "0.12.+"
+    id("org.quiltmc.loom") version "1.0.+"
     id("io.github.p03w.machete") version "1.+"
     id("org.cadixdev.licenser") version "0.6.+"
 }
@@ -15,11 +15,12 @@ version = mod_version
 
 repositories {
     val mavenUrls =
-        mapOf(
-            Pair("https://maven.terraformersmc.com/releases", listOf("com.terraformersmc")),
-            Pair("https://api.modrinth.com/maven", listOf("maven.modrinth")),
-            Pair("https://maven.jamalam.tech/releases", listOf("io.github.jamalam360")),
-        )
+            mapOf(
+                    Pair("https://maven.terraformersmc.com/releases", listOf("com.terraformersmc")),
+                    Pair("https://api.modrinth.com/maven", listOf("maven.modrinth")),
+                    Pair("https://maven.wispforest.io", listOf("io.wispforest")),
+                    Pair("https://maven.jamalam.tech/releases", listOf("io.github.jamalam360")),
+            )
 
     for (mavenPair in mavenUrls) {
         maven {
