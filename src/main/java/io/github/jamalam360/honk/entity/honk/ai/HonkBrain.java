@@ -95,8 +95,7 @@ public class HonkBrain {
               ImmutableList.of(
                     new StalkApproachTask(HonkBrain.getStalkSpeed(), HonkBrain.getRunSpeed()),
                     new MeleeAttackTask(40),
-                    new ForgetAttackTargetTask<>((livingEntity -> {
-                        System.out.println("it does"); return livingEntity.world.random.nextFloat() < 0.001F;}))
+                    new ForgetAttackTargetTask<>((livingEntity -> livingEntity.world.random.nextFloat() < 0.001F))
               ),
               MemoryModuleType.ATTACK_TARGET
         );
