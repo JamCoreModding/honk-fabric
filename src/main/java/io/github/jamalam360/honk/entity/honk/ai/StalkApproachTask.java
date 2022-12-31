@@ -1,6 +1,7 @@
 package io.github.jamalam360.honk.entity.honk.ai;
 
 import com.google.common.collect.ImmutableMap;
+import java.util.Optional;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.brain.EntityLookTarget;
@@ -36,6 +37,12 @@ public class StalkApproachTask extends Task<MobEntity> {
         this.attackSpeed = attackSpeed;
     }
 
+    @Override
+    protected boolean shouldKeepRunning(ServerWorld world, MobEntity entity, long time) {
+        Optional<LivingEntity> optionalMemory = entity.getBrain().getOptionalMemory(MemoryModuleType.ATTACK_TARGET);
+        return optionalMemory.map((livingEntity) -> LookTargetUtil.isVisibleInMemory(entity, livingEntity) && LookTargetUtil.isTargetWithinAttackRange(entity, livingEntity, 1)).orElse(false);
+    }
+
     protected void run(ServerWorld serverWorld, MobEntity mobEntity, long l) {
         LivingEntity livingEntity = mobEntity.getBrain().getOptionalMemory(MemoryModuleType.ATTACK_TARGET).get();
         if (LookTargetUtil.isVisibleInMemory(mobEntity, livingEntity) && LookTargetUtil.isTargetWithinAttackRange(mobEntity, livingEntity, 1)) {
@@ -52,7 +59,7 @@ public class StalkApproachTask extends Task<MobEntity> {
         double distance = entity.squaredDistanceTo(target);
         float speed = this.stalkSpeed;
 
-        if (distance < 180 || entity.world.random.nextFloat() < 0.02F) {
+        if (distance < 120 || entity.world.random.nextFloat() < 0.02F) {
             speed = this.attackSpeed;
         }
 

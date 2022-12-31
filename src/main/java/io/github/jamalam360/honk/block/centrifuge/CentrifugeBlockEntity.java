@@ -17,6 +17,7 @@ import org.quiltmc.qsl.item.content.registry.api.ItemContentRegistries;
 
 public class CentrifugeBlockEntity extends FuelBurningProcessingBlockEntity {
 
+    public static final int FUEL_SLOT = 0;
     public static final int INPUT_SLOT = 1;
     public static final int OUTPUT_SLOT = 2;
 
@@ -42,7 +43,7 @@ public class CentrifugeBlockEntity extends FuelBurningProcessingBlockEntity {
     };
 
     public CentrifugeBlockEntity(BlockPos pos, BlockState state) {
-        super(HonkBlocks.CENTRIFUGE_ENTITY, CentrifugeRecipe.TYPE, 3, pos, state);
+        super(HonkBlocks.CENTRIFUGE_ENTITY, CentrifugeRecipe.TYPE, 3, FUEL_SLOT, pos, state);
     }
 
     @Nullable

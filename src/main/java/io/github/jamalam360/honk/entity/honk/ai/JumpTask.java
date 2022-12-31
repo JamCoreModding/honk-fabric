@@ -7,6 +7,7 @@ import net.minecraft.server.world.ServerWorld;
 
 public class JumpTask extends Task<MobEntity> {
 
+    private boolean hasJumped = false;
 
     public JumpTask() {
         super(Map.of());
@@ -14,11 +15,14 @@ public class JumpTask extends Task<MobEntity> {
 
     @Override
     protected void run(ServerWorld world, MobEntity entity, long time) {
-        super.run(world, entity, time);
-
         if (entity.isOnGround()) {
+            this.hasJumped = true;
             entity.getJumpControl().setActive();
-            this.stop(world, entity, time);
         }
+    }
+
+    @Override
+    protected boolean shouldKeepRunning(ServerWorld world, MobEntity entity, long time) {
+        return !this.hasJumped;
     }
 }

@@ -7,17 +7,14 @@ import com.mojang.datafixers.util.Pair;
 import io.github.jamalam360.honk.entity.honk.HonkEntity;
 import io.github.jamalam360.honk.registry.HonkSensorTypes;
 import java.util.Optional;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.Activity;
 import net.minecraft.entity.ai.brain.Brain;
-import net.minecraft.entity.ai.brain.MemoryModuleState;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.sensor.Sensor;
 import net.minecraft.entity.ai.brain.sensor.SensorType;
 import net.minecraft.entity.ai.brain.task.ConditionalTask;
-import net.minecraft.entity.ai.brain.task.FollowMobTask;
+import net.minecraft.entity.ai.brain.task.ForgetAttackTargetTask;
 import net.minecraft.entity.ai.brain.task.GoTowardsLookTarget;
 import net.minecraft.entity.ai.brain.task.LookAroundTask;
 import net.minecraft.entity.ai.brain.task.MeleeAttackTask;
@@ -39,21 +36,23 @@ public class HonkBrain {
           HonkSensorTypes.HONK_ATTACKABLES
     );
     public static final ImmutableList<MemoryModuleType<?>> MEMORY_MODULES = ImmutableList.of(MemoryModuleType.MOBS,
+          MemoryModuleType.BREED_TARGET,
+          MemoryModuleType.MOBS,
+          MemoryModuleType.HURT_BY,
+          MemoryModuleType.HURT_BY_ENTITY,
           MemoryModuleType.VISIBLE_MOBS,
           MemoryModuleType.NEAREST_VISIBLE_PLAYER,
           MemoryModuleType.NEAREST_VISIBLE_TARGETABLE_PLAYER,
-          MemoryModuleType.NEAREST_VISIBLE_NEMESIS,
           MemoryModuleType.LOOK_TARGET,
           MemoryModuleType.WALK_TARGET,
           MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE,
           MemoryModuleType.PATH,
-          MemoryModuleType.ANGRY_AT,
           MemoryModuleType.ATTACK_TARGET,
-          MemoryModuleType.HURT_BY,
-          MemoryModuleType.HURT_BY_ENTITY,
           MemoryModuleType.ATTACK_COOLING_DOWN,
+          MemoryModuleType.NEAREST_VISIBLE_ADULT,
           MemoryModuleType.NEAREST_ATTACKABLE,
-          MemoryModuleType.AVOID_TARGET
+          MemoryModuleType.HAS_HUNTING_COOLDOWN,
+          MemoryModuleType.IS_PANICKING
     );
 
     public static Brain.Profile<HonkEntity> createProfile() {
@@ -66,8 +65,8 @@ public class HonkBrain {
               0,
               ImmutableList.of(
                     new StayAboveWaterTask(0.6f),
-                    new RunFromNonEntityDamageTask(HonkBrain.getRunSpeed()),
                     new LookAroundTask(45, 90),
+                    new ConditionalTask<>((e) -> e.world.random.nextFloat() < 0.01F, new JumpTask()),
                     new WanderAroundTask()
               )
         );
@@ -75,29 +74,29 @@ public class HonkBrain {
         brain.setTaskList(
               Activity.IDLE,
               ImmutableList.of(
-                    Pair.of(0, new TimeLimitedTask<>(new FollowMobTask(EntityType.PLAYER, 6.0F), UniformIntProvider.create(30, 60))),
-                    Pair.of(1, new UpdateAttackTargetTask<>(HonkBrain::getAttackTarget)),
+                    Pair.of(0, new UpdateAttackTargetTask<>(HonkBrain::getAttackTarget)),
                     Pair.of(
-                          2,
+                          1,
                           new RandomTask<>(
-                                ImmutableMap.of(MemoryModuleType.WALK_TARGET, MemoryModuleState.VALUE_ABSENT),
+                                ImmutableMap.of(),
                                 ImmutableList.of(
-                                      Pair.of(new StrollTask(HonkBrain.getWalkSpeed(), false), 1),
-                                      Pair.of(new JumpTask(), 1),
-                                      Pair.of(new GoTowardsLookTarget(HonkBrain::canGoToLookTarget, (_e) -> HonkBrain.getStalkSpeed(), 3), 1),
-                                      Pair.of(new ConditionalTask<>(Entity::isOnGround, new WaitTask(40, 180)), 2)
+                                      Pair.of(new GoTowardsLookTarget(HonkBrain.getStalkSpeed(), 3), 2),
+                                      Pair.of(new StrollTask(HonkBrain.getWalkSpeed()), 2),
+                                      Pair.of(new TimeLimitedTask<>(new FollowOwnerTask((p) -> p.getLeft().getOwner().map((o) -> o.equals(p.getRight().getUuid())).orElse(false) && !p.getLeft().dislikesOwner(), 32), UniformIntProvider.create(160, 320)), 2),
+                                      Pair.of(new WaitTask(30, 60), 1)
                                 )
                           )
                     )
-              )
-        );
+              ));
 
         brain.setTaskList(
               Activity.FIGHT,
               0,
               ImmutableList.of(
                     new StalkApproachTask(HonkBrain.getStalkSpeed(), HonkBrain.getRunSpeed()),
-                    new MeleeAttackTask(40)
+                    new MeleeAttackTask(40),
+                    new ForgetAttackTargetTask<>((livingEntity -> {
+                        System.out.println("it does"); return livingEntity.world.random.nextFloat() < 0.001F;}))
               ),
               MemoryModuleType.ATTACK_TARGET
         );
@@ -106,7 +105,7 @@ public class HonkBrain {
               Activity.PANIC,
               ImmutableList.of(
                     Pair.of(0, new StopPanickingTask()),
-                    Pair.of(1, new RunFromNonEntityDamageTask(1.6F))
+                    Pair.of(1, new RunFromNonEntityDamageTask(HonkBrain.getRunSpeed()))
               )
         );
 
@@ -126,14 +125,10 @@ public class HonkBrain {
     }
 
     private static float getRunSpeed() {
-        return 0.20F;
+        return 0.28F;
     }
 
     private static Optional<? extends LivingEntity> getAttackTarget(HonkEntity entity) {
         return entity.getBrain().getOptionalMemory(MemoryModuleType.NEAREST_ATTACKABLE);
-    }
-
-    private static boolean canGoToLookTarget(LivingEntity entity) {
-        return entity.getBrain().getOptionalMemory(MemoryModuleType.LOOK_TARGET).isPresent();
     }
 }

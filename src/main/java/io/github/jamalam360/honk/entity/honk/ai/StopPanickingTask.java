@@ -14,9 +14,7 @@ public class StopPanickingTask extends Task<HonkEntity> {
 
     @Override
     protected void run(ServerWorld serverWorld, HonkEntity entity, long l) {
-        boolean bl = RunFromNonEntityDamageTask.wasHurt(entity) || wasHurtByNearbySource(entity);
-
-        if (!bl) {
+        if (!(RunFromNonEntityDamageTask.wasHurt(entity) || wasHurtByNearbySource(entity))) {
             entity.getBrain().forget(MemoryModuleType.HURT_BY);
             entity.getBrain().forget(MemoryModuleType.HURT_BY_ENTITY);
             entity.getBrain().resetPossibleActivities();
