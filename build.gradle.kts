@@ -16,7 +16,7 @@ version = mod_version
 repositories {
     val mavenUrls =
             mapOf(
-                    Pair("https://maven.terraformersmc.com/releases", listOf("com.terraformersmc")),
+                    Pair("https://maven.terraformersmc.com/releases", listOf("com.terraformersmc", "dev.emi")),
                     Pair("https://api.modrinth.com/maven", listOf("maven.modrinth")),
                     Pair("https://maven.wispforest.io", listOf("io.wispforest")),
                     Pair("https://maven.jamalam.tech/releases", listOf("io.github.jamalam360")),

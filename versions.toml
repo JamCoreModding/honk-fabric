@@ -3,10 +3,14 @@ minecraft = "1.19.2"
 quilt-mappings = "1.19.2+build.21"
 quilt-loader = "0.18.1-beta.25"
 quilted-fabric-api = "4.0.0-beta.25+0.70.0-1.19.2"
+
 jamlib = "0.5.0"
 auto-recipe = "1.1.1"
 owo-lib = "0.9.3+1.19"
+
+emi = "0.5.3+1.19.2"
 mod-menu = "4.0.6"
+
 lazy-dfu = "0.1.3"
 
 [libraries]
@@ -19,6 +23,7 @@ jamlib = { module = "io.github.jamalam360:jamlib", version.ref = "jamlib" }
 auto-recipe = { module = "io.github.jamalam360:autorecipe", version.ref = "auto-recipe" }
 owo-lib = { module = "io.wispforest:owo-lib", version.ref="owo-lib" }
 
+emi = { module = "dev.emi:emi", version.ref = "emi" }
 mod-menu = { module = "com.terraformersmc:modmenu", version.ref = "mod-menu" }
 
 lazy-dfu = { module = "maven.modrinth:lazydfu", version.ref = "lazy-dfu" }
@@ -26,5 +31,5 @@ lazy-dfu = { module = "maven.modrinth:lazydfu", version.ref = "lazy-dfu" }
 [bundles]
 quilt = ["quilt-loader", "quilted-fabric-api"]
 required = ["jamlib", "auto-recipe", "owo-lib"]
-optional = ["mod-menu"]
+optional = ["emi", "mod-menu"]
 runtime = ["lazy-dfu"]

@@ -43,6 +43,7 @@ import net.minecraft.entity.attribute.DefaultAttributeRegistry;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
 import org.quiltmc.loader.api.ModContainer;
+import org.quiltmc.loader.api.QuiltLoader;
 import org.quiltmc.qsl.base.api.entrypoint.ModInitializer;
 import org.quiltmc.qsl.item.group.api.QuiltItemGroup;
 import org.quiltmc.qsl.resource.loader.api.ResourceLoader;
@@ -68,6 +69,18 @@ public class HonkInit implements ModInitializer {
         DefaultAttributeRegistry.DEFAULT_ATTRIBUTE_REGISTRY.put(HonkEntities.HONK, HonkEntity.createAttributes());
 
         ResourceLoader.get(ResourceType.SERVER_DATA).registerReloader(HonkTypeResourceReloadListener.INSTANCE);
+
+        mod.metadata().value("compatibility_modules").asObject().forEach((modId, compatClass) -> {
+            if (QuiltLoader.isModLoaded(modId)) {
+                try {
+                    Class<?> clazz = Class.forName("io.github.jamalam360.honk.compatibility." + compatClass.asString());
+                    ModInitializer init = (ModInitializer) clazz.getConstructor().newInstance();
+                    init.onInitialize(mod);
+                } catch (Exception e) {
+                    LOGGER.error("Failed to initialize compatibility module for mod " + modId + ": " + e);
+                }
+            }
+        });
 
         LOGGER.logInitialize();
     }
