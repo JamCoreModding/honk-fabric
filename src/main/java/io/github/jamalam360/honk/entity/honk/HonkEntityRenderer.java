@@ -21,8 +21,8 @@ public class HonkEntityRenderer extends MobEntityRenderer<HonkEntity, HonkEntity
 
     @Override
     public void render(HonkEntity mobEntity, float f, float g, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i) {
-        float scale = Math.max(0.5F, Math.min(1.5F, (float) (1 + mobEntity.getBlendedSizeModifier())));
-        matrixStack.scale(scale, scale, scale);
+//        float scale = Math.max(0.5F, Math.min(1.5F, (float) (1 + mobEntity.getBlendedSizeModifier())));
+//        matrixStack.scale(scale, scale, scale);
         super.render(mobEntity, f, g, matrixStack, vertexConsumerProvider, i);
     }
 

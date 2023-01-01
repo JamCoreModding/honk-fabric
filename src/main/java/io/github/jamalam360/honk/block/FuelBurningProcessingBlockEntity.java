@@ -12,7 +12,7 @@ import org.quiltmc.qsl.item.content.registry.api.ItemContentRegistries;
 
 public abstract class FuelBurningProcessingBlockEntity extends AbstractProcessingBlockEntity {
 
-    private int fuelSlot = 0;
+    private final int fuelSlot;
     private int burnTime = 0;
 
     public FuelBurningProcessingBlockEntity(BlockEntityType<?> type, RecipeType<? extends Recipe<Inventory>> recipeType, int inventorySize, int fuelSlot, BlockPos pos, BlockState state) {

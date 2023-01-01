@@ -3,7 +3,9 @@ package io.github.jamalam360.honk.entity.honk;
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Dynamic;
 import io.github.jamalam360.honk.data.type.HonkType;
+import io.github.jamalam360.honk.entity.egg.EggEntity;
 import io.github.jamalam360.honk.entity.honk.ai.HonkBrain;
+import io.github.jamalam360.honk.registry.HonkEntities;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -22,14 +24,19 @@ import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.mob.PathAwareEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.FoodComponent;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.DebugInfoSender;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult.Type;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.random.RandomGenerator;
 import net.minecraft.world.World;
 
 @SuppressWarnings("unchecked")
@@ -38,6 +45,9 @@ public class HonkEntity extends PathAwareEntity {
     public static final TrackedData<String> TYPE = DataTracker.registerData(HonkEntity.class, TrackedDataHandlerRegistry.STRING);
     public static final TrackedData<Optional<UUID>> OWNER = DataTracker.registerData(HonkEntity.class, TrackedDataHandlerRegistry.OPTIONAL_UUID);
     public static final TrackedData<Boolean> DISLIKES_OWNER = DataTracker.registerData(HonkEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
+    public static final TrackedData<Optional<UUID>> PARENT = DataTracker.registerData(HonkEntity.class, TrackedDataHandlerRegistry.OPTIONAL_UUID);
+    public static final TrackedData<Integer> FOOD_LEVEL = DataTracker.registerData(HonkEntity.class, TrackedDataHandlerRegistry.INTEGER);
+    public static final TrackedData<Integer> EGG_TICKS = DataTracker.registerData(HonkEntity.class, TrackedDataHandlerRegistry.INTEGER);
     public static final TrackedData<Integer> GROWTH = DataTracker.registerData(HonkEntity.class, TrackedDataHandlerRegistry.INTEGER);
     public static final TrackedData<Integer> PRODUCTIVITY = DataTracker.registerData(HonkEntity.class, TrackedDataHandlerRegistry.INTEGER);
     public static final TrackedData<Integer> REPRODUCTIVITY = DataTracker.registerData(HonkEntity.class, TrackedDataHandlerRegistry.INTEGER);
@@ -72,6 +82,9 @@ public class HonkEntity extends PathAwareEntity {
         this.dataTracker.startTracking(TYPE, "");
         this.dataTracker.startTracking(OWNER, Optional.empty());
         this.dataTracker.startTracking(DISLIKES_OWNER, false);
+        this.dataTracker.startTracking(PARENT, Optional.empty());
+        this.dataTracker.startTracking(FOOD_LEVEL, 0);
+        this.dataTracker.startTracking(EGG_TICKS, -1);
         this.dataTracker.startTracking(GROWTH, 1);
         this.dataTracker.startTracking(PRODUCTIVITY, 1);
         this.dataTracker.startTracking(REPRODUCTIVITY, 1);
@@ -113,6 +126,47 @@ public class HonkEntity extends PathAwareEntity {
         }
 
         this.setAttacking(brain.hasMemoryModule(MemoryModuleType.ATTACK_TARGET));
+
+        if (this.getFoodLevel() > 0 && this.world.random.nextFloat() < 0.01F) {
+            this.setFoodLevel(this.getFoodLevel() - 1);
+        } else if (this.getFoodLevel() == 0 && this.world.random.nextFloat() < 0.01F && this.getOwner().isPresent()) {
+            this.damage(DamageSource.STARVE, 1);
+        }
+
+        if (this.getFoodLevel() >= 18) {
+            if (this.world.random.nextFloat() < 0.01F) {
+                this.setFoodLevel(this.getFoodLevel() - 1);
+            }
+
+            if (this.getEggTicks() == 0 && this.world.random.nextFloat() < 0.0015F) {
+                if (!this.world.isClient) {
+                    EggEntity entity = new EggEntity(HonkEntities.EGG, this.world);
+                    entity.setPosition(this.getX(), this.getBlockY(), this.getZ());
+                    this.initializeEggAttributes(entity);
+                    this.world.spawnEntity(entity);
+                    this.setEggTicks(-1);
+                }
+            } else if (this.getEggTicks() > 0) {
+                this.setEggTicks(this.getEggTicks() - 1);
+            }
+        } else if (this.getEggTicks() > 0) {
+            this.setEggTicks(-1);
+        }
+    }
+
+    private void initializeEggAttributes(EggEntity entity) {
+        entity.getDataTracker().set(EggEntity.TYPE, this.dataTracker.get(TYPE));
+        entity.getDataTracker().set(EggEntity.PARENT, Optional.of(this.getUuid()));
+        entity.getDataTracker().set(EggEntity.GROWTH, this.dataTracker.get(GROWTH) + generateMutation(this.world.random));
+        entity.getDataTracker().set(EggEntity.PRODUCTIVITY, this.dataTracker.get(PRODUCTIVITY) + generateMutation(this.world.random));
+        entity.getDataTracker().set(EggEntity.REPRODUCTIVITY, this.dataTracker.get(REPRODUCTIVITY) + generateMutation(this.world.random));
+        entity.getDataTracker().set(EggEntity.INSTABILITY, this.dataTracker.get(INSTABILITY) + generateMutation(this.world.random));
+        entity.getDataTracker().set(EggEntity.DENSITY, this.dataTracker.get(DENSITY) + generateMutation(this.world.random));
+    }
+
+    private int generateMutation(RandomGenerator random) {
+        int instability = this.dataTracker.get(INSTABILITY);
+        return random.range(-((instability / 10) / 2), (instability / 10) / 2);
     }
 
     @Override
@@ -127,9 +181,9 @@ public class HonkEntity extends PathAwareEntity {
             brain.forget(MemoryModuleType.BREED_TARGET);
             brain.forget(MemoryModuleType.INTERACTION_TARGET);
 
-            if (source.getAttacker() == null) {
+            if (source.getAttacker() == null && source != DamageSource.STARVE) {
                 brain.doExclusively(Activity.PANIC);
-            } else if (source.getAttacker().isPlayer()) {
+            } else if (source.getAttacker() != null && source.getAttacker().isPlayer()) {
                 if (this.getOwner().map((o) -> source.getAttacker().getUuid().equals(o)).orElse(false)) {
                     this.dataTracker.set(DISLIKES_OWNER, true);
                 }
@@ -179,13 +233,35 @@ public class HonkEntity extends PathAwareEntity {
     @Override
     public void baseTick() {
         super.baseTick();
+
         if (world.isClient) {
             if (MinecraftClient.getInstance().crosshairTarget.getType() == Type.ENTITY) {
                 if (((EntityHitResult) MinecraftClient.getInstance().crosshairTarget).getEntity() == this) {
-                    System.out.println(this.getBrain().getOptionalMemory(MemoryModuleType.ATTACK_TARGET));
+                    System.out.println(this.getFoodLevel());
                 }
             }
         }
+    }
+
+    @Override
+    protected ActionResult interactMob(PlayerEntity player, Hand hand) {
+        if (player.getStackInHand(hand).isFood()) {
+            FoodComponent component = player.getStackInHand(hand).getItem().getFoodComponent();
+            this.setFoodLevel(this.getFoodLevel() + (component.isMeat() ? 3 : component.isSnack() ? 1 : 2));
+            player.getStackInHand(hand).decrement(1);
+
+            if (this.getFoodLevel() >= 18) {
+                this.setEggTicks(1);
+            }
+
+            if (this.dislikesOwner() && component.isMeat() && this.getFoodLevel() >= 36 && this.world.random.nextFloat() <= 0.33F) {
+                this.dataTracker.set(DISLIKES_OWNER, false);
+            }
+
+            return ActionResult.SUCCESS;
+        }
+
+        return super.interactMob(player, hand);
     }
 
     @Override
@@ -214,6 +290,9 @@ public class HonkEntity extends PathAwareEntity {
         nbt.putString("honk:Type", this.dataTracker.get(TYPE));
         nbt.putString("honk:Owner", this.dataTracker.get(OWNER).map(UUID::toString).orElse(""));
         nbt.putBoolean("honk:DislikesOwner", this.dataTracker.get(DISLIKES_OWNER));
+        nbt.putString("honk:Parent", this.dataTracker.get(PARENT).map(UUID::toString).orElse(""));
+        nbt.putInt("honk:FoodLevel", this.dataTracker.get(FOOD_LEVEL));
+        nbt.putInt("honk:EggTicks", this.dataTracker.get(EGG_TICKS));
         nbt.putInt("honk:Growth", this.dataTracker.get(GROWTH));
         nbt.putInt("honk:Productivity", this.dataTracker.get(PRODUCTIVITY));
         nbt.putInt("honk:Reproductivity", this.dataTracker.get(REPRODUCTIVITY));
@@ -227,6 +306,9 @@ public class HonkEntity extends PathAwareEntity {
         this.dataTracker.set(TYPE, nbt.getString("honk:Type"));
         this.dataTracker.set(OWNER, Objects.equals(nbt.getString("honk:Owner"), "") ? Optional.empty() : Optional.of(UUID.fromString(nbt.getString("honk:Owner"))));
         this.dataTracker.set(DISLIKES_OWNER, nbt.getBoolean("honk:DislikesOwner"));
+        this.dataTracker.set(PARENT, Objects.equals(nbt.getString("honk:Parent"), "") ? Optional.empty() : Optional.of(UUID.fromString(nbt.getString("honk:Parent"))));
+        this.dataTracker.set(FOOD_LEVEL, nbt.getInt("honk:FoodLevel"));
+        this.dataTracker.set(EGG_TICKS, nbt.getInt("honk:EggTicks"));
         this.dataTracker.set(GROWTH, nbt.getInt("honk:Growth"));
         this.dataTracker.set(PRODUCTIVITY, nbt.getInt("honk:Productivity"));
         this.dataTracker.set(REPRODUCTIVITY, nbt.getInt("honk:Reproductivity"));
@@ -265,5 +347,21 @@ public class HonkEntity extends PathAwareEntity {
 
     public boolean dislikesOwner() {
         return this.dataTracker.get(DISLIKES_OWNER);
+    }
+
+    public int getFoodLevel() {
+        return this.dataTracker.get(FOOD_LEVEL);
+    }
+
+    public void setFoodLevel(int foodLevel) {
+        this.dataTracker.set(FOOD_LEVEL, foodLevel);
+    }
+
+    public int getEggTicks() {
+        return this.dataTracker.get(EGG_TICKS);
+    }
+
+    public void setEggTicks(int eggTicks) {
+        this.dataTracker.set(EGG_TICKS, eggTicks);
     }
 }

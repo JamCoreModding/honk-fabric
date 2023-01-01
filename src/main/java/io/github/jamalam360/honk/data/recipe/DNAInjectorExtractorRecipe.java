@@ -31,8 +31,13 @@ public class DNAInjectorExtractorRecipe extends AutoSerializedRecipe<Inventory> 
 
     @Override
     public boolean matches(Inventory inventory, World world) {
+        if (this.auxiliaryInput == null && !inventory.getStack(DNAInjectorExtractorBlockEntity.AUXILIARY_INPUT_SLOT).isEmpty()) {
+            return false;
+        } else if (this.auxiliaryInput != null && !this.auxiliaryInput.test(inventory.getStack(DNAInjectorExtractorBlockEntity.AUXILIARY_INPUT_SLOT))) {
+            return false;
+        }
+
         return this.input.test(inventory.getStack(DNAInjectorExtractorBlockEntity.INPUT_SLOT))
-               && (this.auxiliaryInput == null || this.auxiliaryInput.test(inventory.getStack(DNAInjectorExtractorBlockEntity.AUXILIARY_INPUT_SLOT)))
                && InventoryUtils.canStack(inventory.getStack(DNAInjectorExtractorBlockEntity.OUTPUT_SLOT), this.getOutput());
     }
 

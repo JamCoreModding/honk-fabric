@@ -5,7 +5,9 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
+import java.util.stream.Collectors;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -35,8 +37,8 @@ public record HonkType(
     }
 
     public static HonkType getRandom(int tier) {
-        var types = ENTRIES.entrySet().stream().filter((o) -> o.getValue().tier() == tier).toArray();
-        return (HonkType) types[RANDOM.nextInt(types.length)];
+        var types = ENTRIES.entrySet().stream().filter((o) -> o.getValue().tier() == tier).toList();
+        return types.get(RANDOM.nextInt(types.size())).getValue();
     }
 
 }
