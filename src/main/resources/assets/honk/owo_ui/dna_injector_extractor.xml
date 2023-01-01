@@ -1,0 +1,38 @@
+<owo-ui xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/wisp-forest/owo-lib/1.19/owo-ui.xsd">
+  <components>
+    <flow-layout direction="vertical">
+      <children>
+        <flow-layout direction="vertical">
+          <children>
+            <texture texture="honk:textures/gui/centrifuge.png" region-width="176"
+              region-height="165"/>
+
+            <texture texture="honk:textures/gui/centrifuge.png" u="176" v="0"
+              region-width="13" region-height="13" id="burning-indicator">
+              <positioning type="absolute">9,28</positioning>
+              <visible-area>
+                <height>0</height>
+              </visible-area>
+            </texture>
+
+            <texture texture="honk:textures/gui/centrifuge.png" u="176" v="14"
+              region-width="23" region-height="16" id="progress-indicator">
+              <positioning type="absolute">77,35</positioning>
+              <visible-area>
+                <height>0</height>
+              </visible-area>
+            </texture>
+          </children>
+        </flow-layout>
+      </children>
+
+      <vertical-alignment>center</vertical-alignment>
+      <horizontal-alignment>center</horizontal-alignment>
+
+      <surface>
+        <vanilla-translucent/>
+      </surface>
+    </flow-layout>
+  </components>
+</owo-ui>

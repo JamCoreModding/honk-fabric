@@ -1,10 +1,11 @@
-package io.github.jamalam360.honk.data.recipes;
+package io.github.jamalam360.honk.data.recipe;
 
 import io.github.jamalam360.autorecipe.AutoRecipeRegistry;
 import io.github.jamalam360.autorecipe.AutoSerializedRecipe;
 import io.github.jamalam360.autorecipe.RecipeVar;
 import io.github.jamalam360.honk.HonkInit;
 import io.github.jamalam360.honk.block.centrifuge.CentrifugeBlockEntity;
+import io.github.jamalam360.honk.util.InventoryUtils;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
@@ -27,7 +28,8 @@ public class CentrifugeRecipe extends AutoSerializedRecipe<Inventory> {
 
     @Override
     public boolean matches(Inventory inventory, World world) {
-        return this.input.test(inventory.getStack(CentrifugeBlockEntity.INPUT_SLOT));
+        return this.input.test(inventory.getStack(CentrifugeBlockEntity.INPUT_SLOT)) &&
+               InventoryUtils.canStack(inventory.getStack(CentrifugeBlockEntity.OUTPUT_SLOT), this.getOutput());
     }
 
     @Override

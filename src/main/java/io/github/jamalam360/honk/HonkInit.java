@@ -24,11 +24,11 @@
 
 package io.github.jamalam360.honk;
 
-import io.github.jamalam360.honk.data.recipes.CentrifugeRecipe;
+import io.github.jamalam360.honk.data.recipe.CentrifugeRecipe;
+import io.github.jamalam360.honk.data.recipe.DNAInjectorExtractorRecipe;
 import io.github.jamalam360.honk.data.type.HonkTypeResourceReloadListener;
 import io.github.jamalam360.honk.entity.egg.EggEntity;
 import io.github.jamalam360.honk.entity.honk.HonkEntity;
-import io.github.jamalam360.honk.item.AmberItem;
 import io.github.jamalam360.honk.registry.HonkBlocks;
 import io.github.jamalam360.honk.registry.HonkCommands;
 import io.github.jamalam360.honk.registry.HonkData;
@@ -40,10 +40,8 @@ import io.github.jamalam360.honk.registry.HonkWorldGen;
 import io.github.jamalam360.jamlib.log.JamLibLogger;
 import io.github.jamalam360.jamlib.registry.JamLibRegistry;
 import net.minecraft.entity.attribute.DefaultAttributeRegistry;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 import org.quiltmc.loader.api.ModContainer;
 import org.quiltmc.qsl.base.api.entrypoint.ModInitializer;
 import org.quiltmc.qsl.item.group.api.QuiltItemGroup;
@@ -62,6 +60,7 @@ public class HonkInit implements ModInitializer {
         HonkCommands.init();
         HonkWorldGen.init();
         CentrifugeRecipe.init();
+        DNAInjectorExtractorRecipe.init();
         HonkData.init();
         HonkSensorTypes.init();
 

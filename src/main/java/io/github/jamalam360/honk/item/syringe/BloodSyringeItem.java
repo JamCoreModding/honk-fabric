@@ -14,6 +14,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import org.quiltmc.loader.api.minecraft.ClientOnly;
@@ -80,7 +81,7 @@ public class BloodSyringeItem extends Item {
                           Registry.ENTITY_TYPE.get(
                                 new Identifier(stack.getOrCreateNbt().getString(ENTITY_TYPE_KEY))
                           ).getTranslationKey()
-                    ).asOrderedText()
+                    ).formatted(Formatting.GRAY).asOrderedText()
               )
         );
     }
