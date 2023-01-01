@@ -19,3 +19,4 @@ bin/
 
 #Fabric
 run/
+src/main/generated/.cache/

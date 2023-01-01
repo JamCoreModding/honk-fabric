@@ -20,7 +20,8 @@
     "intermediate_mappings": "net.fabricmc:intermediary",
     "entrypoints": {
       "init": "io.github.jamalam360.honk.HonkInit",
-      "client_init": "io.github.jamalam360.honk.HonkClientInit"
+      "client_init": "io.github.jamalam360.honk.HonkClientInit",
+      "fabric-datagen": "io.github.jamalam360.honk.Datagen"
     },
     "depends": [
       {

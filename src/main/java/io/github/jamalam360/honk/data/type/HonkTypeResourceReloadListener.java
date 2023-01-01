@@ -22,8 +22,6 @@ public class HonkTypeResourceReloadListener implements SimpleSynchronousResource
     @SuppressWarnings("OptionalGetWithoutIsPresent")
     @Override
     public void reload(ResourceManager manager) {
-        HonkType.ENTRIES.clear();
-
         for (Entry<Identifier, Resource> entry : manager.findResources("honk_types", identifier -> identifier.getPath().endsWith(".json")).entrySet()) {
             Identifier resourceId = entry.getKey();
             Resource resource = entry.getValue();
@@ -36,7 +34,8 @@ public class HonkTypeResourceReloadListener implements SimpleSynchronousResource
                           new Identifier(
                                 resourceId.getNamespace(),
                                 resourceId.getPath().substring("honk_types/".length()).substring(0, ".json".length())
-                          ), parseResult.result().get()
+                          ),
+                          parseResult.result().get()
                     );
                 } else {
                     HonkInit.LOGGER.error("Failed to load type at path " + resourceId.toString() + " - " + parseResult.error().get().message());

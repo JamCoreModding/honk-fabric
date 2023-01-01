@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "honk:block/centrifuge",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "honk:block/centrifuge"
+    },
+    "facing=south": {
+      "model": "honk:block/centrifuge",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "honk:block/centrifuge",
+      "y": 270
+    }
+  }
+}

@@ -43,3 +43,23 @@ dependencies {
     modImplementation(libs.bundles.optional)
     modLocalRuntime(libs.bundles.runtime)
 }
+
+sourceSets {
+    getByName("main") {
+        resources.srcDir(rootProject.file("src/main/generated"))
+    }
+}
+
+loom {
+    runs {
+        create("datagenClient") {
+            inherit(getByName("client"))
+            name("Data Generation")
+            vmArg("-Dfabric-api.datagen")
+            vmArg("-Dfabric-api.datagen.output-dir=${rootProject.file("src/main/generated")}")
+            vmArg("-Dfabric-api.datagen.modid=honk")
+
+            runDir("build/datagen")
+        }
+    }
+}
