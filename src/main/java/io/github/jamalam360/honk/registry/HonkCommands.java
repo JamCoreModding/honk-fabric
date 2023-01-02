@@ -6,6 +6,9 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.jamalam360.honk.HonkInit;
 import io.github.jamalam360.honk.data.type.HonkType;
 import io.github.jamalam360.honk.entity.honk.HonkEntity;
+import io.github.jamalam360.honk.util.RegistryAnalysisDebug;
+import java.io.File;
+import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
 import net.minecraft.text.Text;
@@ -50,6 +53,19 @@ public class HonkCommands {
 
                         context.getSource().sendFeedback(Text.literal("Took ownership of " + entities.size() + " entities."), false);
 
+                        return 0;
+                    }))
+                    .then(literal("analyse-registry").executes((context) -> {
+                        File f;
+                        try {
+                            f = RegistryAnalysisDebug.analyseAndDump();
+                        } catch (IOException e) {
+                            context.getSource().sendFeedback(Text.literal("Failed to create dump"), false);
+                            HonkInit.LOGGER.error(e.toString());
+                            return 1;
+                        }
+
+                        context.getSource().sendFeedback(Text.literal("Wrote to file " + f), false);
                         return 0;
                     }))
         )));
