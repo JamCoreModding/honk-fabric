@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/orientable_with_bottom",
+  "textures": {
+    "bottom": "honk:block/dna_injector_extractor_bottom",
+    "front": "honk:block/dna_injector_extractor_front",
+    "side": "honk:block/dna_injector_extractor_side",
+    "top": "honk:block/dna_injector_extractor_top"
+  }
+}

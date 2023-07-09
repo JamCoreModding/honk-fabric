@@ -1,0 +1,11 @@
+{
+  "type": "honk:dna_injector_extractor",
+  "successChance": 0.6,
+  "input": {
+    "item": "honk:amber"
+  },
+  "auxiliaryInput": {
+    "item": "honk:empty_syringe"
+  },
+  "output": "honk:blood_syringe"
+}

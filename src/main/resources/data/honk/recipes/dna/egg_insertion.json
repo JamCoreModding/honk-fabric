@@ -1,0 +1,11 @@
+{
+  "type": "honk:dna_injector_extractor",
+  "successChance": 0.9,
+  "input": {
+    "item": "minecraft:egg"
+  },
+  "auxiliaryInput": {
+    "item": "honk:dna"
+  },
+  "output": "honk:egg"
+}

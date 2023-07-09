@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "honk:block/dna_injector_extractor",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "honk:block/dna_injector_extractor"
+    },
+    "facing=south": {
+      "model": "honk:block/dna_injector_extractor",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "honk:block/dna_injector_extractor",
+      "y": 270
+    }
+  }
+}

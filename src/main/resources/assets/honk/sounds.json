@@ -1,0 +1,22 @@
+{
+  "centrifuge": {
+    "sounds": [
+      "honk:centrifuge"
+    ]
+  },
+  "dna_injector_extractor": {
+    "sounds": [
+      "honk:dna_injector_extractor"
+    ]
+  },
+  "honk_hurt": {
+    "sounds": [
+      "honk:honk_hurt"
+    ]
+  },
+  "honk_ambient": {
+    "sounds": [
+      "honk:honk_ambient"
+    ]
+  }
+}

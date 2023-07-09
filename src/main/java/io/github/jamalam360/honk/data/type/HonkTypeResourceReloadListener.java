@@ -1,3 +1,27 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2023 Jamalam
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
 package io.github.jamalam360.honk.data.type;
 
 import com.google.gson.Gson;
@@ -19,7 +43,6 @@ public class HonkTypeResourceReloadListener implements SimpleSynchronousResource
     public static final HonkTypeResourceReloadListener INSTANCE = new HonkTypeResourceReloadListener();
     private static final Gson GSON = new Gson();
 
-    @SuppressWarnings("OptionalGetWithoutIsPresent")
     @Override
     public void reload(ResourceManager manager) {
         for (Entry<Identifier, Resource> entry : manager.findResources("honk_types", identifier -> identifier.getPath().endsWith(".json")).entrySet()) {
@@ -30,11 +53,14 @@ public class HonkTypeResourceReloadListener implements SimpleSynchronousResource
                 DataResult<HonkType> parseResult = HonkType.CODEC.codec().parse(JsonOps.INSTANCE, GSON.fromJson(new InputStreamReader(stream), JsonElement.class));
 
                 if (parseResult.error().isEmpty()) {
+                    String path = resourceId.getPath();
+                    path = path.substring("honk_types/".length());
+                    path = path.substring(0, path.length() - ".json".length());
                     HonkType.ENTRIES.put(
                           new Identifier(
                                 resourceId.getNamespace(),
-                                resourceId.getPath().substring("honk_types/".length()).substring(0, ".json".length())
-                          ),
+                                path
+                          ).toString(),
                           parseResult.result().get()
                     );
                 } else {
@@ -50,6 +76,6 @@ public class HonkTypeResourceReloadListener implements SimpleSynchronousResource
 
     @Override
     public @NotNull Identifier getQuiltId() {
-        return HonkInit.id("honk_type");
+        return HonkInit.idOf("honk_type");
     }
 }

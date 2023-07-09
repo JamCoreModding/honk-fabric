@@ -1,4 +1,5 @@
 {
   "tier": 1,
+  "name": "honk_type.honk.test",
   "output": "minecraft:copper_ingot"
 }

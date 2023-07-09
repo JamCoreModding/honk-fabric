@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "bottom": "honk:block/centrifuge_bottom",
+    "side": "honk:block/centrifuge_side",
+    "top": "honk:block/centrifuge_top"
+  }
+}

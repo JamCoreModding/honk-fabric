@@ -1,0 +1,7 @@
+{
+  "type": "honk:centrifuge",
+  "input": {
+    "item": "honk:blood_syringe"
+  },
+  "output": "honk:dna"
+}

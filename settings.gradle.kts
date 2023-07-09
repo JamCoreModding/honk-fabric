@@ -1,9 +1,9 @@
 pluginManagement {
     repositories {
         val mavenUrls = listOf(
-            "https://maven.fabricmc.net/",
-            "https://maven.quiltmc.org/repository/release/",
-            "https://maven.quiltmc.org/repository/snapshot/",
+                "https://maven.fabricmc.net/",
+                "https://maven.quiltmc.org/repository/release/",
+                "https://maven.quiltmc.org/repository/snapshot/",
         )
 
         for (url in mavenUrls) {
@@ -14,8 +14,6 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
-
-enableFeaturePreview("VERSION_CATALOGS")
 
 dependencyResolutionManagement {
     versionCatalogs {

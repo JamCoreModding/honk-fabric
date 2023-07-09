@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) [YEAR] Jamalam
+ * Copyright (c) 2023 Jamalam
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,67 +25,53 @@
 package io.github.jamalam360.honk;
 
 import io.github.jamalam360.honk.data.recipe.CentrifugeRecipe;
-import io.github.jamalam360.honk.data.recipe.DNAInjectorExtractorRecipe;
+import io.github.jamalam360.honk.data.recipe.DnaInjectorExtractorRecipe;
 import io.github.jamalam360.honk.data.type.HonkTypeResourceReloadListener;
-import io.github.jamalam360.honk.entity.egg.EggEntity;
-import io.github.jamalam360.honk.entity.honk.HonkEntity;
 import io.github.jamalam360.honk.registry.HonkBlocks;
 import io.github.jamalam360.honk.registry.HonkCommands;
-import io.github.jamalam360.honk.registry.HonkData;
 import io.github.jamalam360.honk.registry.HonkEntities;
 import io.github.jamalam360.honk.registry.HonkItems;
 import io.github.jamalam360.honk.registry.HonkScreens;
-import io.github.jamalam360.honk.registry.HonkSensorTypes;
+import io.github.jamalam360.honk.registry.HonkSounds;
 import io.github.jamalam360.honk.registry.HonkWorldGen;
+import io.github.jamalam360.jamlib.compatibility.JamLibCompatibilityModuleHandler;
 import io.github.jamalam360.jamlib.log.JamLibLogger;
 import io.github.jamalam360.jamlib.registry.JamLibRegistry;
-import net.minecraft.entity.attribute.DefaultAttributeRegistry;
+import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.resource.ResourceType;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.quiltmc.loader.api.ModContainer;
-import org.quiltmc.loader.api.QuiltLoader;
 import org.quiltmc.qsl.base.api.entrypoint.ModInitializer;
-import org.quiltmc.qsl.item.group.api.QuiltItemGroup;
 import org.quiltmc.qsl.resource.loader.api.ResourceLoader;
 
 public class HonkInit implements ModInitializer {
 
     public static final String MOD_ID = "honk";
     public static final JamLibLogger LOGGER = JamLibLogger.getLogger(MOD_ID);
-    public static final QuiltItemGroup GROUP = QuiltItemGroup.create(id("group"));
+    public static final ItemGroup GROUP = FabricItemGroup.builder().icon(HonkItems.BLOOD_SYRINGE::getDefaultStack).name(Text.translatable("group.honk.main")).build();
+    public static RegistryKey<ItemGroup> GROUP_KEY;
+
+    public static Identifier idOf(String path) {
+        return new Identifier(MOD_ID, path);
+    }
 
     @Override
     public void onInitialize(ModContainer mod) {
-        JamLibRegistry.register(HonkBlocks.class, HonkEntities.class, HonkItems.class, HonkScreens.class);
-        GROUP.setIcon(HonkItems.BLOOD_SYRINGE);
-        HonkCommands.init();
+        Registry.register(Registries.ITEM_GROUP, idOf("group"), GROUP);
+        GROUP_KEY = Registries.ITEM_GROUP.getKey(GROUP).get();
+
+        JamLibRegistry.register(HonkBlocks.class, HonkEntities.class, HonkItems.class, HonkScreens.class, HonkSounds.class);
         HonkWorldGen.init();
+        HonkCommands.init();
         CentrifugeRecipe.init();
-        DNAInjectorExtractorRecipe.init();
-        HonkData.init();
-        HonkSensorTypes.init();
-
-        DefaultAttributeRegistry.DEFAULT_ATTRIBUTE_REGISTRY.put(HonkEntities.EGG, EggEntity.createAttributes());
-        DefaultAttributeRegistry.DEFAULT_ATTRIBUTE_REGISTRY.put(HonkEntities.HONK, HonkEntity.createAttributes());
-
+        DnaInjectorExtractorRecipe.init();
         ResourceLoader.get(ResourceType.SERVER_DATA).registerReloader(HonkTypeResourceReloadListener.INSTANCE);
-
-        mod.metadata().value("compatibility_modules").asObject().forEach((modId, compatClass) -> {
-            if (QuiltLoader.isModLoaded(modId)) {
-                try {
-                    Class<?> clazz = Class.forName("io.github.jamalam360.honk.compatibility." + compatClass.asString());
-                    ModInitializer init = (ModInitializer) clazz.getConstructor().newInstance();
-                    init.onInitialize(mod);
-                } catch (Exception e) {
-                    LOGGER.error("Failed to initialize compatibility module for mod " + modId + ": " + e);
-                }
-            }
-        });
-
+        JamLibCompatibilityModuleHandler.initialize(MOD_ID);
         LOGGER.logInitialize();
-    }
-
-    public static Identifier id(String path) {
-        return new Identifier(MOD_ID, path);
     }
 }

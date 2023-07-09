@@ -1,7 +1,0 @@
-{
-  "type": "honk:centrifuge",
-  "input": {
-    "item": "minecraft:iron_ingot"
-  },
-  "output": "minecraft:iron_block"
-}

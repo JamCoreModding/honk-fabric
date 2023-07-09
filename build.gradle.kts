@@ -1,11 +1,11 @@
 plugins {
-    id("org.quiltmc.loom") version "1.0.+"
-    id("io.github.p03w.machete") version "1.+"
+    id("org.quiltmc.loom") version "1.2.+"
+    id("io.github.p03w.machete") version "2.0.1"
     id("org.cadixdev.licenser") version "0.6.+"
 }
 
-apply(from = "https://raw.githubusercontent.com/JamCoreModding/Gronk/quilt/publishing.gradle.kts")
-apply(from = "https://raw.githubusercontent.com/JamCoreModding/Gronk/quilt/misc.gradle.kts")
+apply(from = "https://raw.githubusercontent.com/JamCoreModding/Gronk/a6908f9dad1726fb35fb51817366bead568cf6e0/publishing.gradle.kts")
+apply(from = "https://raw.githubusercontent.com/JamCoreModding/Gronk/a6908f9dad1726fb35fb51817366bead568cf6e0/misc.gradle.kts")
 
 val mod_version: String by project
 
@@ -20,6 +20,7 @@ repositories {
                     Pair("https://api.modrinth.com/maven", listOf("maven.modrinth")),
                     Pair("https://maven.wispforest.io", listOf("io.wispforest")),
                     Pair("https://maven.jamalam.tech/releases", listOf("io.github.jamalam360")),
+                    Pair("https://jitpack.io", listOf("com.github.llamalad7.mixinextras")),
             )
 
     for (mavenPair in mavenUrls) {
@@ -42,6 +43,13 @@ dependencies {
     modApi(libs.bundles.required)
     modImplementation(libs.bundles.optional)
     modLocalRuntime(libs.bundles.runtime)
+
+    modCompileOnly(variantOf(libs.emi) {
+        classifier("api")
+    })
+
+    include(libs.bundles.include)
+    annotationProcessor(libs.mixin.extras)
 }
 
 sourceSets {

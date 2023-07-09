@@ -1,3 +1,27 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2023 Jamalam
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
 package io.github.jamalam360.honk.block;
 
 import java.util.Optional;
@@ -14,6 +38,7 @@ public abstract class FuelBurningProcessingBlockEntity extends AbstractProcessin
 
     private final int fuelSlot;
     private int burnTime = 0;
+    private int maxBurnTime = 0;
 
     public FuelBurningProcessingBlockEntity(BlockEntityType<?> type, RecipeType<? extends Recipe<Inventory>> recipeType, int inventorySize, int fuelSlot, BlockPos pos, BlockState state) {
         super(type, recipeType, inventorySize, pos, state);
@@ -37,9 +62,13 @@ public abstract class FuelBurningProcessingBlockEntity extends AbstractProcessin
         return this.burnTime;
     }
 
+    public int getMaxBurnTime() {
+        return this.maxBurnTime;
+    }
+
     @Override
     public boolean isPowered() {
-        return ItemContentRegistries.FUEL_TIME.get(this.getStack(fuelSlot).getItem()).orElse(0) > 0 || this.burnTime > 0;
+        return ItemContentRegistries.FUEL_TIMES.get(this.getStack(fuelSlot).getItem()).orElse(0) > 0 || this.burnTime > 0;
     }
 
     @Override
@@ -47,14 +76,17 @@ public abstract class FuelBurningProcessingBlockEntity extends AbstractProcessin
         if (this.burnTime == 0) {
             this.tryBurnItemOrCancelRecipe();
         }
+
+        this.playProcessingSound();
     }
 
     public void tryBurnItemOrCancelRecipe() {
-        Optional<Integer> fuelTime = ItemContentRegistries.FUEL_TIME.get(this.getStack(fuelSlot).getItem());
+        Optional<Integer> fuelTime = ItemContentRegistries.FUEL_TIMES.get(this.getStack(fuelSlot).getItem());
 
         if (fuelTime.isPresent()) {
             this.getStack(fuelSlot).decrement(1);
             this.burnTime = fuelTime.get();
+            this.maxBurnTime = fuelTime.get();
         }
 
         if (this.burnTime == 0) {
@@ -66,11 +98,13 @@ public abstract class FuelBurningProcessingBlockEntity extends AbstractProcessin
     public void readNbt(NbtCompound nbt) {
         super.readNbt(nbt);
         this.burnTime = nbt.getInt("BurnTime");
+        this.maxBurnTime = nbt.getInt("MaxBurnTime");
     }
 
     @Override
     public void writeNbt(NbtCompound nbt) {
         super.writeNbt(nbt);
         nbt.putInt("BurnTime", this.burnTime);
+        nbt.putInt("MaxBurnTime", this.maxBurnTime);
     }
 }
