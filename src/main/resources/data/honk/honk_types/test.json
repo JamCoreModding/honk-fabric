@@ -1,5 +1,6 @@
 {
   "tier": 1,
   "name": "honk_type.honk.test",
+  "texture": "honk:textures/entity/iron_honk.png",
   "output": "minecraft:iron_ingot"
 }

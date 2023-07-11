@@ -1,11 +1,11 @@
 plugins {
     id("org.quiltmc.loom") version "1.2.+"
-    id("io.github.p03w.machete") version "2.0.1"
+    id("io.github.p03w.machete") version "2.+"
     id("org.cadixdev.licenser") version "0.6.+"
 }
 
-apply(from = "https://raw.githubusercontent.com/JamCoreModding/Gronk/a6908f9dad1726fb35fb51817366bead568cf6e0/publishing.gradle.kts")
-apply(from = "https://raw.githubusercontent.com/JamCoreModding/Gronk/a6908f9dad1726fb35fb51817366bead568cf6e0/misc.gradle.kts")
+apply(from = "https://raw.githubusercontent.com/JamCoreModding/Gronk/quilt/publishing.gradle.kts")
+apply(from = "https://raw.githubusercontent.com/JamCoreModding/Gronk/quilt/misc.gradle.kts")
 
 val mod_version: String by project
 
@@ -69,5 +69,11 @@ loom {
 
             runDir("build/datagen")
         }
+    }
+}
+
+tasks {
+    named("modrinth") {
+        dependsOn("optimizeOutputsOfRemapJar")
     }
 }

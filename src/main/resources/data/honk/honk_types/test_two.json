@@ -1,5 +1,6 @@
 {
   "tier": 1,
   "name": "honk_type.honk.test",
+  "texture": "honk:textures/entity/honk.png",
   "output": "minecraft:copper_ingot"
 }

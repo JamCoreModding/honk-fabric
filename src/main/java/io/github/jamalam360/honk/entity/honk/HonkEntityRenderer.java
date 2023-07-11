@@ -25,7 +25,6 @@
 package io.github.jamalam360.honk.entity.honk;
 
 import io.github.jamalam360.honk.HonkClientInit;
-import io.github.jamalam360.honk.HonkInit;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.MobEntityRenderer;
@@ -41,13 +40,13 @@ public class HonkEntityRenderer extends MobEntityRenderer<HonkEntity, HonkEntity
 
     @Override
     public Identifier getTexture(HonkEntity entity) {
-        return HonkInit.idOf("textures/entity/honk.png");
+        return entity.getHonkType().texture();
     }
 
     @Override
     public void render(HonkEntity mobEntity, float f, float g, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i) {
-//        float scale = Math.max(0.5F, Math.min(1.5F, (float) (1 + mobEntity.getBlendedSizeModifier())));
-//        matrixStack.scale(scale, scale, scale);
+        float scale = Math.max(0.5F, Math.min(1.5F, mobEntity.getBlendedSizeModifier()));
+        matrixStack.scale(scale, scale, scale);
         super.render(mobEntity, f, g, matrixStack, vertexConsumerProvider, i);
     }
 

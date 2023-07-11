@@ -123,6 +123,7 @@ public class Datagen implements DataGeneratorEntrypoint {
         public void generate() {
             this.addDrop(HonkBlocks.CENTRIFUGE);
             this.addDrop(HonkBlocks.DNA_INJECTOR_EXTRACTOR);
+            this.addDrop(HonkBlocks.MOD_LOGO);
             this.addDrop(HonkBlocks.DEEPSLATE_AMBER_ORE, HonkItems.AMBER);
         }
     }

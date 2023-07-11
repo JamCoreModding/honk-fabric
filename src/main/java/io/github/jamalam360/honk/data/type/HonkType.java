@@ -37,6 +37,7 @@ import net.minecraft.util.Identifier;
 public record HonkType(
       int tier,
       String name,
+      Identifier texture,
       ItemStack output
 ) {
 
@@ -44,8 +45,9 @@ public record HonkType(
           instance.group(
                 Codec.INT.fieldOf("tier").forGetter(HonkType::tier),
                 Codec.STRING.fieldOf("name").forGetter(HonkType::name),
+                Identifier.CODEC.fieldOf("texture").forGetter(HonkType::texture),
                 Identifier.CODEC.fieldOf("output").forGetter((type) -> Registries.ITEM.getId(type.output().getItem()))
-          ).apply(instance, (tier, name, identifier) -> new HonkType(tier, name, Registries.ITEM.get(identifier).getDefaultStack()))
+          ).apply(instance, (tier, name, texture, identifier) -> new HonkType(tier, name, texture, Registries.ITEM.get(identifier).getDefaultStack()))
     );
     public static final Map<String, HonkType> ENTRIES = new HashMap<>();
     private static final Random RANDOM = new Random();

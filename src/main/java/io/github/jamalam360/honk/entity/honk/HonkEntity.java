@@ -28,8 +28,10 @@ import io.github.jamalam360.honk.api.MagnifyingGlassInformationProvider;
 import io.github.jamalam360.honk.data.DnaData;
 import io.github.jamalam360.honk.data.NbtKeys;
 import io.github.jamalam360.honk.data.type.HonkType;
+import io.github.jamalam360.honk.entity.honk.ai.EscapeDangerIfTooHurtGoal;
 import io.github.jamalam360.honk.entity.honk.ai.FollowHonkParentGoal;
 import io.github.jamalam360.honk.entity.honk.ai.MoveTowardsOtherHonksOfSameTypeGoal;
+import io.github.jamalam360.honk.entity.honk.ai.RevengeWithoutUnviersalAngerCheckGoal;
 import io.github.jamalam360.honk.registry.HonkEntities;
 import io.github.jamalam360.honk.registry.HonkSounds;
 import java.util.List;
@@ -40,13 +42,11 @@ import net.minecraft.entity.EntityData;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.goal.EscapeDangerGoal;
 import net.minecraft.entity.ai.goal.LookAroundGoal;
 import net.minecraft.entity.ai.goal.LookAtEntityGoal;
 import net.minecraft.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.entity.ai.goal.MoveIntoWaterGoal;
 import net.minecraft.entity.ai.goal.PounceAtTargetGoal;
-import net.minecraft.entity.ai.goal.RevengeGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.ai.goal.TargetGoal;
 import net.minecraft.entity.ai.goal.TemptGoal;
@@ -103,7 +103,7 @@ public class HonkEntity extends PathAwareEntity implements MagnifyingGlassInform
     }
 
     public static DefaultAttributeContainer.Builder createAttributes() {
-        return MobEntity.createAttributes().add(EntityAttributes.GENERIC_MAX_HEALTH, 28F).add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25F).add(EntityAttributes.GENERIC_FOLLOW_RANGE, 32F).add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 3.2F);
+        return MobEntity.createAttributes().add(EntityAttributes.GENERIC_MAX_HEALTH, 28F).add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25F).add(EntityAttributes.GENERIC_FOLLOW_RANGE, 32F).add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 3.2F).add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 0.5F);
     }
 
     @Override
@@ -122,42 +122,36 @@ public class HonkEntity extends PathAwareEntity implements MagnifyingGlassInform
 
     @Override
     protected void initGoals() {
+        //TODO: attack with owner, attack other types, breeding
         super.initGoals();
         this.goalSelector.add(0, new SwimGoal(this));
 //        this.goalSelector.add(2, new AnimalMateGoal(this, 1.0));
         this.goalSelector.add(1, new TemptGoal(this, 1.1F, Ingredient.ofItems(Items.GRASS, Items.WHEAT), false));
-        this.goalSelector.add(2, new PounceAtTargetGoal(this, 0.4F));
+        this.goalSelector.add(2, new EscapeDangerIfTooHurtGoal(this, 1.5F));
+        this.goalSelector.add(3, new PounceAtTargetGoal(this, 0.4F));
         this.goalSelector.add(3, new MeleeAttackGoal(this, 1.0F, true));
-        this.goalSelector.add(4, new EscapeDangerGoal(this, 1.5F));
-        this.goalSelector.add(5, new FollowHonkParentGoal(this, 1.4F));
-        //TODO: attack with owner, attack other types, breeding
-        this.goalSelector.add(5, new WanderAroundFarGoal(this, 1.0F));
-        this.goalSelector.add(5, new MoveIntoWaterGoal(this));
-        this.goalSelector.add(5, new MoveTowardsOtherHonksOfSameTypeGoal(this, 0.9F));
-        this.goalSelector.add(6, new LookAtEntityGoal(this, PlayerEntity.class, 6.0F));
-        this.goalSelector.add(6, new LookAroundGoal(this));
+        this.goalSelector.add(4, new FollowHonkParentGoal(this, 1.4F));
+        this.goalSelector.add(4, new WanderAroundFarGoal(this, 1.0F));
+        this.goalSelector.add(4, new MoveIntoWaterGoal(this));
+        this.goalSelector.add(4, new MoveTowardsOtherHonksOfSameTypeGoal(this, 0.9F));
+        this.goalSelector.add(5, new LookAtEntityGoal(this, PlayerEntity.class, 6.0F));
+        this.goalSelector.add(5, new LookAroundGoal(this));
 
-        this.targetSelector.add(1, new TargetGoal<>(this, HonkEntity.class, 10, true, false, (entity) -> {
-            if (entity instanceof HonkEntity honk) {
-                return honk.getHonkType() != this.getHonkType();
-            } else {
-                return false;
-            }
-        }));
-        this.targetSelector.add(2, new RevengeGoal(this));
+        this.targetSelector.add(1, new RevengeWithoutUnviersalAngerCheckGoal(this));
+        this.targetSelector.add(2, new TargetGoal<>(this, HonkEntity.class, 10, true, false, (entity) -> entity instanceof HonkEntity honk && honk.getHonkType() != this.getHonkType()));
     }
 
     @Override
     protected void mobTick() {
         super.mobTick();
 
-        if (this.getFoodLevel() > 0 && this.getWorld().random.nextFloat() < 0.01F) {
+        if (this.getFoodLevel() > 0 && this.getWorld().random.nextFloat() < 0.005F) {
             this.setFoodLevel(this.getFoodLevel() - 1);
-        } else if (this.getFoodLevel() == 0 && this.getWorld().random.nextFloat() < 0.05F) {
+        } else if (this.getFoodLevel() == 0 && this.getWorld().random.nextFloat() < 0.005F) {
             this.damage(this.getDamageSources().starve(), 1);
         }
 
-        if (this.getFoodLevel() > 0 && this.getHealth() < this.getMaxHealth() && this.age % 20 == 0) {
+        if (this.getFoodLevel() > 0 && this.getHealth() < this.getMaxHealth() && this.age % 50 == 0) {
             this.heal(1.0F);
             this.setFoodLevel(this.getFoodLevel() - 1);
         }
@@ -214,7 +208,7 @@ public class HonkEntity extends PathAwareEntity implements MagnifyingGlassInform
 
     @Override
     public double squaredAttackRange(LivingEntity target) {
-        return 1.5D;
+        return super.squaredAttackRange(target) + 0.3D;
     }
 
     @Override
@@ -330,9 +324,10 @@ public class HonkEntity extends PathAwareEntity implements MagnifyingGlassInform
         }
     }
 
-    public double getBlendedSizeModifier() {
-        //TODO
-        return 1.0D;
+    public float getBlendedSizeModifier() {
+        float growthFactor = (this.dataTracker.get(GROWTH) - 5) / 30F;
+        float productivityFactor = (this.dataTracker.get(PRODUCTIVITY) - 5) / 30F;
+        return 1.0F + growthFactor + productivityFactor;
     }
 
     @Override
