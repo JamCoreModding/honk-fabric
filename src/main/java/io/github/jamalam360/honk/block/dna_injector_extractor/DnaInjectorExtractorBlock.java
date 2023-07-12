@@ -22,16 +22,16 @@
  * THE SOFTWARE.
  */
 
-package io.github.jamalam360.honk.block.dna;
+package io.github.jamalam360.honk.block.dna_injector_extractor;
 
-import io.github.jamalam360.honk.block.AbstractProcessingBlock;
+import io.github.jamalam360.honk.block.FuelBurningProcessingBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.Nullable;
 
-public class DnaInjectorExtractorBlock extends AbstractProcessingBlock {
+public class DnaInjectorExtractorBlock extends FuelBurningProcessingBlock {
 
     public DnaInjectorExtractorBlock() {
         super(Settings.copy(Blocks.IRON_BLOCK));

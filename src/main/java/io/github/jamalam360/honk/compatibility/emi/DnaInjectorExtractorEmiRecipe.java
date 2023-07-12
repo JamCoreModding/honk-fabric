@@ -29,7 +29,7 @@ import dev.emi.emi.api.render.EmiTexture;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.WidgetHolder;
-import io.github.jamalam360.honk.block.dna.DnaInjectorExtractorBlockEntity;
+import io.github.jamalam360.honk.block.dna_injector_extractor.DnaInjectorExtractorBlockEntity;
 import io.github.jamalam360.honk.data.recipe.DnaInjectorExtractorRecipe;
 import net.minecraft.item.Item;
 import net.minecraft.recipe.Ingredient;

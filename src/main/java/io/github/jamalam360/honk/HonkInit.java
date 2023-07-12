@@ -25,6 +25,7 @@
 package io.github.jamalam360.honk;
 
 import io.github.jamalam360.honk.data.recipe.CentrifugeRecipe;
+import io.github.jamalam360.honk.data.recipe.DnaCombinatorRecipe;
 import io.github.jamalam360.honk.data.recipe.DnaInjectorExtractorRecipe;
 import io.github.jamalam360.honk.data.type.HonkTypeResourceReloadListener;
 import io.github.jamalam360.honk.registry.HonkBlocks;
@@ -70,6 +71,7 @@ public class HonkInit implements ModInitializer {
         HonkCommands.init();
         CentrifugeRecipe.init();
         DnaInjectorExtractorRecipe.init();
+        DnaCombinatorRecipe.init();
         ResourceLoader.get(ResourceType.SERVER_DATA).registerReloader(HonkTypeResourceReloadListener.INSTANCE);
         JamLibCompatibilityModuleHandler.initialize(MOD_ID);
         LOGGER.logInitialize();

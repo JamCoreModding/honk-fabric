@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package io.github.jamalam360.honk.block.centrifuge;
+package io.github.jamalam360.honk.block.dna_combinator;
 
 import io.github.jamalam360.honk.block.FuelBurningProcessingBlock;
 import net.minecraft.block.BlockState;
@@ -31,15 +31,15 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.Nullable;
 
-public class CentrifugeBlock extends FuelBurningProcessingBlock {
+public class DnaCombinatorBlock extends FuelBurningProcessingBlock {
 
-    public CentrifugeBlock() {
+    public DnaCombinatorBlock() {
         super(Settings.copy(Blocks.IRON_BLOCK));
     }
 
     @Nullable
     @Override
     public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
-        return new CentrifugeBlockEntity(pos, state);
+        return new DnaCombinatorBlockEntity(pos, state);
     }
 }

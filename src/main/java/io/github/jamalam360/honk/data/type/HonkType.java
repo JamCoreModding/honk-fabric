@@ -28,6 +28,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import net.minecraft.item.ItemStack;
@@ -37,19 +38,21 @@ import net.minecraft.util.Identifier;
 public record HonkType(
       int tier,
       String name,
+      List<List<Identifier>> parents,
       Identifier texture,
       ItemStack output
 ) {
 
+    public static final Map<String, HonkType> ENTRIES = new HashMap<>();
     public static final MapCodec<HonkType> CODEC = RecordCodecBuilder.mapCodec(instance ->
           instance.group(
                 Codec.INT.fieldOf("tier").forGetter(HonkType::tier),
                 Codec.STRING.fieldOf("name").forGetter(HonkType::name),
+                Codec.list(Codec.list(Identifier.CODEC)).fieldOf("parents").forGetter(HonkType::parents),
                 Identifier.CODEC.fieldOf("texture").forGetter(HonkType::texture),
                 Identifier.CODEC.fieldOf("output").forGetter((type) -> Registries.ITEM.getId(type.output().getItem()))
-          ).apply(instance, (tier, name, texture, identifier) -> new HonkType(tier, name, texture, Registries.ITEM.get(identifier).getDefaultStack()))
+          ).apply(instance, (tier, name, parents, texture, identifier) -> new HonkType(tier, name, parents, texture, Registries.ITEM.get(identifier).getDefaultStack()))
     );
-    public static final Map<String, HonkType> ENTRIES = new HashMap<>();
     private static final Random RANDOM = new Random();
 
     public static HonkType getRandom(int tier) {

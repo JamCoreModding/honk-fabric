@@ -28,8 +28,10 @@ import io.github.jamalam360.honk.api.MagnifyingGlassInformationProvider;
 import io.github.jamalam360.honk.data.DnaData;
 import io.github.jamalam360.honk.data.NbtKeys;
 import io.github.jamalam360.honk.data.type.HonkType;
+import io.github.jamalam360.honk.entity.egg.EggEntity;
 import io.github.jamalam360.honk.entity.honk.ai.EscapeDangerIfTooHurtGoal;
 import io.github.jamalam360.honk.entity.honk.ai.FollowHonkParentGoal;
+import io.github.jamalam360.honk.entity.honk.ai.HonkMateGoal;
 import io.github.jamalam360.honk.entity.honk.ai.MoveTowardsOtherHonksOfSameTypeGoal;
 import io.github.jamalam360.honk.entity.honk.ai.RevengeWithoutUnviersalAngerCheckGoal;
 import io.github.jamalam360.honk.registry.HonkEntities;
@@ -65,6 +67,7 @@ import net.minecraft.item.FoodComponent;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.recipe.Ingredient;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
@@ -85,7 +88,7 @@ public class HonkEntity extends PathAwareEntity implements MagnifyingGlassInform
     public static final TrackedData<Integer> ANGER_TIME = DataTracker.registerData(HonkEntity.class, TrackedDataHandlerRegistry.INTEGER);
 
     public static final TrackedData<Integer> FOOD_LEVEL = DataTracker.registerData(HonkEntity.class, TrackedDataHandlerRegistry.INTEGER);
-    public static final TrackedData<Boolean> IN_LOVE = DataTracker.registerData(HonkEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
+    public static final TrackedData<Integer> IN_LOVE = DataTracker.registerData(HonkEntity.class, TrackedDataHandlerRegistry.INTEGER);
     public static final TrackedData<Integer> GROWTH = DataTracker.registerData(HonkEntity.class, TrackedDataHandlerRegistry.INTEGER);
     public static final TrackedData<Integer> PRODUCTIVITY = DataTracker.registerData(HonkEntity.class, TrackedDataHandlerRegistry.INTEGER);
     public static final TrackedData<Integer> REPRODUCTIVITY = DataTracker.registerData(HonkEntity.class, TrackedDataHandlerRegistry.INTEGER);
@@ -113,7 +116,7 @@ public class HonkEntity extends PathAwareEntity implements MagnifyingGlassInform
         this.dataTracker.startTracking(PARENT, Optional.empty());
         this.dataTracker.startTracking(ANGER_TIME, 0);
         this.dataTracker.startTracking(FOOD_LEVEL, 20);
-        this.dataTracker.startTracking(IN_LOVE, false);
+        this.dataTracker.startTracking(IN_LOVE, 0);
         this.dataTracker.startTracking(GROWTH, 1);
         this.dataTracker.startTracking(PRODUCTIVITY, 1);
         this.dataTracker.startTracking(REPRODUCTIVITY, 1);
@@ -122,11 +125,10 @@ public class HonkEntity extends PathAwareEntity implements MagnifyingGlassInform
 
     @Override
     protected void initGoals() {
-        //TODO: attack with owner, attack other types, breeding
         super.initGoals();
         this.goalSelector.add(0, new SwimGoal(this));
-//        this.goalSelector.add(2, new AnimalMateGoal(this, 1.0));
         this.goalSelector.add(1, new TemptGoal(this, 1.1F, Ingredient.ofItems(Items.GRASS, Items.WHEAT), false));
+        this.goalSelector.add(1, new HonkMateGoal(this, 1.0F));
         this.goalSelector.add(2, new EscapeDangerIfTooHurtGoal(this, 1.5F));
         this.goalSelector.add(3, new PounceAtTargetGoal(this, 0.4F));
         this.goalSelector.add(3, new MeleeAttackGoal(this, 1.0F, true));
@@ -154,6 +156,10 @@ public class HonkEntity extends PathAwareEntity implements MagnifyingGlassInform
         if (this.getFoodLevel() > 0 && this.getHealth() < this.getMaxHealth() && this.age % 50 == 0) {
             this.heal(1.0F);
             this.setFoodLevel(this.getFoodLevel() - 1);
+        }
+
+        if (this.isInLove()) {
+            this.setInLove(this.dataTracker.get(IN_LOVE) - 1);
         }
     }
 
@@ -197,7 +203,7 @@ public class HonkEntity extends PathAwareEntity implements MagnifyingGlassInform
             player.getStackInHand(hand).decrement(1);
 
             if (this.getFoodLevel() > 18 && this.getWorld().random.nextFloat() < 0.4F) {
-                this.dataTracker.set(IN_LOVE, true);
+                this.dataTracker.set(IN_LOVE, 600);
             }
 
             return ActionResult.SUCCESS;
@@ -236,6 +242,20 @@ public class HonkEntity extends PathAwareEntity implements MagnifyingGlassInform
         return false;
     }
 
+    public boolean canBreedWith(HonkEntity other) {
+        return this.getHonkType() == other.getHonkType() && this.isInLove() && other.isInLove();
+    }
+
+    public void breed(ServerWorld world, HonkEntity other) {
+        //TODO: genetic blending
+        EggEntity egg = HonkEntities.EGG.create(world);
+        egg.setType(this.getHonkType());
+        egg.setPos(this.getX(), this.getY(), this.getZ());
+        egg.setParent(this);
+        world.spawnEntity(egg);
+        this.setInLove(0);
+    }
+
     @Nullable
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
@@ -251,7 +271,11 @@ public class HonkEntity extends PathAwareEntity implements MagnifyingGlassInform
     @Nullable
     @Override
     public Text getCustomName() {
-        return Text.literal("[DEBUG] " + this.getHonkType().id() + " (" + this.getFoodLevel() + " food)");
+        if (this.getHonkType() == null || this.getHonkType().id() == null) {
+            return Text.literal("[DEBUG] " + "[IDK]" + " (" + this.getFoodLevel() + " food)");
+        } else {
+            return Text.literal("[DEBUG] " + this.getHonkType().id() + " (" + this.getFoodLevel() + " food)");
+        }
     }
 
     @Override
@@ -289,7 +313,7 @@ public class HonkEntity extends PathAwareEntity implements MagnifyingGlassInform
     public void writeCustomDataToNbt(NbtCompound nbt) {
         nbt.putString(NbtKeys.TYPE, this.dataTracker.get(TYPE));
         nbt.putInt(NbtKeys.FOOD_LEVEL, this.dataTracker.get(FOOD_LEVEL));
-        nbt.putBoolean(NbtKeys.IN_LOVE, this.dataTracker.get(IN_LOVE));
+        nbt.putInt(NbtKeys.IN_LOVE, this.dataTracker.get(IN_LOVE));
         this.dataTracker.get(PARENT).ifPresent((p) -> nbt.putInt(NbtKeys.PARENT, p));
         DnaData data = this.createDnaData();
         data.writeNbt(nbt);
@@ -300,7 +324,7 @@ public class HonkEntity extends PathAwareEntity implements MagnifyingGlassInform
     public void readCustomDataFromNbt(NbtCompound nbt) {
         this.dataTracker.set(TYPE, nbt.getString(NbtKeys.TYPE));
         this.dataTracker.set(FOOD_LEVEL, nbt.getInt(NbtKeys.FOOD_LEVEL));
-        this.dataTracker.set(IN_LOVE, nbt.getBoolean(NbtKeys.IN_LOVE));
+        this.dataTracker.set(IN_LOVE, nbt.getInt(NbtKeys.IN_LOVE));
         this.readDnaData(DnaData.fromNbt(nbt));
 
         if (nbt.contains(NbtKeys.PARENT)) {
@@ -339,6 +363,14 @@ public class HonkEntity extends PathAwareEntity implements MagnifyingGlassInform
     @Override
     public boolean canImmediatelyDespawn(double distanceSquared) {
         return false;
+    }
+
+    public boolean isInLove() {
+        return this.dataTracker.get(IN_LOVE) > 0;
+    }
+
+    public void setInLove(int ticks) {
+        this.dataTracker.set(IN_LOVE, ticks);
     }
 
     public Optional<Integer> getParent() {

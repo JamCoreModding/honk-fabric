@@ -28,7 +28,7 @@ import io.github.jamalam360.autorecipe.AutoRecipeRegistry;
 import io.github.jamalam360.autorecipe.AutoSerializedRecipe;
 import io.github.jamalam360.autorecipe.RecipeVar;
 import io.github.jamalam360.honk.HonkInit;
-import io.github.jamalam360.honk.block.dna.DnaInjectorExtractorBlockEntity;
+import io.github.jamalam360.honk.block.dna_injector_extractor.DnaInjectorExtractorBlockEntity;
 import io.github.jamalam360.honk.data.DnaData;
 import io.github.jamalam360.honk.data.NbtKeys;
 import io.github.jamalam360.honk.registry.HonkItems;
@@ -88,7 +88,8 @@ public class DnaInjectorExtractorRecipe extends AutoSerializedRecipe<Inventory> 
             inventory.setStack(DnaInjectorExtractorBlockEntity.REMAINDER_SLOT, auxiliaryInput.getItem().getRecipeRemainder(auxiliaryInput).copy());
             auxiliaryInput.decrement(1);
         }
-
+        //TODO: remove
+        this.successChance = 1;
         if (RANDOM.nextFloat() <= this.successChance) {
             ItemStack output = this.output.copy();
 

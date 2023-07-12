@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package io.github.jamalam360.honk.block.dna;
+package io.github.jamalam360.honk.block.dna_combinator;
 
 import io.github.jamalam360.honk.block.AbstractProcessingScreenHandler;
 import io.github.jamalam360.honk.registry.HonkScreens;
@@ -37,25 +37,24 @@ import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.slot.Slot;
 import org.quiltmc.qsl.item.content.registry.api.ItemContentRegistries;
 
-public class DnaInjectorExtractorScreenHandler extends AbstractProcessingScreenHandler {
+public class DnaCombinatorScreenHandler extends AbstractProcessingScreenHandler {
 
-    public DnaInjectorExtractorScreenHandler(int syncId, PlayerInventory playerInventory) {
-        this(syncId, playerInventory, new SimpleInventory(5), ScreenHandlerContext.EMPTY, new ArrayPropertyDelegate(3));
+    public DnaCombinatorScreenHandler(int syncId, PlayerInventory playerInventory) {
+        this(syncId, playerInventory, new SimpleInventory(4), ScreenHandlerContext.EMPTY, new ArrayPropertyDelegate(3));
     }
 
-    public DnaInjectorExtractorScreenHandler(int syncId, PlayerInventory playerInventory, Inventory inventory, ScreenHandlerContext context, PropertyDelegate propertyDelegate) {
-        super(HonkScreens.DNA_INJECTOR_EXTRACTOR, syncId, playerInventory, inventory, context, propertyDelegate);
-        checkSize(this.inventory, 5);
+    public DnaCombinatorScreenHandler(int syncId, PlayerInventory playerInventory, Inventory inventory, ScreenHandlerContext context, PropertyDelegate propertyDelegate) {
+        super(HonkScreens.DNA_COMBINATOR, syncId, playerInventory, inventory, context, propertyDelegate);
+        checkSize(this.inventory, 4);
         checkDataCount(this.propertyDelegate, 3);
     }
 
     @Override
     public void addSlots(PlayerInventory playerInventory) {
-        this.addSlot(new ValidatingSlot(this.inventory, DnaInjectorExtractorBlockEntity.FUEL_SLOT, 8, 46, (stack) -> ItemContentRegistries.FUEL_TIMES.get(stack.getItem()).isPresent()));
-        this.addSlot(new Slot(this.inventory, DnaInjectorExtractorBlockEntity.INPUT_SLOT, 44, 23));
-        this.addSlot(new Slot(this.inventory, DnaInjectorExtractorBlockEntity.AUXILIARY_INPUT_SLOT, 44, 46));
-        this.addSlot(new ExtractOnlySlot(this.inventory, DnaInjectorExtractorBlockEntity.OUTPUT_SLOT, 116, 34));
-        this.addSlot(new ExtractOnlySlot(this.inventory, DnaInjectorExtractorBlockEntity.REMAINDER_SLOT, 138, 34));
+        this.addSlot(new ValidatingSlot(this.inventory, DnaCombinatorBlockEntity.FUEL_SLOT, 8, 46, (stack) -> ItemContentRegistries.FUEL_TIMES.get(stack.getItem()).isPresent()));
+        this.addSlot(new Slot(this.inventory, DnaCombinatorBlockEntity.FIRST_INPUT_SLOT, 44, 23));
+        this.addSlot(new Slot(this.inventory, DnaCombinatorBlockEntity.SECOND_INPUT_SLOT, 44, 46));
+        this.addSlot(new ExtractOnlySlot(this.inventory, DnaCombinatorBlockEntity.OUTPUT_SLOT, 116, 34));
         super.addSlots(playerInventory);
     }
 }

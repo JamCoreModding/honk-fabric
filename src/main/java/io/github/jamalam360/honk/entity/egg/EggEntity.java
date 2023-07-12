@@ -75,7 +75,7 @@ public class EggEntity extends MobEntity implements MagnifyingGlassInformationPr
     }
 
     public static DefaultAttributeContainer.Builder createAttributes() {
-        return MobEntity.createAttributes().add(EntityAttributes.GENERIC_MAX_HEALTH, 16F);
+        return MobEntity.createAttributes().add(EntityAttributes.GENERIC_MAX_HEALTH, 10F);
     }
 
     @Override
@@ -131,8 +131,8 @@ public class EggEntity extends MobEntity implements MagnifyingGlassInformationPr
             this.dataTracker.set(COLD_TICKS, this.getColdTicks() + 1);
         }
 
-        if (this.getColdTicks() > 600 && this.getWorld().random.nextFloat() <= 0.01) {
-            this.damage(this.getDamageSources().generic(), 1);
+        if (this.getColdTicks() > 600 && this.getWorld().random.nextFloat() <= 0.005) {
+            this.damage(this.getDamageSources().freeze(), 1);
         }
     }
 
@@ -150,16 +150,17 @@ public class EggEntity extends MobEntity implements MagnifyingGlassInformationPr
     }
 
     public int getMinimumHatchingAge() {
-        return 400;
+        return 4000;
     }
 
     public float getHatchingChance() {
-        return 0.05f;
+        return 0.005f;
     }
 
     public void hatch() {
         if (!this.getWorld().isClient) {
-            HonkEntity spawned = HonkEntities.HONK.spawn((ServerWorld) this.getWorld(), this.getBlockPos(), SpawnReason.BREEDING);
+            // We have to use this method-and-a-half because I need to pass a `SpawnReason` in, and using `EntityType#spawn` causes issues, because the entity is spawned before the data tracker is initialized.
+            HonkEntity spawned = HonkEntities.HONK.create((ServerWorld) this.getWorld(), null, null, this.getBlockPos(), SpawnReason.BREEDING, false, false);
             spawned.refreshPositionAndAngles(this.getX(), this.getY(), this.getZ(), this.getYaw(), this.getPitch());
             spawned.getDataTracker().set(HonkEntity.TYPE, this.dataTracker.get(TYPE));
             spawned.getDataTracker().set(HonkEntity.PARENT, this.dataTracker.get(PARENT));
@@ -167,6 +168,7 @@ public class EggEntity extends MobEntity implements MagnifyingGlassInformationPr
             spawned.getDataTracker().set(HonkEntity.PRODUCTIVITY, this.dataTracker.get(PRODUCTIVITY));
             spawned.getDataTracker().set(HonkEntity.REPRODUCTIVITY, this.dataTracker.get(REPRODUCTIVITY));
             spawned.getDataTracker().set(HonkEntity.INSTABILITY, this.dataTracker.get(INSTABILITY));
+            this.getWorld().spawnEntity(spawned);
             this.remove(RemovalReason.DISCARDED);
         }
     }
@@ -239,6 +241,14 @@ public class EggEntity extends MobEntity implements MagnifyingGlassInformationPr
 
     public int getColdTicks() {
         return this.dataTracker.get(COLD_TICKS);
+    }
+
+    public void setType(HonkType type) {
+        this.dataTracker.set(TYPE, type.id());
+    }
+
+    public void setParent(HonkEntity entity) {
+        this.dataTracker.set(PARENT, Optional.of(entity.getId()));
     }
 
     public void setGrowth(int value) {

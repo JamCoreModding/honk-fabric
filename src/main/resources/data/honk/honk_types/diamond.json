@@ -1,0 +1,12 @@
+{
+  "tier": 2,
+  "name": "honk_type.honk.diamond",
+  "parents": [
+    [
+      "honk:test",
+      "honk:test_two"
+    ]
+  ],
+  "texture": "honk:textures/entity/honk.png",
+  "output": "minecraft:diamond"
+}

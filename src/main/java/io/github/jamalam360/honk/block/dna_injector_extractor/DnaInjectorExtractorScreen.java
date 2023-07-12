@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package io.github.jamalam360.honk.block.dna;
+package io.github.jamalam360.honk.block.dna_injector_extractor;
 
 import io.github.jamalam360.honk.HonkInit;
 import io.wispforest.owo.ui.base.BaseUIModelHandledScreen;

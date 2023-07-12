@@ -1,0 +1,10 @@
+{
+  "type": "honk:dna_combinator",
+  "firstInput": {
+    "item": "honk:dna"
+  },
+  "secondInput": {
+    "item": "honk:dna"
+  },
+  "output": "honk:dna"
+}

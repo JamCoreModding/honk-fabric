@@ -26,7 +26,8 @@ package io.github.jamalam360.honk.registry;
 
 import io.github.jamalam360.honk.HonkInit;
 import io.github.jamalam360.honk.block.centrifuge.CentrifugeScreenHandler;
-import io.github.jamalam360.honk.block.dna.DnaInjectorExtractorScreenHandler;
+import io.github.jamalam360.honk.block.dna_combinator.DnaCombinatorScreenHandler;
+import io.github.jamalam360.honk.block.dna_injector_extractor.DnaInjectorExtractorScreenHandler;
 import io.github.jamalam360.jamlib.registry.annotation.ContentRegistry;
 import net.minecraft.feature_flags.FeatureFlagBitSet;
 import net.minecraft.screen.ScreenHandlerType;
@@ -37,4 +38,5 @@ public class HonkScreens {
 
     public static final ScreenHandlerType<CentrifugeScreenHandler> CENTRIFUGE = new ScreenHandlerType<>((syncId, inventory) -> new CentrifugeScreenHandler(syncId, inventory), FeatureFlagBitSet.empty());
     public static final ScreenHandlerType<DnaInjectorExtractorScreenHandler> DNA_INJECTOR_EXTRACTOR = new ScreenHandlerType<>((syncId, inventory) -> new DnaInjectorExtractorScreenHandler(syncId, inventory), FeatureFlagBitSet.empty());
+    public static final ScreenHandlerType<DnaCombinatorScreenHandler> DNA_COMBINATOR = new ScreenHandlerType<>((syncId, inventory) -> new DnaCombinatorScreenHandler(syncId, inventory), FeatureFlagBitSet.empty());
 }

@@ -1,0 +1,62 @@
+<!--
+    The MIT License (MIT)
+
+    Copyright (c) 2023 Jamalam
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in
+    all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+    THE SOFTWARE.
+-->
+
+<owo-ui xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/wisp-forest/owo-lib/1.19/owo-ui.xsd">
+  <components>
+    <flow-layout direction="vertical">
+      <children>
+        <flow-layout direction="vertical">
+          <children>
+            <texture region-height="165" region-width="176"
+              texture="honk:textures/gui/dna_injector_extractor.png"/>
+
+            <texture id="burning-indicator" region-height="13" region-width="13"
+              texture="honk:textures/gui/dna_injector_extractor.png" u="176" v="0">
+              <positioning type="absolute">9,28</positioning>
+              <visible-area>
+                <height>0</height>
+              </visible-area>
+            </texture>
+
+            <texture id="progress-indicator" region-height="14" region-width="39"
+              texture="honk:textures/gui/dna_injector_extractor.png" u="176" v="14">
+              <positioning type="absolute">68,36</positioning>
+              <visible-area>
+                <height>0</height>
+              </visible-area>
+            </texture>
+          </children>
+        </flow-layout>
+      </children>
+
+      <horizontal-alignment>center</horizontal-alignment>
+      <surface>
+        <vanilla-translucent/>
+      </surface>
+
+      <vertical-alignment>center</vertical-alignment>
+    </flow-layout>
+  </components>
+</owo-ui>

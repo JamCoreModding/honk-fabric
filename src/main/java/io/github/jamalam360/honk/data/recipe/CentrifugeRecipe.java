@@ -72,7 +72,7 @@ public class CentrifugeRecipe extends AutoSerializedRecipe<Inventory> {
         // Special Cases
         if (inputCopy.getItem() == HonkItems.BLOOD_SYRINGE && output.getItem() == HonkItems.DNA) {
             // Initialize the DNA with the blood syringes DNA NBT
-            output.setNbt(DnaData.createRandomData().writeNbt(output.getOrCreateNbt()));
+            output.setNbt(DnaData.fromNbt(inputCopy.getOrCreateNbt()).writeNbt(output.getOrCreateNbt()));
         }
 
         return output;

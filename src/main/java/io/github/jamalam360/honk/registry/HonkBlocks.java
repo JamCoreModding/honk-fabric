@@ -27,8 +27,10 @@ package io.github.jamalam360.honk.registry;
 import io.github.jamalam360.honk.HonkInit;
 import io.github.jamalam360.honk.block.centrifuge.CentrifugeBlock;
 import io.github.jamalam360.honk.block.centrifuge.CentrifugeBlockEntity;
-import io.github.jamalam360.honk.block.dna.DnaInjectorExtractorBlock;
-import io.github.jamalam360.honk.block.dna.DnaInjectorExtractorBlockEntity;
+import io.github.jamalam360.honk.block.dna_combinator.DnaCombinatorBlock;
+import io.github.jamalam360.honk.block.dna_combinator.DnaCombinatorBlockEntity;
+import io.github.jamalam360.honk.block.dna_injector_extractor.DnaInjectorExtractorBlock;
+import io.github.jamalam360.honk.block.dna_injector_extractor.DnaInjectorExtractorBlockEntity;
 import io.github.jamalam360.jamlib.registry.JamLibContentRegistry;
 import io.github.jamalam360.jamlib.registry.annotation.ContentRegistry;
 import net.minecraft.block.Block;
@@ -46,20 +48,20 @@ import org.quiltmc.qsl.block.extensions.api.QuiltBlockSettings;
 @ContentRegistry(HonkInit.MOD_ID)
 public class HonkBlocks implements JamLibContentRegistry {
 
-    public static final Block CENTRIFUGE = new CentrifugeBlock();
-    public static final Block DNA_INJECTOR_EXTRACTOR = new DnaInjectorExtractorBlock();
-    public static final Block DEEPSLATE_AMBER_ORE = new ExperienceDroppingBlock(QuiltBlockSettings.copy(Blocks.DEEPSLATE_IRON_ORE), UniformIntProvider.create(2, 5));
     public static final Block MOD_LOGO = new Block(QuiltBlockSettings.copy(Blocks.WHITE_WOOL));
+    public static final Block DEEPSLATE_AMBER_ORE = new ExperienceDroppingBlock(QuiltBlockSettings.copy(Blocks.DEEPSLATE_IRON_ORE), UniformIntProvider.create(2, 5));
+    public static final Block CENTRIFUGE = new CentrifugeBlock();
+    public static final Block DNA_INJECTOR_EXTRACTOR = new DnaInjectorExtractorBlock();    public static final BlockEntityType<CentrifugeBlockEntity> CENTRIFUGE_ENTITY = QuiltBlockEntityTypeBuilder.create(CentrifugeBlockEntity::new, CENTRIFUGE).build();
+    public static final Block DNA_COMBINATOR = new DnaCombinatorBlock();
 
     @Override
     public RegistryKey<ItemGroup> getItemGroup(Item item) {
         return HonkInit.GROUP_KEY;
-    }
+    }    public static final BlockEntityType<DnaInjectorExtractorBlockEntity> DNA_INJECTOR_EXTRACTOR_ENTITY = QuiltBlockEntityTypeBuilder.create(DnaInjectorExtractorBlockEntity::new, DNA_INJECTOR_EXTRACTOR).build();
 
-    public static final BlockEntityType<CentrifugeBlockEntity> CENTRIFUGE_ENTITY = QuiltBlockEntityTypeBuilder.create(CentrifugeBlockEntity::new, CENTRIFUGE).build();
+    public static final BlockEntityType<DnaCombinatorBlockEntity> DNA_COMBINATOR_ENTITY = QuiltBlockEntityTypeBuilder.create(DnaCombinatorBlockEntity::new, DNA_COMBINATOR).build();
 
 
-    public static final BlockEntityType<DnaInjectorExtractorBlockEntity> DNA_INJECTOR_EXTRACTOR_ENTITY = QuiltBlockEntityTypeBuilder.create(DnaInjectorExtractorBlockEntity::new, DNA_INJECTOR_EXTRACTOR).build();
 
 
 }

@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package io.github.jamalam360.honk.block.dna;
+package io.github.jamalam360.honk.block.dna_injector_extractor;
 
 import io.github.jamalam360.honk.block.FuelBurningProcessingBlockEntity;
 import io.github.jamalam360.honk.data.recipe.DnaInjectorExtractorRecipe;
@@ -83,7 +83,8 @@ public class DnaInjectorExtractorBlockEntity extends FuelBurningProcessingBlockE
     }
 
     public static int getDnaInjectorExtractorProcessingTime() {
-        return 600;
+//        return 600;
+        return 40;
     }
 
     @Override

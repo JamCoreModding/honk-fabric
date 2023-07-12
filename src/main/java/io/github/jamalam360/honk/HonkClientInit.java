@@ -25,7 +25,8 @@
 package io.github.jamalam360.honk;
 
 import io.github.jamalam360.honk.block.centrifuge.CentrifugeScreen;
-import io.github.jamalam360.honk.block.dna.DnaInjectorExtractorScreen;
+import io.github.jamalam360.honk.block.dna_combinator.DnaCombinatorScreen;
+import io.github.jamalam360.honk.block.dna_injector_extractor.DnaInjectorExtractorScreen;
 import io.github.jamalam360.honk.entity.egg.EggEntityModel;
 import io.github.jamalam360.honk.entity.egg.EggEntityRenderer;
 import io.github.jamalam360.honk.entity.honk.HonkEntityModel;
@@ -54,5 +55,6 @@ public class HonkClientInit implements ClientModInitializer {
 
         HandledScreens.register(HonkScreens.CENTRIFUGE, CentrifugeScreen::new);
         HandledScreens.register(HonkScreens.DNA_INJECTOR_EXTRACTOR, DnaInjectorExtractorScreen::new);
+        HandledScreens.register(HonkScreens.DNA_COMBINATOR, DnaCombinatorScreen::new);
     }
 }
