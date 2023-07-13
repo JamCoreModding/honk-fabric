@@ -56,9 +56,9 @@ public class DnaInjectorExtractorEmiRecipe extends BasicEmiRecipe {
             }
         }
 
-        EmiIngredient output = EmiStack.of(recipe.getOutput());
+        EmiStack output = EmiStack.of(recipe.getOutput());
         output.setChance(recipe.getSuccessChance());
-        this.outputs.add(EmiStack.of(recipe.getOutput()));
+        this.outputs.add(output);
     }
 
     @Override

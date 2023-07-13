@@ -98,6 +98,7 @@ public class Datagen implements DataGeneratorEntrypoint {
         public void generateBlockStateModels(BlockStateModelGenerator gen) {
             registerTechnicallyOrientableMachine(gen, HonkBlocks.CENTRIFUGE);
             registerOrientableMachineWithBottom(gen, HonkBlocks.DNA_INJECTOR_EXTRACTOR);
+            registerCombinator(gen, HonkBlocks.DNA_COMBINATOR);
             gen.registerSimpleCubeAll(HonkBlocks.DEEPSLATE_AMBER_ORE);
             gen.registerSimpleCubeAll(HonkBlocks.MOD_LOGO);
         }
@@ -110,6 +111,10 @@ public class Datagen implements DataGeneratorEntrypoint {
         public final void registerTechnicallyOrientableMachine(BlockStateModelGenerator gen, Block machine) {
             Identifier identifier = TexturedModel.CUBE_BOTTOM_TOP.create(machine, gen.modelCollector);
             gen.blockStateCollector.accept(VariantsBlockStateSupplier.create(machine).coordinate(createNorthDefaultHorizontalRotationStates(identifier)));
+        }
+
+        public final void registerCombinator(BlockStateModelGenerator gen, Block machine) {
+            gen.blockStateCollector.accept(VariantsBlockStateSupplier.create(machine).coordinate(createNorthDefaultHorizontalRotationStates(HonkInit.idOf("block/dna_combinator"))));
         }
     }
 

@@ -131,7 +131,7 @@ public class EggEntity extends MobEntity implements MagnifyingGlassInformationPr
             this.dataTracker.set(COLD_TICKS, this.getColdTicks() + 1);
         }
 
-        if (this.getColdTicks() > 600 && this.getWorld().random.nextFloat() <= 0.005) {
+        if (this.getColdTicks() > 600 && this.getWorld().random.nextFloat() <= 0.01) {
             this.damage(this.getDamageSources().freeze(), 1);
         }
     }
@@ -168,6 +168,7 @@ public class EggEntity extends MobEntity implements MagnifyingGlassInformationPr
             spawned.getDataTracker().set(HonkEntity.PRODUCTIVITY, this.dataTracker.get(PRODUCTIVITY));
             spawned.getDataTracker().set(HonkEntity.REPRODUCTIVITY, this.dataTracker.get(REPRODUCTIVITY));
             spawned.getDataTracker().set(HonkEntity.INSTABILITY, this.dataTracker.get(INSTABILITY));
+            spawned.setBaby(true);
             this.getWorld().spawnEntity(spawned);
             this.remove(RemovalReason.DISCARDED);
         }

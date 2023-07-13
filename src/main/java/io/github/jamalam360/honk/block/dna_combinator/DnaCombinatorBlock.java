@@ -27,11 +27,21 @@ package io.github.jamalam360.honk.block.dna_combinator;
 import io.github.jamalam360.honk.block.FuelBurningProcessingBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
+import net.minecraft.world.BlockView;
 import org.jetbrains.annotations.Nullable;
 
 public class DnaCombinatorBlock extends FuelBurningProcessingBlock {
+
+    private static final VoxelShape[] SHAPES = new VoxelShape[]{
+          VoxelShapes.union(VoxelShapes.cuboid(1 / 16F, 0, 1 / 16F, 15 / 16F, 8 / 16F, 15 / 16F), VoxelShapes.cuboid(1 / 16F, 0, 1 / 16F, 7 / 16F, 12 / 16F, 15 / 16F)),
+          VoxelShapes.union(VoxelShapes.cuboid(1 / 16F, 0, 1 / 16F, 15 / 16F, 8 / 16F, 15 / 16F), VoxelShapes.cuboid(9 / 16F, 0, 1 / 16F, 15 / 16F, 12 / 16F, 15 / 16F)),
+          VoxelShapes.union(VoxelShapes.cuboid(1 / 16F, 0, 1 / 16F, 15 / 16F, 8 / 16F, 9 / 16F), VoxelShapes.cuboid(1 / 16F, 0, 9 / 16F, 15 / 16F, 12 / 16F, 15 / 16F)),
+          VoxelShapes.union(VoxelShapes.cuboid(1 / 16F, 0, 7 / 16F, 15 / 16F, 8 / 16F, 15 / 16F), VoxelShapes.cuboid(1 / 16F, 0, 1 / 16F, 15 / 16F, 12 / 16F, 7 / 16F))};
 
     public DnaCombinatorBlock() {
         super(Settings.copy(Blocks.IRON_BLOCK));
@@ -41,5 +51,10 @@ public class DnaCombinatorBlock extends FuelBurningProcessingBlock {
     @Override
     public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
         return new DnaCombinatorBlockEntity(pos, state);
+    }
+
+    @Override
+    public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+        return SHAPES[state.get(FACING).ordinal() - 2];
     }
 }

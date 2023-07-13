@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "honk:block/dna_combinator",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "honk:block/dna_combinator"
+    },
+    "facing=south": {
+      "model": "honk:block/dna_combinator",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "honk:block/dna_combinator",
+      "y": 270
+    }
+  }
+}

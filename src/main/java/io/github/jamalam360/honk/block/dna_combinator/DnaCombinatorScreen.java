@@ -72,7 +72,7 @@ public class DnaCombinatorScreen extends BaseUIModelHandledScreen<FlowLayout, Dn
         this.progressIndicator.visibleArea(PositionedRectangle.of(
               0,
               0,
-              Math.round(recipeProgress * 39),
+              Math.round(recipeProgress * 43),
               this.progressIndicator.height()
         ));
     }

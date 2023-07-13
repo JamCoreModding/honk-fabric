@@ -17,6 +17,7 @@ public abstract class FuelBurningProcessingBlock extends AbstractProcessingBlock
 
     @Override
     public void randomDisplayTick(BlockState state, World world, BlockPos pos, RandomGenerator random) {
+        //TODO: sidedness issue
         if (world.getBlockEntity(pos) instanceof FuelBurningProcessingBlockEntity entity && entity.getBurnTime() > 0) {
             double d = (double) pos.getX() + 0.5;
             double e = pos.getY();

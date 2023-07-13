@@ -37,11 +37,12 @@ public class Warmth {
     public static boolean isWarm(World world, BlockPos pos) {
         Holder<Biome> biome = world.getBiome(pos);
 
-        if (biome.value().getTemperature() >= 4) {
+        // mostly desert
+        if (biome.value().getTemperature() >= 1.5) {
             return true;
         }
 
-        return BlockPos.findClosest(pos, 8, 4, (testPos) -> (
+        return BlockPos.findClosest(pos, 4, 4, (testPos) -> (
               ((world.getBlockState(testPos).isOf(Blocks.CAMPFIRE) || world.getBlockState(testPos).isOf(Blocks.SOUL_CAMPFIRE)) && world.getBlockState(testPos).get(CampfireBlock.LIT)) ||
               ((world.getBlockState(testPos).isOf(Blocks.FURNACE) || world.getBlockState(testPos).isOf(Blocks.BLAST_FURNACE) || world.getBlockState(testPos).isOf(Blocks.SMOKER)) && world.getBlockState(testPos).get(AbstractFurnaceBlock.LIT))
         )).isPresent();

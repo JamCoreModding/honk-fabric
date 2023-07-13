@@ -30,6 +30,7 @@ import io.github.jamalam360.autorecipe.RecipeVar;
 import io.github.jamalam360.honk.HonkInit;
 import io.github.jamalam360.honk.block.centrifuge.CentrifugeBlockEntity;
 import io.github.jamalam360.honk.data.DnaData;
+import io.github.jamalam360.honk.data.NbtKeys;
 import io.github.jamalam360.honk.registry.HonkItems;
 import io.github.jamalam360.honk.util.InventoryUtils;
 import net.minecraft.inventory.Inventory;
@@ -72,7 +73,11 @@ public class CentrifugeRecipe extends AutoSerializedRecipe<Inventory> {
         // Special Cases
         if (inputCopy.getItem() == HonkItems.BLOOD_SYRINGE && output.getItem() == HonkItems.DNA) {
             // Initialize the DNA with the blood syringes DNA NBT
-            output.setNbt(DnaData.fromNbt(inputCopy.getOrCreateNbt()).writeNbt(output.getOrCreateNbt()));
+            if (inputCopy.getOrCreateNbt().contains(NbtKeys.DNA)) {
+                output.setNbt(DnaData.fromNbt(inputCopy.getOrCreateNbt()).writeNbt(output.getOrCreateNbt()));
+            } else {
+                output.setNbt(DnaData.createRandomData().writeNbt(output.getOrCreateNbt()));
+            }
         }
 
         return output;

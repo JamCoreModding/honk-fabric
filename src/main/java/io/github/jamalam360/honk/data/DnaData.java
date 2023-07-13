@@ -26,6 +26,7 @@ package io.github.jamalam360.honk.data;
 
 
 import io.github.jamalam360.honk.data.type.HonkType;
+import io.github.jamalam360.honk.entity.egg.EggEntity;
 import io.github.jamalam360.honk.entity.honk.HonkEntity;
 import java.util.ArrayList;
 import java.util.List;
@@ -90,6 +91,14 @@ public record DnaData(HonkType type, int growth, int productivity, int reproduct
         entity.getDataTracker().set(HonkEntity.PRODUCTIVITY, this.productivity);
         entity.getDataTracker().set(HonkEntity.REPRODUCTIVITY, this.reproductivity);
         entity.getDataTracker().set(HonkEntity.INSTABILITY, this.instability);
+    }
+
+    public void writeEntity(EggEntity entity) {
+        entity.getDataTracker().set(EggEntity.TYPE, this.type.id());
+        entity.getDataTracker().set(EggEntity.GROWTH, this.growth);
+        entity.getDataTracker().set(EggEntity.PRODUCTIVITY, this.productivity);
+        entity.getDataTracker().set(EggEntity.REPRODUCTIVITY, this.reproductivity);
+        entity.getDataTracker().set(EggEntity.INSTABILITY, this.instability);
     }
 
     public List<Text> getInformation() {
