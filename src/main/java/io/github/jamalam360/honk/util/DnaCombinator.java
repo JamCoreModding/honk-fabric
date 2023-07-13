@@ -46,41 +46,4 @@ public class DnaCombinator {
         float mutationOffset = random.nextFloat() * maxInstability;
         return combinedGene + mutationOffset;
     }
-
-//    public static DnaData combine(RandomGenerator random, DnaData a, DnaData b) {
-//        if (!a.type().id().equals(b.type().id())) {
-//            return null;
-//        }
-//
-//        int growth = combine(random, a.growth(), b.growth(), a.instability(), b.instability());
-//        int productivity = combine(random, a.productivity(), b.productivity(), a.instability(), b.instability());
-//        int reproductivity = combine(random, a.reproductivity(), b.reproductivity(), a.instability(), b.instability());
-//        int instability = combine(random, a.instability(), b.instability(), a.instability(), b.instability());
-//        return new DnaData(a.type(), growth, productivity, reproductivity, instability);
-//    }
-//
-//    private static int combine(RandomGenerator random, int a, int b, int aInstab, int bInstab) {
-//        float aMutation = random.nextFloat() * aInstab;
-//        aMutation = random.nextBoolean() ? aMutation : -aMutation;
-//        aMutation = aInstab >= 5 ? aMutation / 2 : aMutation;
-//        float bMutation = (random.nextFloat() * bInstab) / 2.0F;
-//        bMutation = random.nextBoolean() ? bMutation : -bMutation;
-//        bMutation = bInstab >= 5 ? bMutation / 2 : bMutation;
-//        float result = calculateBiasedAverage(a, b) + aMutation + bMutation;
-//        return Math.max(1, Math.min(10, Math.round(result)));
-//    }
-//
-//    private static float calculateBiasedAverage(float a, float b) {
-//        float weightA, weightB;
-//
-//        if (a > b) {
-//            weightA = 0.7F;
-//            weightB = 0.3F;
-//        } else {
-//            weightA = 0.3F;
-//            weightB = 0.7F;
-//        }
-//
-//        return (weightA * a) + (weightB * b);
-//    }
 }

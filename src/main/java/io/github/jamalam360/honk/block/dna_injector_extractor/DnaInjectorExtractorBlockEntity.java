@@ -83,8 +83,7 @@ public class DnaInjectorExtractorBlockEntity extends FuelBurningProcessingBlockE
     }
 
     public static int getDnaInjectorExtractorProcessingTime() {
-//        return 600;
-        return 40;
+        return 600;
     }
 
     @Override

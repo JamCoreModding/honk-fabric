@@ -53,8 +53,6 @@ public class HonkClientInit implements ClientModInitializer {
         EntityModelLayerRegistry.registerModelLayer(EGG_LAYER, EggEntityModel::getTexturedModelData);
         EntityModelLayerRegistry.registerModelLayer(HONK_LAYER, HonkEntityModel::getTexturedModelData);
 
-//        BlockRenderLayerMap.put(RenderLayer.getCutout(), HonkBlocks.DNA_COMBINATOR);
-
         HandledScreens.register(HonkScreens.CENTRIFUGE, CentrifugeScreen::new);
         HandledScreens.register(HonkScreens.DNA_INJECTOR_EXTRACTOR, DnaInjectorExtractorScreen::new);
         HandledScreens.register(HonkScreens.DNA_COMBINATOR, DnaCombinatorScreen::new);
