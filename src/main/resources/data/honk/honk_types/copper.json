@@ -1,0 +1,12 @@
+{
+  "tier": 2,
+  "name": "honk_type.honk.copper",
+  "parents": [
+    [
+      "honk:red",
+      "honk:brown"
+    ]
+  ],
+  "texture": "honk:textures/entity/honk/copper.png",
+  "output": "minecraft:copper_ingot"
+}

@@ -21,6 +21,7 @@ repositories {
                     Pair("https://maven.wispforest.io", listOf("io.wispforest")),
                     Pair("https://maven.jamalam.tech/releases", listOf("io.github.jamalam360")),
                     Pair("https://jitpack.io", listOf("com.github.llamalad7.mixinextras")),
+                    Pair("https://maven2.bai.lol", listOf("lol.bai", "mcp.mobius.waila")),
             )
 
     for (mavenPair in mavenUrls) {
@@ -42,13 +43,14 @@ dependencies {
     modImplementation(libs.bundles.quilt)
     modApi(libs.bundles.required)
     modImplementation(libs.bundles.optional)
-    modLocalRuntime(libs.bundles.runtime)
+    modRuntimeOnly(libs.bundles.runtime)
+    include(libs.bundles.include)
 
+    modCompileOnly(libs.waila.api)
     modCompileOnly(variantOf(libs.emi) {
         classifier("api")
     })
 
-    include(libs.bundles.include)
     annotationProcessor(libs.mixin.extras)
 }
 

@@ -1,0 +1,7 @@
+{
+  "tier": 1,
+  "name": "honk_type.honk.brown",
+  "parents": [],
+  "texture": "honk:textures/entity/honk/brown.png",
+  "output": "minecraft:brown_dye"
+}

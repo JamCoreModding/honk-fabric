@@ -1,0 +1,6 @@
+{
+  "honk:plugin": {
+    "initializer": "io.github.jamalam360.honk.compatibility.waila.WailaCompatibility",
+    "side": "*"
+  }
+}

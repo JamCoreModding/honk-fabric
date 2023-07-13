@@ -1,0 +1,12 @@
+{
+  "tier": 2,
+  "name": "honk_type.honk.iron",
+  "parents": [
+    [
+      "honk:white",
+      "honk:gray"
+    ]
+  ],
+  "texture": "honk:textures/entity/honk/iron.png",
+  "output": "minecraft:iron_ingot"
+}

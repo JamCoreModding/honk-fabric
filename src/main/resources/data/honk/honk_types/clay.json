@@ -1,0 +1,12 @@
+{
+  "tier": 2,
+  "name": "honk_type.honk.clay",
+  "parents": [
+    [
+      "honk:white",
+      "honk:blue"
+    ]
+  ],
+  "texture": "honk:textures/entity/honk/clay.png",
+  "output": "minecraft:clay"
+}

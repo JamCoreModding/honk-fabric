@@ -88,8 +88,7 @@ public class DnaInjectorExtractorRecipe extends AutoSerializedRecipe<Inventory> 
             inventory.setStack(DnaInjectorExtractorBlockEntity.REMAINDER_SLOT, auxiliaryInput.getItem().getRecipeRemainder(auxiliaryInput).copy());
             auxiliaryInput.decrement(1);
         }
-        //TODO: remove
-        this.successChance = 1;
+
         if (RANDOM.nextFloat() <= this.successChance) {
             ItemStack output = this.output.copy();
 

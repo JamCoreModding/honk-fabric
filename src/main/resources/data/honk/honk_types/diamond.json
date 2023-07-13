@@ -1,12 +1,12 @@
 {
-  "tier": 2,
+  "tier": 3,
   "name": "honk_type.honk.diamond",
   "parents": [
     [
-      "honk:test",
-      "honk:test_two"
+      "honk:coal",
+      "honk:lava"
     ]
   ],
-  "texture": "honk:textures/entity/honk.png",
+  "texture": "honk:textures/entity/honk/diamond.png",
   "output": "minecraft:diamond"
 }

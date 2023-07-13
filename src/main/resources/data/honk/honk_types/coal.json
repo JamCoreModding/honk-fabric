@@ -1,0 +1,12 @@
+{
+  "tier": 2,
+  "name": "honk_type.honk.coal",
+  "parents": [
+    [
+      "honk:black",
+      "honk:gray"
+    ]
+  ],
+  "texture": "honk:textures/entity/honk/coal.png",
+  "output": "minecraft:coal"
+}

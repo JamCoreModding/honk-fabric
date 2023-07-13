@@ -1,0 +1,7 @@
+{
+  "tier": 1,
+  "name": "honk_type.honk.white",
+  "parents": [],
+  "texture": "honk:textures/entity/honk/white.png",
+  "output": "minecraft:white_dye"
+}

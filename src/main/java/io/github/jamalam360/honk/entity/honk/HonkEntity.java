@@ -57,6 +57,7 @@ import net.minecraft.entity.ai.goal.TargetGoal;
 import net.minecraft.entity.ai.goal.TemptGoal;
 import net.minecraft.entity.ai.goal.WanderAroundFarGoal;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
+import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
@@ -282,23 +283,6 @@ public class HonkEntity extends AnimalEntity implements MagnifyingGlassInformati
     }
     //endregion
 
-    //region Name
-    @Nullable
-    @Override
-    public Text getCustomName() {
-        if (this.getHonkType() == null || this.getHonkType().id() == null) {
-            return Text.literal("[DEBUG] " + "[IDK]" + " (" + this.getFoodLevel() + " food)");
-        } else {
-            return Text.literal("[DEBUG] " + this.getHonkType().id() + " (" + this.getFoodLevel() + " food)");
-        }
-    }
-
-    @Override
-    public boolean hasCustomName() {
-        return true;
-    }
-    //endregion
-
     //region Anger
     @Override
     public int getAngerTime() {
@@ -368,7 +352,8 @@ public class HonkEntity extends AnimalEntity implements MagnifyingGlassInformati
     public float getBlendedSizeModifier() {
         float growthFactor = (this.dataTracker.get(GROWTH) - 5) / 30F;
         float productivityFactor = (this.dataTracker.get(PRODUCTIVITY) - 5) / 30F;
-        return 1.0F + growthFactor + productivityFactor;
+        float tierFactor = this.getHonkType().tier() / 10F;
+        return 1.0F + growthFactor + productivityFactor + tierFactor;
     }
     //endregion
 
@@ -390,6 +375,34 @@ public class HonkEntity extends AnimalEntity implements MagnifyingGlassInformati
 
         this.setFoodLevel(40);
         return super.initialize(world, difficulty, spawnReason, entityData, entityNbt);
+    }
+
+    @Override
+    public Text getDefaultName() {
+        if (this.getHonkType() == null) {
+            return super.getDefaultName();
+        } else {
+            return Text.translatable(this.getHonkType().name());
+        }
+    }
+
+    @Override
+    public double getAttributeValue(EntityAttribute attribute) {
+        if (this.getHonkType() == null) {
+            return super.getAttributeValue(attribute);
+        }
+
+        if (attribute == EntityAttributes.GENERIC_ATTACK_DAMAGE) {
+            return this.getAttributes().getValue(EntityAttributes.GENERIC_ATTACK_DAMAGE) + this.getHonkType().tier() - 1;
+        } else if (attribute == EntityAttributes.GENERIC_ATTACK_KNOCKBACK) {
+            return this.getAttributes().getValue(EntityAttributes.GENERIC_ATTACK_KNOCKBACK) + this.getHonkType().tier() - 1;
+        } else if (attribute == EntityAttributes.GENERIC_MAX_HEALTH) {
+            return this.getAttributes().getValue(EntityAttributes.GENERIC_MAX_HEALTH) + this.getHonkType().tier() * 4 - 1;
+        } else if (attribute == EntityAttributes.GENERIC_MOVEMENT_SPEED) {
+            return this.getAttributes().getValue(EntityAttributes.GENERIC_MOVEMENT_SPEED) + this.getHonkType().tier() / 20F - 1;
+        } else {
+            return super.getAttributeValue(attribute);
+        }
     }
 
     @Override

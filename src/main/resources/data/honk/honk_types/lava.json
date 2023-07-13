@@ -1,0 +1,12 @@
+{
+  "tier": 2,
+  "name": "honk_type.honk.lava",
+  "parents": [
+    [
+      "honk:water",
+      "honk:red"
+    ]
+  ],
+  "texture": "honk:textures/entity/honk/lava.png",
+  "output": "minecraft:lava_bucket"
+}

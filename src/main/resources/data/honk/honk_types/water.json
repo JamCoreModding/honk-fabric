@@ -1,0 +1,12 @@
+{
+  "tier": 2,
+  "name": "honk_type.honk.water",
+  "parents": [
+    [
+      "honk:gray",
+      "honk:blue"
+    ]
+  ],
+  "texture": "honk:textures/entity/honk/water.png",
+  "output": "minecraft:water_bucket"
+}
