@@ -35,6 +35,7 @@ import io.github.jamalam360.honk.registry.HonkItems;
 import io.github.jamalam360.honk.util.Warmth;
 import java.util.List;
 import java.util.Optional;
+import net.minecraft.entity.EntityData;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
@@ -52,7 +53,10 @@ import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
+import net.minecraft.world.LocalDifficulty;
+import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 public class EggEntity extends MobEntity implements MagnifyingGlassInformationProvider {
 
@@ -209,6 +213,16 @@ public class EggEntity extends MobEntity implements MagnifyingGlassInformationPr
         }
 
         super.readCustomDataFromNbt(nbt);
+    }
+
+    @Nullable
+    @Override
+    public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData, @Nullable NbtCompound entityNbt) {
+        if (spawnReason != SpawnReason.BREEDING) {
+            this.initializeBaseType();
+        }
+
+        return super.initialize(world, difficulty, spawnReason, entityData, entityNbt);
     }
 
     public void initializeBaseType() {

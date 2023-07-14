@@ -41,8 +41,8 @@ import org.quiltmc.qsl.entity.networking.api.tracked_data.QuiltTrackedDataHandle
 public class HonkEntities {
 
     public static final TrackedDataHandler<Optional<Integer>> OPTIONAL_INTEGER = TrackedDataHandler.createOptional(PacketByteBuf::getInt, PacketByteBuf::readInt);
-    public static final EntityType<EggEntity> EGG = QuiltEntityTypeBuilder.create(SpawnGroup.CREATURE, EggEntity::new).setDimensions(EntityDimensions.fixed(6f / 16f, 6f / 16f)).build();
-    public static final EntityType<HonkEntity> HONK = QuiltEntityTypeBuilder.create(SpawnGroup.CREATURE, (HonkEntity::new)).setDimensions(EntityDimensions.changing(0.5f, 0.5f)).build();
+    public static final EntityType<EggEntity> EGG = QuiltEntityTypeBuilder.create(SpawnGroup.CREATURE, EggEntity::new).setDimensions(EntityDimensions.fixed(6f / 16f, 8f / 16f)).build();
+    public static final EntityType<HonkEntity> HONK = QuiltEntityTypeBuilder.create(SpawnGroup.CREATURE, HonkEntity::new).setDimensions(EntityDimensions.changing(0.8f, 0.8f)).build();
 
     static {
         QuiltTrackedDataHandlerRegistry.register(HonkInit.idOf("optional_integer"), OPTIONAL_INTEGER);

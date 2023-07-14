@@ -47,6 +47,7 @@ public class HonkItems implements JamLibContentRegistry {
     public static final Item BLOOD_SYRINGE = new BloodSyringeItem();
     public static final Item DNA = new DnaItem();
     public static final Item MAGNIFYING_GLASS = new MagnifyingGlassItem();
+    public static final Item SCREEN = new Item(new QuiltItemSettings());
 
     @Override
     public RegistryKey<ItemGroup> getItemGroup(Item item) {

@@ -92,6 +92,7 @@ public class Datagen implements DataGeneratorEntrypoint {
             gen.register(HonkItems.BLOOD_SYRINGE, Models.HANDHELD);
             gen.register(HonkItems.DNA, Models.SINGLE_LAYER_ITEM);
             gen.register(HonkItems.MAGNIFYING_GLASS, Models.HANDHELD);
+            gen.register(HonkItems.SCREEN, Models.SINGLE_LAYER_ITEM);
         }
 
         @Override
@@ -128,6 +129,7 @@ public class Datagen implements DataGeneratorEntrypoint {
         public void generate() {
             this.addDrop(HonkBlocks.CENTRIFUGE);
             this.addDrop(HonkBlocks.DNA_INJECTOR_EXTRACTOR);
+            this.addDrop(HonkBlocks.DNA_COMBINATOR);
             this.addDrop(HonkBlocks.MOD_LOGO);
             this.addDrop(HonkBlocks.DEEPSLATE_AMBER_ORE, HonkItems.AMBER);
         }

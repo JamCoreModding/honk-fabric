@@ -41,6 +41,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import net.minecraft.entity.EntityData;
+import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityStatuses;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ExperienceOrbEntity;
@@ -79,6 +80,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TimeHelper;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.int_provider.UniformIntProvider;
@@ -111,7 +113,7 @@ public class HonkEntity extends AnimalEntity implements MagnifyingGlassInformati
     }
 
     public static DefaultAttributeContainer.Builder createAttributes() {
-        return MobEntity.createAttributes().add(EntityAttributes.GENERIC_MAX_HEALTH, 28F).add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25F).add(EntityAttributes.GENERIC_FOLLOW_RANGE, 32F).add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 3.2F).add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 0.5F);
+        return MobEntity.createAttributes().add(EntityAttributes.GENERIC_MAX_HEALTH, 28F).add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.15F).add(EntityAttributes.GENERIC_FOLLOW_RANGE, 32F).add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 3.2F).add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 0.5F);
     }
 
     @Override
@@ -152,7 +154,7 @@ public class HonkEntity extends AnimalEntity implements MagnifyingGlassInformati
     protected void mobTick() {
         super.mobTick();
 
-        if (this.getFoodLevel() > 0 && this.getWorld().random.nextFloat() < 0.005F) {
+        if (this.getFoodLevel() > 0 && this.getWorld().random.nextFloat() < (0.005F) * this.getHonkType().tier()) {
             this.setFoodLevel(this.getFoodLevel() - 1);
         } else if (this.getFoodLevel() == 0 && this.getWorld().random.nextFloat() < 0.005F) {
             this.damage(this.getDamageSources().starve(), 1);
@@ -348,13 +350,6 @@ public class HonkEntity extends AnimalEntity implements MagnifyingGlassInformati
             this.dataTracker.set(INSTABILITY, data.instability());
         }
     }
-
-    public float getBlendedSizeModifier() {
-        float growthFactor = (this.dataTracker.get(GROWTH) - 5) / 30F;
-        float productivityFactor = (this.dataTracker.get(PRODUCTIVITY) - 5) / 30F;
-        float tierFactor = this.getHonkType().tier() / 10F;
-        return 1.0F + growthFactor + productivityFactor + tierFactor;
-    }
     //endregion
 
     //region Magnifying Glass
@@ -423,6 +418,19 @@ public class HonkEntity extends AnimalEntity implements MagnifyingGlassInformati
     @Override
     public float getNameTagYOffset() {
         return 1.5F;
+    }
+
+    @Override
+    public Box getBoundingBox(EntityPose pose) {
+        return super.getBoundingBox(pose);
+    }
+
+    @Override
+    public float getScaleFactor() {
+        float growthFactor = (this.dataTracker.get(GROWTH) - 5) / 30F;
+        float productivityFactor = (this.dataTracker.get(PRODUCTIVITY) - 5) / 30F;
+        float tierFactor = this.getHonkType().tier() / 10F;
+        return (this.isBaby() ? 0.4F : 1.0F) + growthFactor + productivityFactor + tierFactor;
     }
 
     @Override

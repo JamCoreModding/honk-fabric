@@ -30,6 +30,7 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.structure.rule.TagMatchRuleTest;
+import net.minecraft.util.math.int_provider.UniformIntProvider;
 import net.minecraft.world.gen.BootstrapContext;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.YOffset;
@@ -62,6 +63,6 @@ public class HonkWorldGen {
 
     public static void getPlacedFeatures(BootstrapContext<PlacedFeature> bootstrap) {
         HolderProvider<ConfiguredFeature<?, ?>> provider = bootstrap.lookup(RegistryKeys.CONFIGURED_FEATURE);
-        bootstrap.register(AMBER_ORE_PLACED_FEATURE_KEY, new PlacedFeature(provider.getHolderOrThrow(AMBER_ORE_CONFIGURED_FEATURE_KEY), List.of(CountPlacementModifier.create(240), InSquarePlacementModifier.getInstance(), HeightRangePlacementModifier.trapezoid(YOffset.fixed(0), YOffset.BOTTOM), BiomePlacementModifier.getInstance())));
+        bootstrap.register(AMBER_ORE_PLACED_FEATURE_KEY, new PlacedFeature(provider.getHolderOrThrow(AMBER_ORE_CONFIGURED_FEATURE_KEY), List.of(CountPlacementModifier.create(UniformIntProvider.create(99, 100)), InSquarePlacementModifier.getInstance(), HeightRangePlacementModifier.trapezoid(YOffset.fixed(-64), YOffset.fixed(-48)), BiomePlacementModifier.getInstance())));
     }
 }
