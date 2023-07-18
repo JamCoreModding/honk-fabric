@@ -41,6 +41,18 @@
       {
         "id": "autorecipe",
         "versions": "*"
+      },
+      {
+        "id": "owo",
+        "versions": "*"
+      },
+      {
+        "id": "jamlib",
+        "versions": "*"
+      },
+      {
+        "id": "com_github_llamalad7_mixinextras",
+        "versions": "*"
       }
     ]
   },

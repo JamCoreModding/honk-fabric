@@ -75,5 +75,6 @@ public class HonkInit implements ModInitializer {
         ResourceLoader.get(ResourceType.SERVER_DATA).registerReloader(HonkTypeResourceReloadListener.INSTANCE);
         JamLibCompatibilityModuleHandler.initialize(MOD_ID);
         LOGGER.logInitialize();
+        LOGGER.info("Honk!");
     }
 }

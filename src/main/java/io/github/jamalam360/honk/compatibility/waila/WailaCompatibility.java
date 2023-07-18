@@ -38,6 +38,8 @@ public class WailaCompatibility implements IWailaPlugin {
 
     @Override
     public void register(IRegistrar registrar) {
+        HonkInit.LOGGER.info("Initializing Honk compatibility module for WAILA and derivatives");
+
         registrar.addSyncedConfig(SHOW_GENES, true, false);
         registrar.addComponent(HonkOverride.INSTANCE, TooltipPosition.BODY, HonkEntity.class);
         registrar.addComponent(HonkOverride.INSTANCE, TooltipPosition.BODY, EggEntity.class);

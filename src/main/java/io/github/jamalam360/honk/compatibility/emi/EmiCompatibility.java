@@ -59,6 +59,8 @@ public class EmiCompatibility implements EmiPlugin {
 
     @Override
     public void register(EmiRegistry registry) {
+        HonkInit.LOGGER.info("Initializing Honk compatibility module for EMI");
+
         registry.addCategory(CENTRIFUGE_CATEGORY);
         registry.addWorkstation(CENTRIFUGE_CATEGORY, CENTRIFUGE);
         registry.addCategory(DNA_INJECTOR_EXTRACTOR_CATEGORY);

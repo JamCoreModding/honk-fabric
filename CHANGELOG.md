@@ -1,5 +1,5 @@
 ## Changelog
 
-- Don't accidentally include a PDF of BisectHosting's RightClickHarvest assets in the mod...nice
+- Add dependencies to `quilt.mod.json`.
 
-[Full Changelog](https://github.com/JamCoreModding/Honk/compare/0.1.0-beta.3...0.1.0-beta.4)
+[Full Changelog](https://github.com/JamCoreModding/Honk/compare/0.1.0-beta.4...0.1.0-beta.5)
