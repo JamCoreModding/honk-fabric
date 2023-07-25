@@ -27,47 +27,48 @@ package io.github.jamalam360.honk.data.type;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+
 public record HonkType(
-      int tier,
-      String name,
-      List<List<Identifier>> parents,
-      Identifier texture,
-      ItemStack output
+		int tier,
+		String name,
+		List<List<Identifier>> parents,
+		Identifier texture,
+		ItemStack output
 ) {
 
-    public static final Map<String, HonkType> ENTRIES = new HashMap<>();
-    public static final MapCodec<HonkType> CODEC = RecordCodecBuilder.mapCodec(instance ->
-          instance.group(
-                Codec.INT.fieldOf("tier").forGetter(HonkType::tier),
-                Codec.STRING.fieldOf("name").forGetter(HonkType::name),
-                Codec.list(Codec.list(Identifier.CODEC)).fieldOf("parents").forGetter(HonkType::parents),
-                Identifier.CODEC.fieldOf("texture").forGetter(HonkType::texture),
-                Identifier.CODEC.fieldOf("output").forGetter((type) -> Registries.ITEM.getId(type.output().getItem()))
-          ).apply(instance, (tier, name, parents, texture, identifier) -> new HonkType(tier, name, parents, texture, Registries.ITEM.get(identifier).getDefaultStack()))
-    );
-    private static final Random RANDOM = new Random();
+	public static final Map<String, HonkType> ENTRIES = new HashMap<>();
+	public static final MapCodec<HonkType> CODEC = RecordCodecBuilder.mapCodec(instance ->
+			instance.group(
+					Codec.INT.fieldOf("tier").forGetter(HonkType::tier),
+					Codec.STRING.fieldOf("name").forGetter(HonkType::name),
+					Codec.list(Codec.list(Identifier.CODEC)).fieldOf("parents").forGetter(HonkType::parents),
+					Identifier.CODEC.fieldOf("texture").forGetter(HonkType::texture),
+					Identifier.CODEC.fieldOf("output").forGetter((type) -> Registries.ITEM.getId(type.output().getItem()))
+			).apply(instance, (tier, name, parents, texture, identifier) -> new HonkType(tier, name, parents, texture, Registries.ITEM.get(identifier).getDefaultStack()))
+	);
+	private static final Random RANDOM = new Random();
 
-    public static HonkType getRandom(int tier) {
-        var types = ENTRIES.entrySet().stream().filter((o) -> o.getValue().tier() == tier).toList();
-        return types.get(RANDOM.nextInt(types.size())).getValue();
-    }
+	public static HonkType getRandom(int tier) {
+		List<HonkType> types = ENTRIES.values().stream().filter((o) -> o.tier() == tier).toList();
+		return types.get(RANDOM.nextInt(types.size()));
+	}
 
-    public String id() {
-        for (String id : ENTRIES.keySet()) {
-            if (ENTRIES.get(id).equals(this)) {
-                return id;
-            }
-        }
+	public String id() {
+		for (String id : ENTRIES.keySet()) {
+			if (ENTRIES.get(id).equals(this)) {
+				return id;
+			}
+		}
 
-        return null;
-    }
+		return null;
+	}
 
 }
