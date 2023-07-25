@@ -33,11 +33,7 @@ import io.github.jamalam360.honk.item.EggItem;
 import io.github.jamalam360.honk.registry.HonkEntities;
 import io.github.jamalam360.honk.registry.HonkItems;
 import io.github.jamalam360.honk.util.Warmth;
-import java.util.List;
-import java.util.Optional;
-import net.minecraft.entity.EntityData;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
@@ -53,242 +49,233 @@ import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
-import net.minecraft.world.LocalDifficulty;
-import net.minecraft.world.ServerWorldAccess;
+import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+import java.util.Optional;
 
 public class EggEntity extends MobEntity implements MagnifyingGlassInformationProvider {
 
-    public static final TrackedData<String> TYPE = DataTracker.registerData(EggEntity.class, TrackedDataHandlerRegistry.STRING);
-    public static final TrackedData<Optional<Integer>> PARENT = DataTracker.registerData(EggEntity.class, HonkEntities.OPTIONAL_INTEGER);
-    public static final TrackedData<Integer> GROWTH = DataTracker.registerData(EggEntity.class, TrackedDataHandlerRegistry.INTEGER);
-    public static final TrackedData<Integer> PRODUCTIVITY = DataTracker.registerData(EggEntity.class, TrackedDataHandlerRegistry.INTEGER);
-    public static final TrackedData<Integer> REPRODUCTIVITY = DataTracker.registerData(EggEntity.class, TrackedDataHandlerRegistry.INTEGER);
-    public static final TrackedData<Integer> INSTABILITY = DataTracker.registerData(EggEntity.class, TrackedDataHandlerRegistry.INTEGER);
-    private static final TrackedData<Integer> AGE = DataTracker.registerData(EggEntity.class, TrackedDataHandlerRegistry.INTEGER);
-    private static final TrackedData<Integer> COLD_TICKS = DataTracker.registerData(EggEntity.class, TrackedDataHandlerRegistry.INTEGER);
-    public float wobbleAngle = 0;
-    private boolean wobbling = false;
-    private int wobbleTicks = 0;
-    private boolean warm = false;
-    private int prevWarmthCheck = 20;
+	public static final TrackedData<String> TYPE = DataTracker.registerData(EggEntity.class, TrackedDataHandlerRegistry.STRING);
+	public static final TrackedData<Optional<Integer>> PARENT = DataTracker.registerData(EggEntity.class, HonkEntities.OPTIONAL_INTEGER);
+	public static final TrackedData<Integer> GROWTH = DataTracker.registerData(EggEntity.class, TrackedDataHandlerRegistry.INTEGER);
+	public static final TrackedData<Integer> PRODUCTIVITY = DataTracker.registerData(EggEntity.class, TrackedDataHandlerRegistry.INTEGER);
+	public static final TrackedData<Integer> REPRODUCTIVITY = DataTracker.registerData(EggEntity.class, TrackedDataHandlerRegistry.INTEGER);
+	public static final TrackedData<Integer> INSTABILITY = DataTracker.registerData(EggEntity.class, TrackedDataHandlerRegistry.INTEGER);
+	private static final TrackedData<Integer> AGE = DataTracker.registerData(EggEntity.class, TrackedDataHandlerRegistry.INTEGER);
+	private static final TrackedData<Integer> COLD_TICKS = DataTracker.registerData(EggEntity.class, TrackedDataHandlerRegistry.INTEGER);
+	public float wobbleAngle = 0;
+	private boolean wobbling = false;
+	private int wobbleTicks = 0;
+	private boolean warm = false;
+	private int prevWarmthCheck = 20;
 
-    public EggEntity(EntityType<EggEntity> type, World world) {
-        super(type, world);
-    }
+	public EggEntity(EntityType<EggEntity> type, World world) {
+		super(type, world);
+		this.initializeBaseType();
+	}
 
-    public static DefaultAttributeContainer.Builder createAttributes() {
-        return MobEntity.createAttributes().add(EntityAttributes.GENERIC_MAX_HEALTH, 10F);
-    }
+	public static DefaultAttributeContainer.Builder createAttributes() {
+		return MobEntity.createAttributes().add(EntityAttributes.GENERIC_MAX_HEALTH, 10F);
+	}
 
-    @Override
-    protected void initDataTracker() {
-        super.initDataTracker();
-        this.dataTracker.startTracking(AGE, 0);
-        this.dataTracker.startTracking(COLD_TICKS, 0);
-        this.dataTracker.startTracking(TYPE, "");
-        this.dataTracker.startTracking(PARENT, Optional.empty());
-        this.dataTracker.startTracking(GROWTH, 0);
-        this.dataTracker.startTracking(PRODUCTIVITY, 0);
-        this.dataTracker.startTracking(REPRODUCTIVITY, 0);
-        this.dataTracker.startTracking(INSTABILITY, 0);
-    }
+	@Override
+	protected void initDataTracker() {
+		super.initDataTracker();
+		this.dataTracker.startTracking(AGE, 0);
+		this.dataTracker.startTracking(COLD_TICKS, 0);
+		this.dataTracker.startTracking(TYPE, new Identifier("honk", "white").toString());
+		this.dataTracker.startTracking(PARENT, Optional.empty());
+		this.dataTracker.startTracking(GROWTH, 0);
+		this.dataTracker.startTracking(PRODUCTIVITY, 0);
+		this.dataTracker.startTracking(REPRODUCTIVITY, 0);
+		this.dataTracker.startTracking(INSTABILITY, 0);
+	}
 
-    @Override
-    public void tick() {
-        super.tick();
-        this.dataTracker.set(AGE, this.getAge() + 1);
-        this.prevWarmthCheck++;
+	@Override
+	public void tick() {
+		super.tick();
+		this.dataTracker.set(AGE, this.getAge() + 1);
+		this.prevWarmthCheck++;
 
-        if (this.getAge() > this.getMinimumHatchingAge() && this.warm) {
-            if (this.getWorld().random.nextFloat() < this.getHatchingChance()) {
-                this.hatch();
-            }
-        }
+		if (this.getAge() > this.getMinimumHatchingAge() && this.warm) {
+			if (this.getWorld().random.nextFloat() < this.getHatchingChance()) {
+				this.hatch();
+			}
+		}
 
-        if (wobbling) {
-            wobbleTicks++;
-            float pitchChange = (float) Math.sin(0.35 * wobbleTicks - (11 * Math.PI) / 7);
-            this.wobbleAngle = this.wobbleAngle + pitchChange;
+		if (wobbling) {
+			wobbleTicks++;
+			float pitchChange = (float) Math.sin(0.35 * wobbleTicks - (11 * Math.PI) / 7);
+			this.wobbleAngle = this.wobbleAngle + pitchChange;
 
-            if (this.wobbleTicks >= 90) {
-                this.wobbleAngle = 0;
-                this.wobbling = false;
-            }
-        } else if (this.getAge() > 0.65 * this.getMinimumHatchingAge() && this.getWorld().random.nextFloat() < 0.01F) {
-            this.wobbling = true;
-            this.wobbleTicks = 0;
-        }
+			if (this.wobbleTicks >= 90) {
+				this.wobbleAngle = 0;
+				this.wobbling = false;
+			}
+		} else if (this.getAge() > 0.65 * this.getMinimumHatchingAge() && this.getWorld().random.nextFloat() < 0.01F) {
+			this.wobbling = true;
+			this.wobbleTicks = 0;
+		}
 
-        if (this.prevWarmthCheck >= 20) {
-            this.warm = Warmth.isWarm(this.getWorld(), this.getBlockPos());
+		if (this.prevWarmthCheck >= 20) {
+			this.warm = Warmth.isWarm(this.getWorld(), this.getBlockPos());
 
-            if (this.warm) {
-                this.dataTracker.set(COLD_TICKS, 0);
-            }
+			if (this.warm) {
+				this.dataTracker.set(COLD_TICKS, 0);
+			}
 
-            this.prevWarmthCheck = 0;
-        }
+			this.prevWarmthCheck = 0;
+		}
 
-        if (!this.warm) {
-            this.dataTracker.set(COLD_TICKS, this.getColdTicks() + 1);
-        }
+		if (!this.warm) {
+			this.dataTracker.set(COLD_TICKS, this.getColdTicks() + 1);
+		}
 
-        if (this.getColdTicks() > 600 && this.getWorld().random.nextFloat() <= 0.01) {
-            this.damage(this.getDamageSources().freeze(), 1);
-        }
-    }
+		if (this.getColdTicks() > 600 && this.getWorld().random.nextFloat() <= 0.01) {
+			this.damage(this.getDamageSources().freeze(), 1);
+		}
+	}
 
-    @Override
-    protected ActionResult interactMob(PlayerEntity player, Hand hand) {
-        if (!this.getWorld().isClient && player.isSneaking() && player.getStackInHand(hand).isEmpty()) {
-            ItemStack egg = HonkItems.EGG.getDefaultStack();
-            EggItem.initializeFrom(egg, this);
-            player.setStackInHand(hand, egg);
-            this.remove(RemovalReason.DISCARDED);
-            return ActionResult.SUCCESS;
-        }
+	@Override
+	protected ActionResult interactMob(PlayerEntity player, Hand hand) {
+		if (!this.getWorld().isClient && player.isSneaking() && player.getStackInHand(hand).isEmpty()) {
+			ItemStack egg = HonkItems.EGG.getDefaultStack();
+			EggItem.initializeFrom(egg, this);
+			player.setStackInHand(hand, egg);
+			this.remove(RemovalReason.DISCARDED);
+			return ActionResult.SUCCESS;
+		}
 
-        return super.interactMob(player, hand);
-    }
+		return super.interactMob(player, hand);
+	}
 
-    public int getMinimumHatchingAge() {
-        return 4000;
-    }
+	public int getMinimumHatchingAge() {
+		return 4000;
+	}
 
-    public float getHatchingChance() {
-        return 0.005f;
-    }
+	public float getHatchingChance() {
+		return 0.005f;
+	}
 
-    public void hatch() {
-        if (!this.getWorld().isClient) {
-            // We have to use this method-and-a-half because I need to pass a `SpawnReason` in, and using `EntityType#spawn` causes issues, because the entity is spawned before the data tracker is initialized.
-            HonkEntity spawned = HonkEntities.HONK.create((ServerWorld) this.getWorld(), null, null, this.getBlockPos(), SpawnReason.BREEDING, false, false);
-            spawned.refreshPositionAndAngles(this.getX(), this.getY(), this.getZ(), this.getYaw(), this.getPitch());
-            spawned.getDataTracker().set(HonkEntity.TYPE, this.dataTracker.get(TYPE));
-            spawned.getDataTracker().set(HonkEntity.PARENT, this.dataTracker.get(PARENT));
-            spawned.getDataTracker().set(HonkEntity.GROWTH, this.dataTracker.get(GROWTH));
-            spawned.getDataTracker().set(HonkEntity.PRODUCTIVITY, this.dataTracker.get(PRODUCTIVITY));
-            spawned.getDataTracker().set(HonkEntity.REPRODUCTIVITY, this.dataTracker.get(REPRODUCTIVITY));
-            spawned.getDataTracker().set(HonkEntity.INSTABILITY, this.dataTracker.get(INSTABILITY));
-            spawned.setBaby(true);
-            this.getWorld().spawnEntity(spawned);
-            this.remove(RemovalReason.DISCARDED);
-        }
-    }
+	public void hatch() {
+		if (this.getWorld() instanceof ServerWorld server) {
+			HonkEntity spawned = HonkEntities.HONK.create(server);
+			spawned.refreshPositionAndAngles(this.getX(), this.getY(), this.getZ(), this.getYaw(), this.getPitch());
+			spawned.getDataTracker().set(HonkEntity.TYPE, this.dataTracker.get(TYPE));
+			spawned.getDataTracker().set(HonkEntity.PARENT, this.dataTracker.get(PARENT));
+			spawned.getDataTracker().set(HonkEntity.GROWTH, this.dataTracker.get(GROWTH));
+			spawned.getDataTracker().set(HonkEntity.PRODUCTIVITY, this.dataTracker.get(PRODUCTIVITY));
+			spawned.getDataTracker().set(HonkEntity.REPRODUCTIVITY, this.dataTracker.get(REPRODUCTIVITY));
+			spawned.getDataTracker().set(HonkEntity.INSTABILITY, this.dataTracker.get(INSTABILITY));
+			spawned.setBaby(true);
+			this.getWorld().spawnEntity(spawned);
+			this.remove(RemovalReason.DISCARDED);
+		}
+	}
 
-    @Override
-    public boolean handleFallDamage(float fallDistance, float damageMultiplier, DamageSource damageSource) {
-        if (fallDistance > 1f) {
-            this.damage(this.getDamageSources().fall(), this.getHealth());
-        }
+	@Override
+	public boolean handleFallDamage(float fallDistance, float damageMultiplier, DamageSource damageSource) {
+		if (fallDistance > 1f) {
+			this.damage(this.getDamageSources().fall(), this.getHealth());
+		}
 
-        return true;
-    }
+		return true;
+	}
 
-    @Override
-    public int getSafeFallDistance() {
-        return 1;
-    }
+	@Override
+	public int getSafeFallDistance() {
+		return 1;
+	}
 
-    @Override
-    public void writeCustomDataToNbt(NbtCompound nbt) {
-        nbt.putInt(NbtKeys.AGE, this.dataTracker.get(AGE));
-        nbt.putInt(NbtKeys.COLD_TICKS, this.dataTracker.get(COLD_TICKS));
-        this.dataTracker.get(PARENT).ifPresent((p) -> nbt.putInt(NbtKeys.PARENT, p));
-        DnaData data = this.createDnaData();
-        data.writeNbt(nbt);
-        super.writeCustomDataToNbt(nbt);
-    }
+	@Override
+	public void writeCustomDataToNbt(NbtCompound nbt) {
+		nbt.putInt(NbtKeys.AGE, this.dataTracker.get(AGE));
+		nbt.putInt(NbtKeys.COLD_TICKS, this.dataTracker.get(COLD_TICKS));
+		this.dataTracker.get(PARENT).ifPresent((p) -> nbt.putInt(NbtKeys.PARENT, p));
+		DnaData data = this.createDnaData();
+		data.writeNbt(nbt);
+		super.writeCustomDataToNbt(nbt);
+	}
 
-    @Override
-    public void readCustomDataFromNbt(NbtCompound nbt) {
-        this.dataTracker.set(AGE, nbt.getInt(NbtKeys.AGE));
-        this.dataTracker.set(COLD_TICKS, nbt.getInt(NbtKeys.COLD_TICKS));
-        this.readDnaData(DnaData.fromNbt(nbt));
+	@Override
+	public void readCustomDataFromNbt(NbtCompound nbt) {
+		this.dataTracker.set(AGE, nbt.getInt(NbtKeys.AGE));
+		this.dataTracker.set(COLD_TICKS, nbt.getInt(NbtKeys.COLD_TICKS));
+		this.readDnaData(DnaData.fromNbt(nbt));
 
-        if (nbt.contains(NbtKeys.PARENT)) {
-            this.dataTracker.set(PARENT, Optional.of(nbt.getInt(NbtKeys.PARENT)));
-        }
+		if (nbt.contains(NbtKeys.PARENT)) {
+			this.dataTracker.set(PARENT, Optional.of(nbt.getInt(NbtKeys.PARENT)));
+		}
 
-        super.readCustomDataFromNbt(nbt);
-    }
+		super.readCustomDataFromNbt(nbt);
+	}
 
-    @Nullable
-    @Override
-    public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData, @Nullable NbtCompound entityNbt) {
-        if (spawnReason != SpawnReason.BREEDING) {
-            this.initializeBaseType();
-        }
+	public void initializeBaseType() {
+		HonkType type = HonkType.getRandom(1);
+		this.dataTracker.set(AGE, 0);
+		this.dataTracker.set(COLD_TICKS, 0);
+		this.dataTracker.set(TYPE, type.id());
+		this.dataTracker.set(GROWTH, 1);
+		this.dataTracker.set(PRODUCTIVITY, 1);
+		this.dataTracker.set(REPRODUCTIVITY, 1);
+		this.dataTracker.set(INSTABILITY, 1);
+	}
 
-        return super.initialize(world, difficulty, spawnReason, entityData, entityNbt);
-    }
+	public DnaData createDnaData() {
+		return new DnaData(HonkType.ENTRIES.get(this.dataTracker.get(TYPE)), this.dataTracker.get(GROWTH), this.dataTracker.get(PRODUCTIVITY), this.dataTracker.get(REPRODUCTIVITY), this.dataTracker.get(INSTABILITY));
+	}
 
-    public void initializeBaseType() {
-        HonkType type = HonkType.getRandom(1);
-        this.dataTracker.set(AGE, 0);
-        this.dataTracker.set(COLD_TICKS, 0);
-        this.dataTracker.set(TYPE, type.id());
-        this.dataTracker.set(GROWTH, 1);
-        this.dataTracker.set(PRODUCTIVITY, 1);
-        this.dataTracker.set(REPRODUCTIVITY, 1);
-        this.dataTracker.set(INSTABILITY, 1);
-    }
+	public void readDnaData(DnaData data) {
+		if (data != null) {
+			this.dataTracker.set(TYPE, data.type().id());
+			this.dataTracker.set(GROWTH, data.growth());
+			this.dataTracker.set(PRODUCTIVITY, data.productivity());
+			this.dataTracker.set(REPRODUCTIVITY, data.reproductivity());
+			this.dataTracker.set(INSTABILITY, data.instability());
+		}
+	}
 
-    public DnaData createDnaData() {
-        return new DnaData(HonkType.ENTRIES.get(this.dataTracker.get(TYPE)), this.dataTracker.get(GROWTH), this.dataTracker.get(PRODUCTIVITY), this.dataTracker.get(REPRODUCTIVITY), this.dataTracker.get(INSTABILITY));
-    }
+	public int getAge() {
+		return this.dataTracker.get(AGE);
+	}
 
-    public void readDnaData(DnaData data) {
-        if (data != null) {
-            this.dataTracker.set(TYPE, data.type().id());
-            this.dataTracker.set(GROWTH, data.growth());
-            this.dataTracker.set(PRODUCTIVITY, data.productivity());
-            this.dataTracker.set(REPRODUCTIVITY, data.reproductivity());
-            this.dataTracker.set(INSTABILITY, data.instability());
-        }
-    }
+	public int getColdTicks() {
+		return this.dataTracker.get(COLD_TICKS);
+	}
 
-    public int getAge() {
-        return this.dataTracker.get(AGE);
-    }
+	public void setType(HonkType type) {
+		this.dataTracker.set(TYPE, type.id());
+	}
 
-    public int getColdTicks() {
-        return this.dataTracker.get(COLD_TICKS);
-    }
+	public void setParent(HonkEntity entity) {
+		this.dataTracker.set(PARENT, Optional.of(entity.getId()));
+	}
 
-    public void setType(HonkType type) {
-        this.dataTracker.set(TYPE, type.id());
-    }
+	public void setGrowth(int value) {
+		this.dataTracker.set(GROWTH, value);
+	}
 
-    public void setParent(HonkEntity entity) {
-        this.dataTracker.set(PARENT, Optional.of(entity.getId()));
-    }
+	public void setProductivity(int value) {
+		this.dataTracker.set(PRODUCTIVITY, value);
+	}
 
-    public void setGrowth(int value) {
-        this.dataTracker.set(GROWTH, value);
-    }
+	public void setReproductivity(int value) {
+		this.dataTracker.set(REPRODUCTIVITY, value);
+	}
 
-    public void setProductivity(int value) {
-        this.dataTracker.set(PRODUCTIVITY, value);
-    }
+	public void setInstability(int value) {
+		this.dataTracker.set(INSTABILITY, value);
+	}
 
-    public void setReproductivity(int value) {
-        this.dataTracker.set(REPRODUCTIVITY, value);
-    }
-
-    public void setInstability(int value) {
-        this.dataTracker.set(INSTABILITY, value);
-    }
-
-    @Override
-    public List<Text> getMagnifyingGlassInformation(PlayerEntity user) {
-        DnaData data = this.createDnaData();
-        List<Text> info = data.getInformation();
-        info.add(Text.literal(""));
-        info.add(Text.translatable("text.honk.info_age", this.getAge()).styled(s -> s.withColor(Formatting.GRAY)));
-        info.add(Text.translatable(this.warm ? "text.honk.info_warm_yes" : "text.honk.info_warm_no").styled(s -> s.withColor(Formatting.GRAY)));
-        return info;
-    }
+	@Override
+	public List<Text> getMagnifyingGlassInformation(PlayerEntity user) {
+		DnaData data = this.createDnaData();
+		List<Text> info = data.getInformation();
+		info.add(Text.literal(""));
+		info.add(Text.translatable("text.honk.info_age", this.getAge()).styled(s -> s.withColor(Formatting.GRAY)));
+		info.add(Text.translatable(this.warm ? "text.honk.info_warm_yes" : "text.honk.info_warm_no").styled(s -> s.withColor(Formatting.GRAY)));
+		return info;
+	}
 }
