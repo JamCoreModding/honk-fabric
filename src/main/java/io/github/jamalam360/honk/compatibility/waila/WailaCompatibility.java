@@ -34,14 +34,16 @@ import net.minecraft.util.Identifier;
 
 public class WailaCompatibility implements IWailaPlugin {
 
-    public static final Identifier SHOW_GENES = HonkInit.idOf("show_genes");
+	public static final Identifier SHOW_GENES = HonkInit.idOf("show_genes");
+	public static final Identifier ONLY_SHOW_GENES_ON_SNEAK = HonkInit.idOf("only_show_genes_on_sneak");
 
-    @Override
-    public void register(IRegistrar registrar) {
-        HonkInit.LOGGER.info("Initializing Honk compatibility module for WAILA and derivatives");
+	@Override
+	public void register(IRegistrar registrar) {
+		HonkInit.LOGGER.info("Initializing Honk compatibility module for WAILA and derivatives");
 
-        registrar.addSyncedConfig(SHOW_GENES, true, false);
-        registrar.addComponent(HonkOverride.INSTANCE, TooltipPosition.BODY, HonkEntity.class);
-        registrar.addComponent(HonkOverride.INSTANCE, TooltipPosition.BODY, EggEntity.class);
-    }
+		registrar.addSyncedConfig(SHOW_GENES, true, false);
+		registrar.addConfig(ONLY_SHOW_GENES_ON_SNEAK, false);
+		registrar.addComponent(HonkOverride.INSTANCE, TooltipPosition.BODY, HonkEntity.class);
+		registrar.addComponent(HonkOverride.INSTANCE, TooltipPosition.BODY, EggEntity.class);
+	}
 }

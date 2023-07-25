@@ -35,24 +35,37 @@ import net.minecraft.text.Text;
 
 public class HonkOverride implements IEntityComponentProvider {
 
-    public static final HonkOverride INSTANCE = new HonkOverride();
+	public static final HonkOverride INSTANCE = new HonkOverride();
 
-    @Override
-    public void appendBody(ITooltip tooltip, IEntityAccessor accessor, IPluginConfig config) {
-        //TODO: test for honk and egg, and test config option
-        DnaData data = null;
+	@Override
+	public void appendBody(ITooltip tooltip, IEntityAccessor accessor, IPluginConfig config) {
+		//TODO: test for honk and egg, and test config option
+		DnaData data = null;
 
-        if (accessor.getEntity() instanceof HonkEntity honk) {
-            data = honk.createDnaData();
-        } else if (accessor.getEntity() instanceof EggEntity egg) {
-            data = egg.createDnaData();
-        }
+		if (accessor.getEntity() instanceof HonkEntity honk) {
+			data = honk.createDnaData();
+		} else if (accessor.getEntity() instanceof EggEntity egg) {
+			data = egg.createDnaData();
+		}
 
-        if (data != null && config.getBoolean(WailaCompatibility.SHOW_GENES)) {
-            tooltip.addLine(Text.translatable("text.honk.info_productivity", data.productivity()));
-            tooltip.addLine(Text.translatable("text.honk.info_reproductivity", data.reproductivity()));
-            tooltip.addLine(Text.translatable("text.honk.info_growth", data.growth()));
-            tooltip.addLine(Text.translatable("text.honk.info_instability", data.instability()));
-        }
-    }
+		if (data != null && config.getBoolean(WailaCompatibility.SHOW_GENES)) {
+			if (accessor.getEntity() instanceof HonkEntity honk) {
+				tooltip.addLine(Text.translatable("text.honk.waila.food", honk.getFoodLevel()));
+
+				if (honk.getBreedingAge() > 1) {
+					tooltip.addLine(Text.translatable("text.honk.waila.breeding_cooldown", honk.getBreedingAge() / 20));
+				}
+			} else if (accessor.getEntity() instanceof EggEntity egg) {
+				tooltip.addLine(Text.translatable("text.honk.waila.age", egg.getAge() / 20));
+				tooltip.addLine(Text.translatable("text.honk.waila.warm_" + (egg.isWarm() ? "yes" : "no")));
+			}
+
+			if (!config.getBoolean(WailaCompatibility.ONLY_SHOW_GENES_ON_SNEAK) || accessor.getPlayer().isSneaking()) {
+				tooltip.addLine(Text.translatable("text.honk.waila.productivity", data.productivity()));
+				tooltip.addLine(Text.translatable("text.honk.waila.reproductivity", data.reproductivity()));
+				tooltip.addLine(Text.translatable("text.honk.waila.growth", data.growth()));
+				tooltip.addLine(Text.translatable("text.honk.waila.instability", data.instability()));
+			}
+		}
+	}
 }

@@ -237,6 +237,10 @@ public class EggEntity extends MobEntity implements MagnifyingGlassInformationPr
 		}
 	}
 
+	public boolean isWarm() {
+		return this.warm;
+	}
+
 	public int getAge() {
 		return this.dataTracker.get(AGE);
 	}
@@ -274,7 +278,7 @@ public class EggEntity extends MobEntity implements MagnifyingGlassInformationPr
 		DnaData data = this.createDnaData();
 		List<Text> info = data.getInformation();
 		info.add(Text.literal(""));
-		info.add(Text.translatable("text.honk.info_age", this.getAge()).styled(s -> s.withColor(Formatting.GRAY)));
+		info.add(Text.translatable("text.honk.info_age", this.getAge() / 20).styled(s -> s.withColor(Formatting.GRAY)));
 		info.add(Text.translatable(this.warm ? "text.honk.info_warm_yes" : "text.honk.info_warm_no").styled(s -> s.withColor(Formatting.GRAY)));
 		return info;
 	}

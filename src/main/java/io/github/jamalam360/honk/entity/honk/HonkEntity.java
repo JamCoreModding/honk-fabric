@@ -224,8 +224,8 @@ public class HonkEntity extends AnimalEntity implements MagnifyingGlassInformati
 		DnaCombinator.combine(world.getRandom(), this.createDnaData(), other.createDnaData()).writeEntity(egg);
 		egg.refreshPositionAndAngles(this.getX(), this.getY(), this.getZ(), 0.0F, 0.0F);
 
-		this.setBreedingAge(6000);
-		other.setBreedingAge(6000);
+		this.setBreedingAge(-400 * this.getReproductivity() + 6400);
+		other.setBreedingAge(-400 * other.getReproductivity() + 6400);
 		this.resetLoveTicks();
 		other.resetLoveTicks();
 		world.sendEntityStatus(this, EntityStatuses.ADD_BREEDING_PARTICLES);
