@@ -62,7 +62,6 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.TimeHelper;
-import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.int_provider.UniformIntProvider;
@@ -100,7 +99,7 @@ public class HonkEntity extends AnimalEntity implements MagnifyingGlassInformati
 	}
 
 	public static DefaultAttributeContainer.Builder createAttributes() {
-		return MobEntity.createAttributes().add(EntityAttributes.GENERIC_MAX_HEALTH, 28F).add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.15F).add(EntityAttributes.GENERIC_FOLLOW_RANGE, 32F).add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 3.2F).add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 0.5F);
+		return MobEntity.createAttributes().add(EntityAttributes.GENERIC_MAX_HEALTH, 28F).add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.2F).add(EntityAttributes.GENERIC_FOLLOW_RANGE, 32F).add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 3.2F).add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 0.5F);
 	}
 
 	@Override
@@ -133,7 +132,7 @@ public class HonkEntity extends AnimalEntity implements MagnifyingGlassInformati
 		this.goalSelector.add(7, new LookAroundGoal(this));
 
 		this.targetSelector.add(1, new RevengeWithoutUnviersalAngerCheckGoal(this));
-		this.targetSelector.add(2, new TargetGoal<>(this, HonkEntity.class, 10, true, false, (entity) -> entity instanceof HonkEntity honk && honk.getHonkType() != this.getHonkType()));
+		this.targetSelector.add(2, new TargetGoal<>(this, HonkEntity.class, 10, true, true, (entity) -> entity instanceof HonkEntity honk && honk.getHonkType() != this.getHonkType()));
 	}
 
 	//region Ticking
@@ -267,6 +266,12 @@ public class HonkEntity extends AnimalEntity implements MagnifyingGlassInformati
 
 	@Nullable
 	@Override
+	protected SoundEvent getDeathSound() {
+		return HonkSounds.APOLGY_FOR_BAD_ENGLISH_WHERE_WERE_U_WEN_HONK_DIE_I_WAS_AT_HOUSE_EATING_DORITO_WHEN_PHONE_RING_HONK_IS_KILL_NO;
+	}
+
+	@Nullable
+	@Override
 	protected SoundEvent getAmbientSound() {
 		return HonkSounds.HONK_AMBIENT;
 	}
@@ -362,13 +367,13 @@ public class HonkEntity extends AnimalEntity implements MagnifyingGlassInformati
 		}
 
 		if (attribute == EntityAttributes.GENERIC_ATTACK_DAMAGE) {
-			return this.getAttributes().getValue(EntityAttributes.GENERIC_ATTACK_DAMAGE) + this.getHonkType().tier() - 1;
+			return this.getAttributes().getValue(EntityAttributes.GENERIC_ATTACK_DAMAGE) + this.getHonkType().tier();
 		} else if (attribute == EntityAttributes.GENERIC_ATTACK_KNOCKBACK) {
-			return this.getAttributes().getValue(EntityAttributes.GENERIC_ATTACK_KNOCKBACK) + this.getHonkType().tier() - 1;
+			return this.getAttributes().getValue(EntityAttributes.GENERIC_ATTACK_KNOCKBACK) + this.getHonkType().tier();
 		} else if (attribute == EntityAttributes.GENERIC_MAX_HEALTH) {
-			return this.getAttributes().getValue(EntityAttributes.GENERIC_MAX_HEALTH) + this.getHonkType().tier() * 4 - 1;
+			return this.getAttributes().getValue(EntityAttributes.GENERIC_MAX_HEALTH) + this.getHonkType().tier() * 4;
 		} else if (attribute == EntityAttributes.GENERIC_MOVEMENT_SPEED) {
-			return this.getAttributes().getValue(EntityAttributes.GENERIC_MOVEMENT_SPEED) + this.getHonkType().tier() / 20F - 1;
+			return this.getAttributes().getValue(EntityAttributes.GENERIC_MOVEMENT_SPEED) + this.getHonkType().tier() / 50F;
 		} else {
 			return super.getAttributeValue(attribute);
 		}
@@ -395,8 +400,8 @@ public class HonkEntity extends AnimalEntity implements MagnifyingGlassInformati
 	}
 
 	@Override
-	public Box getBoundingBox(EntityPose pose) {
-		return super.getBoundingBox(pose);
+	public EntityDimensions getDimensions(EntityPose pose) {
+		return pose == EntityPose.SLEEPING ? SLEEPING_DIMENSIONS : super.getDimensions(pose).scaled(this.getScaleFactor() + (this.isBaby() ? 4F : 0.0F));
 	}
 
 	@Override
@@ -421,6 +426,12 @@ public class HonkEntity extends AnimalEntity implements MagnifyingGlassInformati
 	public boolean handleFallDamage(float fallDistance, float damageMultiplier, DamageSource damageSource) {
 		return false;
 	}
+
+	@Override
+	public void setBaby(boolean baby) {
+		this.setBreedingAge(baby ? (900 * this.getGrowth() - 24000) : 0);
+	}
+
 	//endregion
 
 	//region DataTracker

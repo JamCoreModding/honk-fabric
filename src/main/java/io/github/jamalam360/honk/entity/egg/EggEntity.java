@@ -152,7 +152,7 @@ public class EggEntity extends MobEntity implements MagnifyingGlassInformationPr
 	}
 
 	public int getMinimumHatchingAge() {
-		return 4000;
+		return -100 * this.dataTracker.get(GROWTH) + 4000;
 	}
 
 	public float getHatchingChance() {

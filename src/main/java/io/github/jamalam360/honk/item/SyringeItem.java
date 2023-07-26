@@ -31,6 +31,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -38,22 +39,23 @@ import org.quiltmc.qsl.item.setting.api.QuiltItemSettings;
 
 public class SyringeItem extends Item {
 
-    public SyringeItem() {
-        super(new QuiltItemSettings().maxCount(16).recipeSelfRemainder());
-    }
+	public SyringeItem() {
+		super(new QuiltItemSettings().maxCount(16).recipeSelfRemainder());
+	}
 
-    @Override
-    public ActionResult useOnEntity(ItemStack stack, PlayerEntity user, LivingEntity entity, Hand hand) {
-        if (entity instanceof HonkEntity honk && !user.getWorld().isClient) {
-            DnaData data = DnaData.fromEntity(honk);
-            ItemStack bloodSyringe = HonkItems.BLOOD_SYRINGE.getDefaultStack();
-            bloodSyringe.setNbt(data.writeNbt(bloodSyringe.getOrCreateNbt()));
-            entity.damage(entity.getDamageSources().playerAttack(user), 2.0F);
-            user.playSound(SoundEvents.ENTITY_GENERIC_DRINK, 1.0F, user.getWorld().random.nextFloat() + 0.5F);
-            user.setStackInHand(hand, bloodSyringe);
-            return ActionResult.SUCCESS;
-        } else {
-            return super.useOnEntity(stack, user, entity, hand);
-        }
-    }
+	@Override
+	public ActionResult useOnEntity(ItemStack stack, PlayerEntity user, LivingEntity entity, Hand hand) {
+		if (entity instanceof HonkEntity honk && !user.getWorld().isClient) {
+			DnaData data = DnaData.fromEntity(honk);
+			ItemStack bloodSyringe = HonkItems.BLOOD_SYRINGE.getDefaultStack();
+			bloodSyringe.setNbt(data.writeNbt(bloodSyringe.getOrCreateNbt()));
+			entity.damage(entity.getDamageSources().playerAttack(user), 2.0F);
+			user.getWorld().playSound(null, user.getBlockPos(), SoundEvents.ENTITY_GENERIC_DRINK, SoundCategory.PLAYERS, 1.0F, user.getWorld().random.nextFloat() + 0.5F);
+			user.getStackInHand(hand).decrement(1);
+			user.getInventory().offerOrDrop(bloodSyringe);
+			return ActionResult.SUCCESS;
+		} else {
+			return super.useOnEntity(stack, user, entity, hand);
+		}
+	}
 }

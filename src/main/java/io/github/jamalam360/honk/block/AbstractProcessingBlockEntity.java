@@ -48,142 +48,154 @@ import net.minecraft.util.math.Direction;
 
 public abstract class AbstractProcessingBlockEntity extends BlockEntity implements PowerProvider, SidedInventory, TickingBlockEntity, NamedScreenHandlerFactory {
 
-    public final DefaultedList<ItemStack> inventory;
-    public final InventoryStorage storage;
-    private final RecipeType<? extends Recipe<Inventory>> recipeType;
-    public int processingTime = 0;
-    private Recipe<Inventory> currentRecipe = null;
+	public final DefaultedList<ItemStack> inventory;
+	public final InventoryStorage storage;
+	private final RecipeType<? extends Recipe<Inventory>> recipeType;
+	public int processingTime = 0;
+	private int processingSoundTicks = 0;
+	private Recipe<Inventory> currentRecipe = null;
 
-    public AbstractProcessingBlockEntity(BlockEntityType<?> type, RecipeType<? extends Recipe<Inventory>> recipeType, int inventorySize, BlockPos pos, BlockState state) {
-        super(type, pos, state);
-        this.inventory = DefaultedList.ofSize(inventorySize, ItemStack.EMPTY);
-        this.storage = InventoryStorage.of(this, Direction.UP);
-        this.recipeType = recipeType;
-    }
+	public AbstractProcessingBlockEntity(BlockEntityType<?> type, RecipeType<? extends Recipe<Inventory>> recipeType, int inventorySize, BlockPos pos, BlockState state) {
+		super(type, pos, state);
+		this.inventory = DefaultedList.ofSize(inventorySize, ItemStack.EMPTY);
+		this.storage = InventoryStorage.of(this, Direction.UP);
+		this.recipeType = recipeType;
+	}
 
-    public void onInventoryUpdated() {
-        if (this.currentRecipe == null) {
-            if (this.isPowered()) {
-                this.getWorld().getRecipeManager().getFirstMatch(this.recipeType, this, this.getWorld()).ifPresent((recipe) -> {
-                    this.currentRecipe = recipe;
-                    this.onBeginProcessing();
-                });
-            }
-        } else {
-            if (!this.currentRecipe.matches(this, this.getWorld()) || !this.isPowered()) {
-                this.cancelCurrentRecipe();
-            }
-        }
-    }
+	public void onInventoryUpdated() {
+		if (this.currentRecipe == null) {
+			if (this.isPowered()) {
+				this.getWorld().getRecipeManager().getFirstMatch(this.recipeType, this, this.getWorld()).ifPresent((recipe) -> {
+					this.currentRecipe = recipe;
+					this.onBeginProcessing();
+				});
+			}
+		} else {
+			if (!this.currentRecipe.matches(this, this.getWorld()) || !this.isPowered()) {
+				this.cancelCurrentRecipe();
+			}
+		}
+	}
 
-    @Override
-    public void tick() {
-        if (this.currentRecipe != null) {
-            if (this.processingTime == 0) {
-                this.onRecipeCrafted(this.currentRecipe.craft(this, this.world.getRegistryManager()));
-                this.currentRecipe = null;
-            } else if (this.processingTime > 0) {
-                this.processingTime--;
-            }
-        }
-    }
+	@Override
+	public void tick() {
+		if (this.currentRecipe != null) {
+			if (this.processingTime == 0) {
+				this.onRecipeCrafted(this.currentRecipe.craft(this, this.world.getRegistryManager()));
+				this.currentRecipe = null;
+				this.processingSoundTicks = 0;
+			} else if (this.processingTime > 0) {
+				this.processingTime--;
+				this.processingSoundTicks--;
 
-    public void onRecipeCrafted(ItemStack output) {
-    }
+				if (this.processingSoundTicks <= 0) {
+					this.playProcessingSound();
+					this.processingSoundTicks = this.getProcessingSoundLength();
+				}
+			}
+		}
+	}
 
-    public Recipe<Inventory> getCurrentRecipe() {
-        return this.currentRecipe;
-    }
+	public void onRecipeCrafted(ItemStack output) {
+	}
 
-    public int getProcessingTime() {
-        return this.processingTime;
-    }
+	public Recipe<Inventory> getCurrentRecipe() {
+		return this.currentRecipe;
+	}
 
-    public SoundEvent getProcessingSound() {
-        return null;
-    }
+	public int getProcessingTime() {
+		return this.processingTime;
+	}
 
-    public void playProcessingSound() {
-        if (!this.world.isClient && this.getProcessingSound() != null) {
-            this.world.playSound(
-                  null,
-                  this.getPos(),
-                  this.getProcessingSound(),
-                  SoundCategory.BLOCKS,
-                  0.75f,
-                  1f
-            );
-        }
-    }
+	public SoundEvent getProcessingSound() {
+		return null;
+	}
 
-    public void cancelCurrentRecipe() {
-        this.processingTime = 0;
-        this.currentRecipe = null;
-    }
+	public int getProcessingSoundLength() {
+		return 0;
+	}
 
-    @Override
-    public Text getDisplayName() {
-        return Text.translatable(this.getCachedState().getBlock().getTranslationKey());
-    }
+	public void playProcessingSound() {
+		if (!this.world.isClient && this.getProcessingSound() != null && this.getProcessingSoundLength() != 0) {
+			this.world.playSound(
+					null,
+					this.getPos(),
+					this.getProcessingSound(),
+					SoundCategory.BLOCKS,
+					0.75f,
+					1f
+			);
+		}
+	}
 
-    @Override
-    public int size() {
-        return this.inventory.size();
-    }
+	public void cancelCurrentRecipe() {
+		this.processingTime = 0;
+		this.currentRecipe = null;
+	}
 
-    @Override
-    public boolean isEmpty() {
-        return this.inventory.isEmpty();
-    }
+	@Override
+	public Text getDisplayName() {
+		return Text.translatable(this.getCachedState().getBlock().getTranslationKey());
+	}
 
-    @Override
-    public ItemStack getStack(int slot) {
-        return this.inventory.get(slot);
-    }
+	@Override
+	public int size() {
+		return this.inventory.size();
+	}
 
-    @Override
-    public ItemStack removeStack(int slot, int count) {
-        ItemStack result = Inventories.splitStack(this.inventory, slot, count);
+	@Override
+	public boolean isEmpty() {
+		return this.inventory.isEmpty();
+	}
 
-        if (!result.isEmpty()) {
-            markDirty();
-        }
+	@Override
+	public ItemStack getStack(int slot) {
+		return this.inventory.get(slot);
+	}
 
-        return result;
-    }
+	@Override
+	public ItemStack removeStack(int slot, int count) {
+		ItemStack result = Inventories.splitStack(this.inventory, slot, count);
 
-    @Override
-    public ItemStack removeStack(int slot) {
-        return Inventories.removeStack(this.inventory, slot);
-    }
+		if (!result.isEmpty()) {
+			markDirty();
+		}
 
-    @Override
-    public void setStack(int slot, ItemStack stack) {
-        this.inventory.set(slot, stack);
-        if (stack.getCount() > getMaxCountPerStack()) {
-            stack.setCount(getMaxCountPerStack());
-        }
-    }
+		return result;
+	}
 
-    @Override
-    public void clear() {
-        this.inventory.clear();
-    }
+	@Override
+	public ItemStack removeStack(int slot) {
+		return Inventories.removeStack(this.inventory, slot);
+	}
 
-    @Override
-    public boolean canPlayerUse(PlayerEntity player) {
-        return true;
-    }
+	@Override
+	public void setStack(int slot, ItemStack stack) {
+		this.inventory.set(slot, stack);
+		if (stack.getCount() > getMaxCountPerStack()) {
+			stack.setCount(getMaxCountPerStack());
+		}
+	}
 
-    @Override
-    public void readNbt(NbtCompound nbt) {
-        super.readNbt(nbt);
-        Inventories.readNbt(nbt, this.inventory);
-    }
+	@Override
+	public void clear() {
+		this.inventory.clear();
+	}
 
-    @Override
-    public void writeNbt(NbtCompound nbt) {
-        super.writeNbt(nbt);
-        Inventories.writeNbt(nbt, this.inventory);
-    }
+	@Override
+	public boolean canPlayerUse(PlayerEntity player) {
+		return true;
+	}
+
+	@Override
+	public void readNbt(NbtCompound nbt) {
+		super.readNbt(nbt);
+		Inventories.readNbt(nbt, this.inventory);
+	}
+
+	@Override
+	public void writeNbt(NbtCompound nbt) {
+		super.writeNbt(nbt);
+		Inventories.writeNbt(nbt, this.inventory);
+	}
 }

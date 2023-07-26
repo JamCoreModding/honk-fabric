@@ -39,7 +39,6 @@ public class HonkOverride implements IEntityComponentProvider {
 
 	@Override
 	public void appendBody(ITooltip tooltip, IEntityAccessor accessor, IPluginConfig config) {
-		//TODO: test for honk and egg, and test config option
 		DnaData data = null;
 
 		if (accessor.getEntity() instanceof HonkEntity honk) {
@@ -51,10 +50,6 @@ public class HonkOverride implements IEntityComponentProvider {
 		if (data != null && config.getBoolean(WailaCompatibility.SHOW_GENES)) {
 			if (accessor.getEntity() instanceof HonkEntity honk) {
 				tooltip.addLine(Text.translatable("text.honk.waila.food", honk.getFoodLevel()));
-
-				if (honk.getBreedingAge() > 1) {
-					tooltip.addLine(Text.translatable("text.honk.waila.breeding_cooldown", honk.getBreedingAge() / 20));
-				}
 			} else if (accessor.getEntity() instanceof EggEntity egg) {
 				tooltip.addLine(Text.translatable("text.honk.waila.age", egg.getAge() / 20));
 				tooltip.addLine(Text.translatable("text.honk.waila.warm_" + (egg.isWarm() ? "yes" : "no")));

@@ -24,6 +24,7 @@
 
 package io.github.jamalam360.honk;
 
+import io.github.jamalam360.honk.block.FuelBurningProcessingBlockEntity;
 import io.github.jamalam360.honk.block.centrifuge.CentrifugeScreen;
 import io.github.jamalam360.honk.block.dna_combinator.DnaCombinatorScreen;
 import io.github.jamalam360.honk.block.dna_injector_extractor.DnaInjectorExtractorScreen;
@@ -32,29 +33,44 @@ import io.github.jamalam360.honk.entity.egg.EggEntityRenderer;
 import io.github.jamalam360.honk.entity.honk.HonkEntityModel;
 import io.github.jamalam360.honk.entity.honk.HonkEntityRenderer;
 import io.github.jamalam360.honk.registry.HonkEntities;
+import io.github.jamalam360.honk.registry.HonkNetwork;
 import io.github.jamalam360.honk.registry.HonkScreens;
+import io.github.jamalam360.jamlib.network.JamLibClientNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.gui.screen.ingame.HandledScreens;
 import net.minecraft.client.render.entity.model.EntityModelLayer;
+import net.minecraft.util.math.BlockPos;
 import org.quiltmc.loader.api.ModContainer;
 import org.quiltmc.qsl.base.api.entrypoint.client.ClientModInitializer;
 
 public class HonkClientInit implements ClientModInitializer {
 
-    public static final EntityModelLayer EGG_LAYER = new EntityModelLayer(HonkInit.idOf("egg"), "main");
-    public static final EntityModelLayer HONK_LAYER = new EntityModelLayer(HonkInit.idOf("honk"), "main");
+	public static final EntityModelLayer EGG_LAYER = new EntityModelLayer(HonkInit.idOf("egg"), "main");
+	public static final EntityModelLayer HONK_LAYER = new EntityModelLayer(HonkInit.idOf("honk"), "main");
 
-    @Override
-    public void onInitializeClient(ModContainer mod) {
-        EntityRendererRegistry.register(HonkEntities.EGG, EggEntityRenderer::new);
-        EntityRendererRegistry.register(HonkEntities.HONK, HonkEntityRenderer::new);
+	@Override
+	public void onInitializeClient(ModContainer mod) {
+		EntityRendererRegistry.register(HonkEntities.EGG, EggEntityRenderer::new);
+		EntityRendererRegistry.register(HonkEntities.HONK, HonkEntityRenderer::new);
 
-        EntityModelLayerRegistry.registerModelLayer(EGG_LAYER, EggEntityModel::getTexturedModelData);
-        EntityModelLayerRegistry.registerModelLayer(HONK_LAYER, HonkEntityModel::getTexturedModelData);
+		EntityModelLayerRegistry.registerModelLayer(EGG_LAYER, EggEntityModel::getTexturedModelData);
+		EntityModelLayerRegistry.registerModelLayer(HONK_LAYER, HonkEntityModel::getTexturedModelData);
 
-        HandledScreens.register(HonkScreens.CENTRIFUGE, CentrifugeScreen::new);
-        HandledScreens.register(HonkScreens.DNA_INJECTOR_EXTRACTOR, DnaInjectorExtractorScreen::new);
-        HandledScreens.register(HonkScreens.DNA_COMBINATOR, DnaCombinatorScreen::new);
-    }
+		HandledScreens.register(HonkScreens.CENTRIFUGE, CentrifugeScreen::new);
+		HandledScreens.register(HonkScreens.DNA_INJECTOR_EXTRACTOR, DnaInjectorExtractorScreen::new);
+		HandledScreens.register(HonkScreens.DNA_COMBINATOR, DnaCombinatorScreen::new);
+
+		HonkNetwork.S2C_FUEL_BURNING_UPDATE_BURN_TIME.setHandler(((client, handler, buf, responseSender) -> {
+			BlockPos pos = buf.readBlockPos();
+			int burnTime = buf.readInt();
+
+			client.execute(() -> {
+				if (client.world != null && client.world.getBlockEntity(pos) instanceof FuelBurningProcessingBlockEntity fuelBurner) {
+					fuelBurner.setClientBurnTime(burnTime);
+				}
+			});
+		}));
+		JamLibClientNetworking.registerHandlers(HonkInit.MOD_ID);
+	}
 }
