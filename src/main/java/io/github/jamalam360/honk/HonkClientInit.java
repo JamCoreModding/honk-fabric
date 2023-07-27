@@ -24,7 +24,6 @@
 
 package io.github.jamalam360.honk;
 
-import io.github.jamalam360.honk.block.FuelBurningProcessingBlockEntity;
 import io.github.jamalam360.honk.block.centrifuge.CentrifugeScreen;
 import io.github.jamalam360.honk.block.dna_combinator.DnaCombinatorScreen;
 import io.github.jamalam360.honk.block.dna_injector_extractor.DnaInjectorExtractorScreen;
@@ -32,15 +31,15 @@ import io.github.jamalam360.honk.entity.egg.EggEntityModel;
 import io.github.jamalam360.honk.entity.egg.EggEntityRenderer;
 import io.github.jamalam360.honk.entity.honk.HonkEntityModel;
 import io.github.jamalam360.honk.entity.honk.HonkEntityRenderer;
+import io.github.jamalam360.honk.registry.HonkC2SNetwork;
 import io.github.jamalam360.honk.registry.HonkEntities;
-import io.github.jamalam360.honk.registry.HonkNetwork;
 import io.github.jamalam360.honk.registry.HonkScreens;
-import io.github.jamalam360.jamlib.network.JamLibClientNetworking;
+import io.github.jamalam360.jamlib.keybind.JamLibKeybinds;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.gui.screen.ingame.HandledScreens;
 import net.minecraft.client.render.entity.model.EntityModelLayer;
-import net.minecraft.util.math.BlockPos;
+import org.lwjgl.glfw.GLFW;
 import org.quiltmc.loader.api.ModContainer;
 import org.quiltmc.qsl.base.api.entrypoint.client.ClientModInitializer;
 
@@ -61,16 +60,6 @@ public class HonkClientInit implements ClientModInitializer {
 		HandledScreens.register(HonkScreens.DNA_INJECTOR_EXTRACTOR, DnaInjectorExtractorScreen::new);
 		HandledScreens.register(HonkScreens.DNA_COMBINATOR, DnaCombinatorScreen::new);
 
-		HonkNetwork.S2C_FUEL_BURNING_UPDATE_BURN_TIME.setHandler(((client, handler, buf, responseSender) -> {
-			BlockPos pos = buf.readBlockPos();
-			int burnTime = buf.readInt();
-
-			client.execute(() -> {
-				if (client.world != null && client.world.getBlockEntity(pos) instanceof FuelBurningProcessingBlockEntity fuelBurner) {
-					fuelBurner.setClientBurnTime(burnTime);
-				}
-			});
-		}));
-		JamLibClientNetworking.registerHandlers(HonkInit.MOD_ID);
+		JamLibKeybinds.register(new JamLibKeybinds.JamLibKeybind(HonkInit.MOD_ID, "honk", GLFW.GLFW_KEY_SLASH, (client) -> HonkC2SNetwork.HONK.send()));
 	}
 }

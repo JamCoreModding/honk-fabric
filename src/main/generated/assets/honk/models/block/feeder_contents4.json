@@ -1,0 +1,25 @@
+{
+  "elements": [
+    {
+      "faces": {
+        "up": {
+          "texture": "#inside"
+        }
+      },
+      "from": [
+        1,
+        0,
+        1
+      ],
+      "to": [
+        15,
+        8,
+        15
+      ]
+    }
+  ],
+  "textures": {
+    "inside": "honk:block/feeder_contents",
+    "particle": "honk:block/feeder_contents"
+  }
+}

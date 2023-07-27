@@ -24,17 +24,14 @@
 
 package io.github.jamalam360.honk.block;
 
-import io.github.jamalam360.honk.registry.HonkNetwork;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeType;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import org.quiltmc.qsl.item.content.registry.api.ItemContentRegistries;
-import org.quiltmc.qsl.networking.api.PlayerLookup;
 
 import java.util.Optional;
 
@@ -43,6 +40,7 @@ public abstract class FuelBurningProcessingBlockEntity extends AbstractProcessin
 	private final int fuelSlot;
 	private int burnTime = 0;
 	private int maxBurnTime = 0;
+	private boolean lastSyncedBurning = false;
 
 	public FuelBurningProcessingBlockEntity(BlockEntityType<?> type, RecipeType<? extends Recipe<Inventory>> recipeType, int inventorySize, int fuelSlot, BlockPos pos, BlockState state) {
 		super(type, recipeType, inventorySize, pos, state);
@@ -53,21 +51,33 @@ public abstract class FuelBurningProcessingBlockEntity extends AbstractProcessin
 	public void tick() {
 		super.tick();
 
+		if (this.lastSyncedBurning != this.burnTime > 0) {
+			this.updateBlockState();
+			this.lastSyncedBurning = this.burnTime > 0;
+		}
+
 		if (this.burnTime > 0) {
 			this.burnTime--;
 
 			if (!this.world.isClient && this.burnTime == 0 && this.getCurrentRecipe() != null) {
 				this.tryBurnItemOrCancelRecipe();
+				this.updateBlockState();
 			}
+		}
+
+		this.markDirty();
+	}
+
+	public void updateBlockState() {
+		if (this.burnTime == 0) {
+			this.world.setBlockState(this.pos, this.world.getBlockState(this.pos).with(FuelBurningProcessingBlock.LIT, false));
+		} else {
+			this.world.setBlockState(this.pos, this.world.getBlockState(this.pos).with(FuelBurningProcessingBlock.LIT, true));
 		}
 	}
 
 	public int getBurnTime() {
 		return this.burnTime;
-	}
-
-	public void setClientBurnTime(int burnTime) {
-		this.burnTime = burnTime;
 	}
 
 	public int getMaxBurnTime() {
@@ -86,6 +96,8 @@ public abstract class FuelBurningProcessingBlockEntity extends AbstractProcessin
 		} else {
 			super.onBeginProcessing();
 		}
+
+		this.updateBlockState();
 	}
 
 	public void tryBurnItemOrCancelRecipe() {
@@ -101,21 +113,14 @@ public abstract class FuelBurningProcessingBlockEntity extends AbstractProcessin
 			this.cancelCurrentRecipe();
 		}
 
-		// This whole method should be server-side only, but might as well check.
-		if (!this.world.isClient) {
-			for (ServerPlayerEntity player : PlayerLookup.tracking(this)) {
-				HonkNetwork.S2C_FUEL_BURNING_UPDATE_BURN_TIME.send(player, (buf) -> {
-					buf.writeBlockPos(this.pos);
-					buf.writeInt(this.burnTime);
-				});
-			}
-		}
+		this.markDirty();
 	}
 
 	@Override
 	public void readNbt(NbtCompound nbt) {
 		super.readNbt(nbt);
 		this.burnTime = nbt.getInt("BurnTime");
+		this.lastSyncedBurning = this.burnTime == 0;
 		this.maxBurnTime = nbt.getInt("MaxBurnTime");
 	}
 

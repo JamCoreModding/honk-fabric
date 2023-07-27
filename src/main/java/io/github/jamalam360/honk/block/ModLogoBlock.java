@@ -32,12 +32,12 @@ import org.quiltmc.qsl.block.extensions.api.QuiltBlockSettings;
 
 public class ModLogoBlock extends Block implements Equippable {
 
-    public ModLogoBlock() {
-        super(QuiltBlockSettings.copy(Blocks.WHITE_WOOL));
-    }
+	public ModLogoBlock() {
+		super(QuiltBlockSettings.copy(Blocks.WHITE_WOOL));
+	}
 
-    @Override
-    public EquipmentSlot getPreferredSlot() {
-        return EquipmentSlot.HEAD;
-    }
+	@Override
+	public EquipmentSlot getPreferredSlot() {
+		return EquipmentSlot.HEAD;
+	}
 }

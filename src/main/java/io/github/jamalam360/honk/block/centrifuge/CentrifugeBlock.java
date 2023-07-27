@@ -33,13 +33,13 @@ import org.jetbrains.annotations.Nullable;
 
 public class CentrifugeBlock extends FuelBurningProcessingBlock {
 
-    public CentrifugeBlock() {
-        super(Settings.copy(Blocks.IRON_BLOCK));
-    }
+	public CentrifugeBlock() {
+		super(Settings.copy(Blocks.IRON_BLOCK));
+	}
 
-    @Nullable
-    @Override
-    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
-        return new CentrifugeBlockEntity(pos, state);
-    }
+	@Nullable
+	@Override
+	public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+		return new CentrifugeBlockEntity(pos, state);
+	}
 }

@@ -33,7 +33,6 @@ import io.github.jamalam360.honk.data.DnaData;
 import io.github.jamalam360.honk.data.NbtKeys;
 import io.github.jamalam360.honk.registry.HonkItems;
 import io.github.jamalam360.honk.util.InventoryUtils;
-import java.util.Random;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -43,101 +42,103 @@ import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
 
+import java.util.Random;
+
 public class DnaInjectorExtractorRecipe extends AutoSerializedRecipe<Inventory> {
 
-    private static final Random RANDOM = new Random();
-    public static RecipeType<DnaInjectorExtractorRecipe> TYPE;
-    @RecipeVar
-    private float successChance;
-    @RecipeVar
-    private Ingredient input;
-    @RecipeVar(required = false)
-    private Ingredient auxiliaryInput;
-    @RecipeVar
-    private ItemStack output;
+	private static final Random RANDOM = new Random();
+	public static RecipeType<DnaInjectorExtractorRecipe> TYPE;
+	@RecipeVar
+	private float successChance;
+	@RecipeVar
+	private Ingredient input;
+	@RecipeVar(required = false)
+	private Ingredient auxiliaryInput;
+	@RecipeVar
+	private ItemStack output;
 
-    public static void init() {
-        TYPE = AutoRecipeRegistry.registerRecipeSerializer(HonkInit.idOf("dna_injector_extractor"), DnaInjectorExtractorRecipe::new);
-    }
+	public static void init() {
+		TYPE = AutoRecipeRegistry.registerRecipeSerializer(HonkInit.idOf("dna_injector_extractor"), DnaInjectorExtractorRecipe::new);
+	}
 
-    @Override
-    public boolean matches(Inventory inventory, World world) {
-        boolean auxCondition = true;
-        if (this.auxiliaryInput == null && !inventory.getStack(DnaInjectorExtractorBlockEntity.AUXILIARY_INPUT_SLOT).isEmpty()) {
-            return false;
-        } else if (this.auxiliaryInput != null && !this.auxiliaryInput.test(inventory.getStack(DnaInjectorExtractorBlockEntity.AUXILIARY_INPUT_SLOT))) {
-            return false;
-        } else if (this.auxiliaryInput != null) {
-            ItemStack auxInput = inventory.getStack(DnaInjectorExtractorBlockEntity.AUXILIARY_INPUT_SLOT);
-            auxCondition = InventoryUtils.canStack(inventory.getStack(DnaInjectorExtractorBlockEntity.REMAINDER_SLOT), auxInput.getItem().getRecipeRemainder(auxInput));
-        }
+	@Override
+	public boolean matches(Inventory inventory, World world) {
+		boolean auxCondition = true;
+		if (this.auxiliaryInput == null && !inventory.getStack(DnaInjectorExtractorBlockEntity.AUXILIARY_INPUT_SLOT).isEmpty()) {
+			return false;
+		} else if (this.auxiliaryInput != null && !this.auxiliaryInput.test(inventory.getStack(DnaInjectorExtractorBlockEntity.AUXILIARY_INPUT_SLOT))) {
+			return false;
+		} else if (this.auxiliaryInput != null) {
+			ItemStack auxInput = inventory.getStack(DnaInjectorExtractorBlockEntity.AUXILIARY_INPUT_SLOT);
+			auxCondition = InventoryUtils.canStack(inventory.getStack(DnaInjectorExtractorBlockEntity.REMAINDER_SLOT), auxInput.getItem().getRecipeRemainder(auxInput));
+		}
 
-        return this.input.test(inventory.getStack(DnaInjectorExtractorBlockEntity.INPUT_SLOT))
-               && InventoryUtils.canStack(inventory.getStack(DnaInjectorExtractorBlockEntity.OUTPUT_SLOT), this.getResult(world.getRegistryManager()))
-               && auxCondition;
-    }
+		return this.input.test(inventory.getStack(DnaInjectorExtractorBlockEntity.INPUT_SLOT))
+				&& InventoryUtils.canStack(inventory.getStack(DnaInjectorExtractorBlockEntity.OUTPUT_SLOT), this.getResult(world.getRegistryManager()))
+				&& auxCondition;
+	}
 
-    @Override
-    public ItemStack craft(Inventory inventory, DynamicRegistryManager manager) {
-        ItemStack inputCopy = inventory.getStack(DnaInjectorExtractorBlockEntity.INPUT_SLOT).copy();
-        ItemStack auxiliaryInputCopy = inventory.getStack(DnaInjectorExtractorBlockEntity.AUXILIARY_INPUT_SLOT).copy();
-        inventory.getStack(DnaInjectorExtractorBlockEntity.INPUT_SLOT).decrement(1);
+	@Override
+	public ItemStack craft(Inventory inventory, DynamicRegistryManager manager) {
+		ItemStack inputCopy = inventory.getStack(DnaInjectorExtractorBlockEntity.INPUT_SLOT).copy();
+		ItemStack auxiliaryInputCopy = inventory.getStack(DnaInjectorExtractorBlockEntity.AUXILIARY_INPUT_SLOT).copy();
+		inventory.getStack(DnaInjectorExtractorBlockEntity.INPUT_SLOT).decrement(1);
 
-        if (this.auxiliaryInput != null) {
-            ItemStack auxiliaryInput = inventory.getStack(DnaInjectorExtractorBlockEntity.AUXILIARY_INPUT_SLOT);
-            inventory.setStack(DnaInjectorExtractorBlockEntity.REMAINDER_SLOT, auxiliaryInput.getItem().getRecipeRemainder(auxiliaryInput).copy());
-            auxiliaryInput.decrement(1);
-        }
+		if (this.auxiliaryInput != null) {
+			ItemStack auxiliaryInput = inventory.getStack(DnaInjectorExtractorBlockEntity.AUXILIARY_INPUT_SLOT);
+			inventory.setStack(DnaInjectorExtractorBlockEntity.REMAINDER_SLOT, auxiliaryInput.getItem().getRecipeRemainder(auxiliaryInput).copy());
+			auxiliaryInput.decrement(1);
+		}
 
-        if (RANDOM.nextFloat() <= this.successChance) {
-            ItemStack output = this.output.copy();
+		if (RANDOM.nextFloat() <= this.successChance) {
+			ItemStack output = this.output.copy();
 
-            // Special Cases
-            if (inputCopy.getItem() == HonkItems.AMBER && auxiliaryInputCopy.getItem() == HonkItems.EMPTY_SYRINGE && output.getItem() == HonkItems.BLOOD_SYRINGE) {
-                // Initialize the blood syringe with random base tier data
-                output.setNbt(DnaData.createRandomData().writeNbt(output.getOrCreateNbt()));
-            } else if (inputCopy.getItem() == Items.EGG && auxiliaryInputCopy.getItem() == HonkItems.DNA && output.getItem() == HonkItems.EGG) {
-                // Copy DNA data from auxiliary input to output
-                if (auxiliaryInputCopy.getOrCreateNbt().contains(NbtKeys.DNA)) {
-                    output.setNbt(DnaData.fromNbt(auxiliaryInputCopy.getOrCreateNbt()).writeNbt(output.getOrCreateNbt()));
-                } else {
-                    output.setNbt(DnaData.createRandomData().writeNbt(output.getOrCreateNbt()));
-                }
-            }
+			// Special Cases
+			if (inputCopy.getItem() == HonkItems.AMBER && auxiliaryInputCopy.getItem() == HonkItems.EMPTY_SYRINGE && output.getItem() == HonkItems.BLOOD_SYRINGE) {
+				// Initialize the blood syringe with random base tier data
+				output.setNbt(DnaData.createRandomData().writeNbt(output.getOrCreateNbt()));
+			} else if (inputCopy.getItem() == Items.EGG && auxiliaryInputCopy.getItem() == HonkItems.DNA && output.getItem() == HonkItems.EGG) {
+				// Copy DNA data from auxiliary input to output
+				if (auxiliaryInputCopy.getOrCreateNbt().contains(NbtKeys.DNA)) {
+					output.setNbt(DnaData.fromNbt(auxiliaryInputCopy.getOrCreateNbt()).writeNbt(output.getOrCreateNbt()));
+				} else {
+					output.setNbt(DnaData.createRandomData().writeNbt(output.getOrCreateNbt()));
+				}
+			}
 
-            return output;
-        } else {
-            return ItemStack.EMPTY.copy();
-        }
-    }
+			return output;
+		} else {
+			return ItemStack.EMPTY.copy();
+		}
+	}
 
-    @Override
-    public DefaultedList<Ingredient> getIngredients() {
-        DefaultedList<Ingredient> defaultedList = DefaultedList.of();
-        defaultedList.add(this.input);
+	@Override
+	public DefaultedList<Ingredient> getIngredients() {
+		DefaultedList<Ingredient> defaultedList = DefaultedList.of();
+		defaultedList.add(this.input);
 
-        if (this.auxiliaryInput != null) {
-            defaultedList.add(this.auxiliaryInput);
-        }
+		if (this.auxiliaryInput != null) {
+			defaultedList.add(this.auxiliaryInput);
+		}
 
-        return defaultedList;
-    }
+		return defaultedList;
+	}
 
-    @Override
-    public ItemStack getResult(DynamicRegistryManager manager) {
-        return this.output;
-    }
+	@Override
+	public ItemStack getResult(DynamicRegistryManager manager) {
+		return this.output;
+	}
 
-    public float getSuccessChance() {
-        return this.successChance;
-    }
+	public float getSuccessChance() {
+		return this.successChance;
+	}
 
-    public ItemStack getOutput() {
-        return this.output;
-    }
+	public ItemStack getOutput() {
+		return this.output;
+	}
 
-    @Override
-    public boolean isIgnoredInRecipeBook() {
-        return true;
-    }
+	@Override
+	public boolean isIgnoredInRecipeBook() {
+		return true;
+	}
 }

@@ -33,13 +33,13 @@ import org.jetbrains.annotations.Nullable;
 
 public class DnaInjectorExtractorBlock extends FuelBurningProcessingBlock {
 
-    public DnaInjectorExtractorBlock() {
-        super(Settings.copy(Blocks.IRON_BLOCK));
-    }
+	public DnaInjectorExtractorBlock() {
+		super(Settings.copy(Blocks.IRON_BLOCK));
+	}
 
-    @Nullable
-    @Override
-    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
-        return new DnaInjectorExtractorBlockEntity(pos, state);
-    }
+	@Nullable
+	@Override
+	public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+		return new DnaInjectorExtractorBlockEntity(pos, state);
+	}
 }

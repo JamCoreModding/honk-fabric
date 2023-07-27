@@ -24,15 +24,13 @@
 
 package io.github.jamalam360.honk.entity.honk;
 
+import com.mojang.datafixers.util.Pair;
 import io.github.jamalam360.honk.api.MagnifyingGlassInformationProvider;
 import io.github.jamalam360.honk.data.DnaData;
 import io.github.jamalam360.honk.data.NbtKeys;
 import io.github.jamalam360.honk.data.type.HonkType;
 import io.github.jamalam360.honk.entity.egg.EggEntity;
-import io.github.jamalam360.honk.entity.honk.ai.EscapeDangerIfTooHurtGoal;
-import io.github.jamalam360.honk.entity.honk.ai.FollowHonkParentGoal;
-import io.github.jamalam360.honk.entity.honk.ai.MoveTowardsOtherHonksOfSameTypeGoal;
-import io.github.jamalam360.honk.entity.honk.ai.RevengeWithoutUnviersalAngerCheckGoal;
+import io.github.jamalam360.honk.entity.honk.ai.*;
 import io.github.jamalam360.honk.registry.HonkEntities;
 import io.github.jamalam360.honk.registry.HonkSounds;
 import io.github.jamalam360.honk.util.DnaCombinator;
@@ -45,6 +43,8 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.Angerable;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.passive.AnimalEntity;
@@ -52,11 +52,11 @@ import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.FoodComponent;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.recipe.Ingredient;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -67,6 +67,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.int_provider.UniformIntProvider;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
+import net.minecraft.world.event.GameEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -94,8 +95,11 @@ public class HonkEntity extends AnimalEntity implements MagnifyingGlassInformati
 
 	public HonkEntity(EntityType<HonkEntity> type, World world) {
 		super(type, world);
-		this.setHonkType(HonkType.getRandom(1));
-		this.setFoodLevel(40);
+
+		if (!world.isClient) {
+			this.setHonkType(HonkType.getRandom(1));
+			this.setFoodLevel(40);
+		}
 	}
 
 	public static DefaultAttributeContainer.Builder createAttributes() {
@@ -108,7 +112,7 @@ public class HonkEntity extends AnimalEntity implements MagnifyingGlassInformati
 		this.dataTracker.startTracking(TYPE, new Identifier("honk", "white").toString());
 		this.dataTracker.startTracking(PARENT, Optional.empty());
 		this.dataTracker.startTracking(ANGER_TIME, 0);
-		this.dataTracker.startTracking(FOOD_LEVEL, 20);
+		this.dataTracker.startTracking(FOOD_LEVEL, 40);
 		this.dataTracker.startTracking(GROWTH, 1);
 		this.dataTracker.startTracking(PRODUCTIVITY, 1);
 		this.dataTracker.startTracking(REPRODUCTIVITY, 1);
@@ -119,11 +123,12 @@ public class HonkEntity extends AnimalEntity implements MagnifyingGlassInformati
 	protected void initGoals() {
 		super.initGoals();
 		this.goalSelector.add(0, new SwimGoal(this));
-		this.goalSelector.add(1, new TemptGoal(this, 1.1F, Ingredient.ofItems(Items.GRASS, Items.WHEAT), false));
+		this.goalSelector.add(1, new TemptHonkGoal(this, 1.1F, false));
 		this.goalSelector.add(1, new AnimalMateGoal(this, 1.0F));
 		this.goalSelector.add(2, new EscapeDangerIfTooHurtGoal(this, 1.5F));
 		this.goalSelector.add(3, new PounceAtTargetGoal(this, 0.4F));
 		this.goalSelector.add(3, new MeleeAttackGoal(this, 1.0F, true));
+		this.goalSelector.add(3, new FindHonkFeederGoal(this, 1.1F));
 		this.goalSelector.add(4, new FollowHonkParentGoal(this, 1.4F));
 		this.goalSelector.add(4, new WanderAroundFarGoal(this, 1.0F));
 		this.goalSelector.add(4, new MoveIntoWaterGoal(this));
@@ -208,9 +213,36 @@ public class HonkEntity extends AnimalEntity implements MagnifyingGlassInformati
 	protected void eat(PlayerEntity player, Hand hand, ItemStack stack) {
 		super.eat(player, hand, stack);
 
-		if (player.getStackInHand(hand).isFood() && this.getFoodLevel() < 50) {
-			FoodComponent component = player.getStackInHand(hand).getItem().getFoodComponent();
+		if (player.getStackInHand(hand).isFood()) {
+			this.eatHonkFood(stack);
+		}
+	}
+
+	public void eatHonkFood(ItemStack stack) {
+		if (this.getFoodLevel() < 50) {
+			FoodComponent component = stack.getItem().getFoodComponent();
 			this.setFoodLevel(this.getFoodLevel() + (component.isMeat() ? 3 : component.isSnack() ? 1 : 2));
+
+			this.getWorld().playSound(
+					null,
+					this.getX(),
+					this.getY(),
+					this.getZ(),
+					this.getEatSound(stack),
+					SoundCategory.NEUTRAL,
+					1.0F,
+					1.0F + (this.getWorld().random.nextFloat() - this.getWorld().random.nextFloat()) * 0.4F
+			);
+
+			if (!this.getWorld().isClient) {
+				for (Pair<StatusEffectInstance, Float> pair : stack.getItem().getFoodComponent().getStatusEffects()) {
+					if (pair.getFirst() != null && this.getWorld().random.nextFloat() < pair.getSecond()) {
+						this.addStatusEffect(new StatusEffectInstance(pair.getFirst()));
+					}
+				}
+			}
+
+			this.emitGameEvent(GameEvent.EAT);
 		}
 	}
 
@@ -244,7 +276,6 @@ public class HonkEntity extends AnimalEntity implements MagnifyingGlassInformati
 	public boolean canEat() {
 		return this.getFoodLevel() < 50;
 	}
-
 
 	@Override
 	public boolean canBreedWith(AnimalEntity other) {
@@ -352,11 +383,20 @@ public class HonkEntity extends AnimalEntity implements MagnifyingGlassInformati
 
 	//region Entity Boilerplate
 	@Override
+	protected void tickStatusEffects() {
+		super.tickStatusEffects();
+
+		if (this.hasStatusEffect(StatusEffects.HUNGER) && this.getWorld().random.nextFloat() < (0.04F * this.getStatusEffect(StatusEffects.HUNGER).getAmplifier()) * 20) {
+			this.setFoodLevel(Math.max(0, this.getFoodLevel() - 1));
+		}
+	}
+
+	@Override
 	public Text getDefaultName() {
 		if (this.getHonkType() == null) {
 			return super.getDefaultName();
 		} else {
-			return Text.translatable(this.getHonkType().name());
+			return MutableText.create(super.getDefaultName().asComponent()).append(" (").append(Text.translatable(this.getHonkType().name())).append(")");
 		}
 	}
 
@@ -431,7 +471,6 @@ public class HonkEntity extends AnimalEntity implements MagnifyingGlassInformati
 	public void setBaby(boolean baby) {
 		this.setBreedingAge(baby ? (900 * this.getGrowth() - 24000) : 0);
 	}
-
 	//endregion
 
 	//region DataTracker

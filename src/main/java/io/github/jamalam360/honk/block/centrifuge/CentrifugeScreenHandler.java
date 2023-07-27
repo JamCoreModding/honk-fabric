@@ -39,22 +39,22 @@ import org.quiltmc.qsl.item.content.registry.api.ItemContentRegistries;
 
 public class CentrifugeScreenHandler extends AbstractProcessingScreenHandler {
 
-    public CentrifugeScreenHandler(int syncId, PlayerInventory playerInventory) {
-        this(syncId, playerInventory, new SimpleInventory(4), ScreenHandlerContext.EMPTY, new ArrayPropertyDelegate(3));
-    }
+	public CentrifugeScreenHandler(int syncId, PlayerInventory playerInventory) {
+		this(syncId, playerInventory, new SimpleInventory(4), ScreenHandlerContext.EMPTY, new ArrayPropertyDelegate(3));
+	}
 
-    public CentrifugeScreenHandler(int syncId, PlayerInventory playerInventory, Inventory inventory, ScreenHandlerContext context, PropertyDelegate propertyDelegate) {
-        super(HonkScreens.CENTRIFUGE, syncId, playerInventory, inventory, context, propertyDelegate);
-        checkSize(this.inventory, 4);
-        checkDataCount(this.propertyDelegate, 3);
-    }
+	public CentrifugeScreenHandler(int syncId, PlayerInventory playerInventory, Inventory inventory, ScreenHandlerContext context, PropertyDelegate propertyDelegate) {
+		super(HonkScreens.CENTRIFUGE, syncId, playerInventory, inventory, context, propertyDelegate);
+		checkSize(this.inventory, 4);
+		checkDataCount(this.propertyDelegate, 3);
+	}
 
-    @Override
-    public void addSlots(PlayerInventory playerInventory) {
-        this.addSlot(new ValidatingSlot(this.inventory, CentrifugeBlockEntity.FUEL_SLOT, 8, 46, (stack) -> ItemContentRegistries.FUEL_TIMES.get(stack.getItem()).isPresent()));
-        this.addSlot(new Slot(this.inventory, CentrifugeBlockEntity.INPUT_SLOT, 44, 34));
-        this.addSlot(new ExtractOnlySlot(this.inventory, CentrifugeBlockEntity.OUTPUT_SLOT, 116, 34));
-        this.addSlot(new ExtractOnlySlot(this.inventory, CentrifugeBlockEntity.REMAINDER_SLOT, 152, 34));
-        super.addSlots(playerInventory);
-    }
+	@Override
+	public void addSlots(PlayerInventory playerInventory) {
+		this.addSlot(new ValidatingSlot(this.inventory, CentrifugeBlockEntity.FUEL_SLOT, 8, 46, (stack) -> ItemContentRegistries.FUEL_TIMES.get(stack.getItem()).isPresent()));
+		this.addSlot(new Slot(this.inventory, CentrifugeBlockEntity.INPUT_SLOT, 44, 34));
+		this.addSlot(new ExtractOnlySlot(this.inventory, CentrifugeBlockEntity.OUTPUT_SLOT, 116, 34));
+		this.addSlot(new ExtractOnlySlot(this.inventory, CentrifugeBlockEntity.REMAINDER_SLOT, 138, 34));
+		super.addSlots(playerInventory);
+	}
 }

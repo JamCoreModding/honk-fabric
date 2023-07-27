@@ -38,44 +38,44 @@ import net.minecraft.screen.ScreenHandlerType;
 
 public abstract class AbstractProcessingScreenHandler extends ScreenHandler {
 
-    public final Inventory inventory;
-    public final ScreenHandlerContext context;
-    public final PropertyDelegate propertyDelegate;
+	public final Inventory inventory;
+	public final ScreenHandlerContext context;
+	public final PropertyDelegate propertyDelegate;
 
-    public AbstractProcessingScreenHandler(ScreenHandlerType<? extends AbstractProcessingScreenHandler> type, int syncId, PlayerInventory playerInventory, Inventory inventory, ScreenHandlerContext context, PropertyDelegate propertyDelegate) {
-        super(type, syncId);
-        this.inventory = inventory;
-        this.inventory.onOpen(playerInventory.player);
-        this.context = context;
-        this.propertyDelegate = propertyDelegate;
-        this.addProperties(this.propertyDelegate);
-        this.addSlots(playerInventory);
-    }
+	public AbstractProcessingScreenHandler(ScreenHandlerType<? extends AbstractProcessingScreenHandler> type, int syncId, PlayerInventory playerInventory, Inventory inventory, ScreenHandlerContext context, PropertyDelegate propertyDelegate) {
+		super(type, syncId);
+		this.inventory = inventory;
+		this.inventory.onOpen(playerInventory.player);
+		this.context = context;
+		this.propertyDelegate = propertyDelegate;
+		this.addProperties(this.propertyDelegate);
+		this.addSlots(playerInventory);
+	}
 
-    public void addSlots(PlayerInventory playerInventory) {
-        SlotGenerator.begin(this::addSlot, 8, 84).playerInventory(playerInventory);
-    }
+	public void addSlots(PlayerInventory playerInventory) {
+		SlotGenerator.begin(this::addSlot, 8, 84).playerInventory(playerInventory);
+	}
 
-    @Override
-    public ItemStack quickTransfer(PlayerEntity player, int fromIndex) {
-        return ScreenUtils.handleSlotTransfer(this, fromIndex, this.inventory.size());
-    }
+	@Override
+	public ItemStack quickTransfer(PlayerEntity player, int fromIndex) {
+		return ScreenUtils.handleSlotTransfer(this, fromIndex, this.inventory.size());
+	}
 
-    @Override
-    public boolean canUse(PlayerEntity player) {
-        return this.inventory.canPlayerUse(player);
-    }
+	@Override
+	public boolean canUse(PlayerEntity player) {
+		return this.inventory.canPlayerUse(player);
+	}
 
-    @Override
-    public void sendContentUpdates() {
-        this.context.run((world, pos) -> {
-            BlockEntity entity = world.getBlockEntity(pos);
+	@Override
+	public void sendContentUpdates() {
+		this.context.run((world, pos) -> {
+			BlockEntity entity = world.getBlockEntity(pos);
 
-            if (entity instanceof AbstractProcessingBlockEntity abstractProcessingBlockEntity) {
-                abstractProcessingBlockEntity.onInventoryUpdated();
-            }
-        });
+			if (entity instanceof AbstractProcessingBlockEntity abstractProcessingBlockEntity) {
+				abstractProcessingBlockEntity.onInventoryUpdated();
+			}
+		});
 
-        super.sendContentUpdates();
-    }
+		super.sendContentUpdates();
+	}
 }

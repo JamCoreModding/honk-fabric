@@ -24,25 +24,42 @@
 
 package io.github.jamalam360.honk.block;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.state.StateManager;
+import net.minecraft.state.property.Properties;
+import net.minecraft.state.property.Property;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.random.RandomGenerator;
 import net.minecraft.world.World;
 
 public abstract class FuelBurningProcessingBlock extends AbstractProcessingBlock {
+	public static final Property<Boolean> LIT = Properties.LIT;
 
 	public FuelBurningProcessingBlock(Settings settings) {
-		super(settings);
+		super(settings.luminance(s -> s.get(LIT) ? 13 : 0));
+		this.setDefaultState(this.getDefaultState().with(LIT, false));
+	}
+
+	@Override
+	protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+		super.appendProperties(builder);
+		builder.add(LIT);
+	}
+
+	@Override
+	public BlockState getPlacementState(ItemPlacementContext ctx) {
+		return super.getPlacementState(ctx).with(LIT, false);
 	}
 
 	@Override
 	public void randomDisplayTick(BlockState state, World world, BlockPos pos, RandomGenerator random) {
-		System.out.println(((FuelBurningProcessingBlockEntity) world.getBlockEntity(pos)).getBurnTime());
-		if (world.getBlockEntity(pos) instanceof FuelBurningProcessingBlockEntity entity && entity.getBurnTime() > 0) {
+		if (world.getBlockEntity(pos) instanceof FuelBurningProcessingBlockEntity entity && state.get(LIT)) {
 			double d = (double) pos.getX() + 0.5;
 			double e = pos.getY();
 			double f = (double) pos.getZ() + 0.5;

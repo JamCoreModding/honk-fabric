@@ -1,6 +1,9 @@
 {
   "replace": false,
   "values": [
-    "honk:deepslate_amber_ore"
+    "honk:deepslate_amber_ore",
+    "honk:dna_injector_extractor",
+    "honk:dna_combinator",
+    "honk:centrifuge"
   ]
 }

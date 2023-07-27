@@ -34,27 +34,28 @@ import net.minecraft.util.math.MathHelper;
 
 public class HonkEntityRenderer extends MobEntityRenderer<HonkEntity, HonkEntityModel> {
 
-    public HonkEntityRenderer(EntityRendererFactory.Context context) {
-        super(context, new HonkEntityModel(context.getPart(HonkClientInit.HONK_LAYER)), 0.5f);
-    }
+	public HonkEntityRenderer(EntityRendererFactory.Context context) {
+		super(context, new HonkEntityModel(context.getPart(HonkClientInit.HONK_LAYER)), 0.5f);
+		this.addFeature(new AngryEyebrowsFeatureRenderer(this));
+	}
 
-    @Override
-    public Identifier getTexture(HonkEntity entity) {
-        return entity.getHonkType().texture();
-    }
+	@Override
+	public Identifier getTexture(HonkEntity entity) {
+		return entity.getHonkType().texture();
+	}
 
-    @Override
-    public void render(HonkEntity mobEntity, float f, float g, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i) {
-        float scale = Math.max(0.5F, Math.min(1.5F, mobEntity.getScaleFactor()));
-        matrixStack.scale(scale, scale, scale);
-        super.render(mobEntity, f, g, matrixStack, vertexConsumerProvider, i);
-    }
+	@Override
+	public void render(HonkEntity entity, float f, float g, MatrixStack matrices, VertexConsumerProvider vertexConsumerProvider, int l) {
+		float scale = Math.max(0.5F, Math.min(1.5F, entity.getScaleFactor()));
+		matrices.scale(scale, scale, scale);
+		super.render(entity, f, g, matrices, vertexConsumerProvider, l);
+	}
 
-    @Override
-    protected float getAnimationProgress(HonkEntity entity, float tickDelta) {
-        float g = MathHelper.lerp(tickDelta, entity.prevFlapProgress, entity.flapProgress);
-        float h = MathHelper.lerp(tickDelta, entity.prevMaxWingDeviation, entity.maxWingDeviation);
-        return (MathHelper.sin(g) + 1.0F) * h;
-    }
+	@Override
+	protected float getAnimationProgress(HonkEntity entity, float tickDelta) {
+		float g = MathHelper.lerp(tickDelta, entity.prevFlapProgress, entity.flapProgress);
+		float h = MathHelper.lerp(tickDelta, entity.prevMaxWingDeviation, entity.maxWingDeviation);
+		return (MathHelper.sin(g) + 1.0F) * h;
+	}
 }
 

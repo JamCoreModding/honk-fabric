@@ -25,13 +25,10 @@
 package io.github.jamalam360.honk.registry;
 
 import io.github.jamalam360.honk.HonkInit;
-import io.github.jamalam360.honk.item.BloodSyringeItem;
-import io.github.jamalam360.honk.item.DnaItem;
-import io.github.jamalam360.honk.item.EggItem;
-import io.github.jamalam360.honk.item.MagnifyingGlassItem;
-import io.github.jamalam360.honk.item.SyringeItem;
+import io.github.jamalam360.honk.item.*;
 import io.github.jamalam360.jamlib.registry.JamLibContentRegistry;
 import io.github.jamalam360.jamlib.registry.annotation.ContentRegistry;
+import net.minecraft.item.FoodComponent;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.registry.RegistryKey;
@@ -41,16 +38,17 @@ import org.quiltmc.qsl.item.setting.api.QuiltItemSettings;
 @ContentRegistry(HonkInit.MOD_ID)
 public class HonkItems implements JamLibContentRegistry {
 
-    public static final Item AMBER = new Item(new QuiltItemSettings());
-    public static final Item EGG = new EggItem();
-    public static final Item EMPTY_SYRINGE = new SyringeItem();
-    public static final Item BLOOD_SYRINGE = new BloodSyringeItem();
-    public static final Item DNA = new DnaItem();
-    public static final Item MAGNIFYING_GLASS = new MagnifyingGlassItem();
-    public static final Item SCREEN = new Item(new QuiltItemSettings());
+	public static final Item AMBER = new Item(new QuiltItemSettings());
+	public static final Item EGG = new EggItem();
+	public static final Item FRIED_EGG = new Item(new QuiltItemSettings().food(new FoodComponent.Builder().hunger(6).saturationModifier(0.8F).meat().build()));
+	public static final Item EMPTY_SYRINGE = new SyringeItem();
+	public static final Item BLOOD_SYRINGE = new BloodSyringeItem();
+	public static final Item DNA = new DnaItem();
+	public static final Item MAGNIFYING_GLASS = new MagnifyingGlassItem();
+	public static final Item SCREEN = new Item(new QuiltItemSettings());
 
-    @Override
-    public RegistryKey<ItemGroup> getItemGroup(Item item) {
-        return HonkInit.GROUP_KEY;
-    }
+	@Override
+	public RegistryKey<ItemGroup> getItemGroup(Item item) {
+		return HonkInit.GROUP_KEY;
+	}
 }

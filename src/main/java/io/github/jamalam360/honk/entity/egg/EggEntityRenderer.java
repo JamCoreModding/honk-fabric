@@ -35,18 +35,18 @@ import net.minecraft.util.math.Axis;
 
 public class EggEntityRenderer extends MobEntityRenderer<EggEntity, EggEntityModel> {
 
-    public EggEntityRenderer(EntityRendererFactory.Context context) {
-        super(context, new EggEntityModel(context.getPart(HonkClientInit.EGG_LAYER)), 0.25f);
-    }
+	public EggEntityRenderer(EntityRendererFactory.Context context) {
+		super(context, new EggEntityModel(context.getPart(HonkClientInit.EGG_LAYER)), 0.25f);
+	}
 
-    @Override
-    public Identifier getTexture(EggEntity entity) {
-        return HonkInit.idOf("textures/entity/egg.png");
-    }
+	@Override
+	public Identifier getTexture(EggEntity entity) {
+		return HonkInit.idOf("textures/entity/egg.png");
+	}
 
-    @Override
-    public void render(EggEntity egg, float f, float g, MatrixStack matrices, VertexConsumerProvider vertexConsumerProvider, int i) {
-        matrices.multiply(Axis.X_NEGATIVE.rotationDegrees(egg.wobbleAngle));
-        super.render(egg, f, g, matrices, vertexConsumerProvider, i);
-    }
+	@Override
+	public void render(EggEntity egg, float f, float g, MatrixStack matrices, VertexConsumerProvider vertexConsumerProvider, int i) {
+		matrices.multiply(Axis.X_NEGATIVE.rotationDegrees(egg.wobbleAngle));
+		super.render(egg, f, g, matrices, vertexConsumerProvider, i);
+	}
 }

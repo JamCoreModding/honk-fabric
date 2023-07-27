@@ -36,44 +36,44 @@ import net.minecraft.text.Text;
 
 public class DnaCombinatorScreen extends BaseUIModelHandledScreen<FlowLayout, DnaCombinatorScreenHandler> {
 
-    private TextureComponent fuelIndicator;
-    private TextureComponent progressIndicator;
+	private TextureComponent fuelIndicator;
+	private TextureComponent progressIndicator;
 
-    public DnaCombinatorScreen(DnaCombinatorScreenHandler handler, PlayerInventory inventory, Text title) {
-        super(handler, inventory, title, FlowLayout.class, DataSource.asset(HonkInit.idOf("dna_combinator")));
-        this.backgroundWidth = 176;
-        this.backgroundHeight = 165;
-    }
+	public DnaCombinatorScreen(DnaCombinatorScreenHandler handler, PlayerInventory inventory, Text title) {
+		super(handler, inventory, title, FlowLayout.class, DataSource.asset(HonkInit.idOf("dna_combinator")));
+		this.backgroundWidth = 176;
+		this.backgroundHeight = 165;
+	}
 
-    @Override
-    protected void build(FlowLayout layout) {
-        this.fuelIndicator = layout.childById(TextureComponent.class, "burning-indicator");
-        this.progressIndicator = layout.childById(TextureComponent.class, "progress-indicator");
-    }
+	@Override
+	protected void build(FlowLayout layout) {
+		this.fuelIndicator = layout.childById(TextureComponent.class, "burning-indicator");
+		this.progressIndicator = layout.childById(TextureComponent.class, "progress-indicator");
+	}
 
-    @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
-        super.render(graphics, mouseX, mouseY, delta);
+	@Override
+	public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+		super.render(graphics, mouseX, mouseY, delta);
 
-        float burnProgress = this.handler.propertyDelegate.get(DnaCombinatorBlockEntity.BURN_TIME_PROPERTY) / (float) this.handler.propertyDelegate.get(DnaCombinatorBlockEntity.MAX_BURN_TIME_PROPERTY);
+		float burnProgress = this.handler.propertyDelegate.get(DnaCombinatorBlockEntity.BURN_TIME_PROPERTY) / (float) this.handler.propertyDelegate.get(DnaCombinatorBlockEntity.MAX_BURN_TIME_PROPERTY);
 
-        this.fuelIndicator.visibleArea(PositionedRectangle.of(
-              0,
-              13 - Math.round(burnProgress * 13),
-              this.fuelIndicator.fullSize()
-        ));
+		this.fuelIndicator.visibleArea(PositionedRectangle.of(
+				0,
+				13 - Math.round(burnProgress * 13),
+				this.fuelIndicator.fullSize()
+		));
 
-        float recipeProgress = 1 - this.handler.propertyDelegate.get(DnaCombinatorBlockEntity.RECIPE_PROGRESS_PROPERTY) / (float) DnaCombinatorBlockEntity.getDnaCombinatorProcessingTime();
+		float recipeProgress = 1 - this.handler.propertyDelegate.get(DnaCombinatorBlockEntity.RECIPE_PROGRESS_PROPERTY) / (float) DnaCombinatorBlockEntity.getDnaCombinatorProcessingTime();
 
-        if (recipeProgress == 1) {
-            recipeProgress = 0;
-        }
+		if (recipeProgress == 1) {
+			recipeProgress = 0;
+		}
 
-        this.progressIndicator.visibleArea(PositionedRectangle.of(
-              0,
-              0,
-              Math.round(recipeProgress * 43),
-              this.progressIndicator.height()
-        ));
-    }
+		this.progressIndicator.visibleArea(PositionedRectangle.of(
+				0,
+				0,
+				Math.round(recipeProgress * 43),
+				this.progressIndicator.height()
+		));
+	}
 }

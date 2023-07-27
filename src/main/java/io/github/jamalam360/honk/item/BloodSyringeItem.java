@@ -27,7 +27,6 @@ package io.github.jamalam360.honk.item;
 import io.github.jamalam360.honk.data.DnaData;
 import io.github.jamalam360.honk.data.NbtKeys;
 import io.github.jamalam360.honk.registry.HonkItems;
-import java.util.List;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -37,22 +36,24 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 import org.quiltmc.qsl.item.setting.api.QuiltItemSettings;
 
+import java.util.List;
+
 public class BloodSyringeItem extends Item {
 
-    public BloodSyringeItem() {
-        super(new QuiltItemSettings().maxCount(1).recipeRemainder(HonkItems.EMPTY_SYRINGE));
-    }
+	public BloodSyringeItem() {
+		super(new QuiltItemSettings().maxCount(1).recipeRemainder(HonkItems.EMPTY_SYRINGE));
+	}
 
-    @Override
-    public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
-        super.appendTooltip(stack, world, tooltip, context);
+	@Override
+	public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
+		super.appendTooltip(stack, world, tooltip, context);
 
-        if (stack.getNbt() == null || !stack.getNbt().contains(NbtKeys.DNA)) {
-            tooltip.add(Text.literal("???").styled(s -> s.withItalic(true).withColor(Formatting.GRAY)));
-            return;
-        }
+		if (stack.getNbt() == null || !stack.getNbt().contains(NbtKeys.DNA)) {
+			tooltip.add(Text.literal("???").styled(s -> s.withItalic(true).withColor(Formatting.GRAY)));
+			return;
+		}
 
-        DnaData data = DnaData.fromNbt(stack.getNbt());
-        tooltip.addAll(data.getInformation());
-    }
+		DnaData data = DnaData.fromNbt(stack.getNbt());
+		tooltip.addAll(data.getInformation());
+	}
 }

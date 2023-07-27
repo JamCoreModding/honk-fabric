@@ -28,15 +28,10 @@ import io.github.jamalam360.honk.data.recipe.CentrifugeRecipe;
 import io.github.jamalam360.honk.data.recipe.DnaCombinatorRecipe;
 import io.github.jamalam360.honk.data.recipe.DnaInjectorExtractorRecipe;
 import io.github.jamalam360.honk.data.type.HonkTypeResourceReloadListener;
-import io.github.jamalam360.honk.registry.HonkBlocks;
-import io.github.jamalam360.honk.registry.HonkCommands;
-import io.github.jamalam360.honk.registry.HonkEntities;
-import io.github.jamalam360.honk.registry.HonkItems;
-import io.github.jamalam360.honk.registry.HonkScreens;
-import io.github.jamalam360.honk.registry.HonkSounds;
-import io.github.jamalam360.honk.registry.HonkWorldGen;
+import io.github.jamalam360.honk.registry.*;
 import io.github.jamalam360.jamlib.compatibility.JamLibCompatibilityModuleHandler;
 import io.github.jamalam360.jamlib.log.JamLibLogger;
+import io.github.jamalam360.jamlib.network.JamLibServerNetworking;
 import io.github.jamalam360.jamlib.registry.JamLibRegistry;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.minecraft.item.ItemGroup;
@@ -44,6 +39,7 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.resource.ResourceType;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.quiltmc.loader.api.ModContainer;
@@ -52,29 +48,46 @@ import org.quiltmc.qsl.resource.loader.api.ResourceLoader;
 
 public class HonkInit implements ModInitializer {
 
-    public static final String MOD_ID = "honk";
-    public static final JamLibLogger LOGGER = JamLibLogger.getLogger(MOD_ID);
-    public static final ItemGroup GROUP = FabricItemGroup.builder().icon(HonkItems.BLOOD_SYRINGE::getDefaultStack).name(Text.translatable("group.honk.main")).build();
-    public static RegistryKey<ItemGroup> GROUP_KEY;
+	public static final String MOD_ID = "honk";
+	public static final JamLibLogger LOGGER = JamLibLogger.getLogger(MOD_ID);
+	public static final ItemGroup GROUP = FabricItemGroup.builder().icon(HonkItems.BLOOD_SYRINGE::getDefaultStack).name(Text.translatable("group.honk.main")).build();
+	public static RegistryKey<ItemGroup> GROUP_KEY;
 
-    public static Identifier idOf(String path) {
-        return new Identifier(MOD_ID, path);
-    }
+	public static Identifier idOf(String path) {
+		return new Identifier(MOD_ID, path);
+	}
 
-    @Override
-    public void onInitialize(ModContainer mod) {
-        Registry.register(Registries.ITEM_GROUP, idOf("group"), GROUP);
-        GROUP_KEY = Registries.ITEM_GROUP.getKey(GROUP).get();
+	@Override
+	public void onInitialize(ModContainer mod) {
+		Registry.register(Registries.ITEM_GROUP, idOf("group"), GROUP);
+		GROUP_KEY = Registries.ITEM_GROUP.getKey(GROUP).get();
 
-        JamLibRegistry.register(HonkBlocks.class, HonkEntities.class, HonkItems.class, HonkScreens.class, HonkSounds.class);
-        HonkWorldGen.init();
-        HonkCommands.init();
-        CentrifugeRecipe.init();
-        DnaInjectorExtractorRecipe.init();
-        DnaCombinatorRecipe.init();
-        ResourceLoader.get(ResourceType.SERVER_DATA).registerReloader(HonkTypeResourceReloadListener.INSTANCE);
-        JamLibCompatibilityModuleHandler.initialize(MOD_ID);
-        LOGGER.logInitialize();
-        LOGGER.info("Honk!");
-    }
+		JamLibRegistry.register(HonkBlocks.class, HonkEntities.class, HonkItems.class, HonkScreens.class, HonkSounds.class);
+		HonkWorldGen.init();
+		HonkCommands.init();
+		CentrifugeRecipe.init();
+		DnaInjectorExtractorRecipe.init();
+		DnaCombinatorRecipe.init();
+		ResourceLoader.get(ResourceType.SERVER_DATA).registerReloader(HonkTypeResourceReloadListener.INSTANCE);
+		JamLibCompatibilityModuleHandler.initialize(MOD_ID);
+
+		HonkC2SNetwork.HONK.setHandler(((server, player, handler, buf, responseSender) -> {
+			int rand = player.getRandom().nextInt(3);
+			SoundEvent ev = switch (rand) {
+				case 0 -> HonkSounds.HONK_AMBIENT;
+				case 1 -> HonkSounds.HONK_HURT;
+				case 2 ->
+						HonkSounds.APOLGY_FOR_BAD_ENGLISH_WHERE_WERE_U_WEN_HONK_DIE_I_WAS_AT_HOUSE_EATING_DORITO_WHEN_PHONE_RING_HONK_IS_KILL_NO;
+				default -> null;
+			};
+
+			float pitch = 1.0F + (player.getRandom().nextFloat() - player.getRandom().nextFloat()) * 0.2F;
+
+			player.getWorld().playSound(null, player.getBlockPos(), ev, player.getSoundCategory(), 1.0F, pitch);
+		}));
+		JamLibServerNetworking.registerHandlers(MOD_ID);
+
+		LOGGER.logInitialize();
+		LOGGER.info("Honk!");
+	}
 }

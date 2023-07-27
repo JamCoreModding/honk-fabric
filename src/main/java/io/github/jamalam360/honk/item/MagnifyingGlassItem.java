@@ -25,7 +25,6 @@
 package io.github.jamalam360.honk.item;
 
 import io.github.jamalam360.honk.api.MagnifyingGlassInformationProvider;
-import java.util.List;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -36,39 +35,41 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import org.quiltmc.qsl.item.setting.api.QuiltItemSettings;
 
+import java.util.List;
+
 public class MagnifyingGlassItem extends Item {
 
-    public MagnifyingGlassItem() {
-        super(new QuiltItemSettings().maxCount(1));
-    }
+	public MagnifyingGlassItem() {
+		super(new QuiltItemSettings().maxCount(1));
+	}
 
-    @Override
-    public ActionResult useOnEntity(ItemStack stack, PlayerEntity user, LivingEntity entity, Hand hand) {
-        if (!user.getWorld().isClient && entity instanceof MagnifyingGlassInformationProvider provider) {
-            List<Text> info = provider.getMagnifyingGlassInformation(user);
+	@Override
+	public ActionResult useOnEntity(ItemStack stack, PlayerEntity user, LivingEntity entity, Hand hand) {
+		if (!user.getWorld().isClient && entity instanceof MagnifyingGlassInformationProvider provider) {
+			List<Text> info = provider.getMagnifyingGlassInformation(user);
 
-            for (Text text : info) {
-                user.sendMessage(text, false);
-            }
+			for (Text text : info) {
+				user.sendMessage(text, false);
+			}
 
-            return ActionResult.SUCCESS;
-        }
+			return ActionResult.SUCCESS;
+		}
 
-        return super.useOnEntity(stack, user, entity, hand);
-    }
+		return super.useOnEntity(stack, user, entity, hand);
+	}
 
-    @Override
-    public ActionResult useOnBlock(ItemUsageContext context) {
-        if (!context.getWorld().isClient && context.getWorld().getBlockState(context.getBlockPos()) instanceof MagnifyingGlassInformationProvider provider) {
-            List<Text> info = provider.getMagnifyingGlassInformation(context.getPlayer());
+	@Override
+	public ActionResult useOnBlock(ItemUsageContext context) {
+		if (!context.getWorld().isClient && context.getWorld().getBlockState(context.getBlockPos()) instanceof MagnifyingGlassInformationProvider provider) {
+			List<Text> info = provider.getMagnifyingGlassInformation(context.getPlayer());
 
-            for (Text text : info) {
-                context.getPlayer().sendMessage(text, false);
-            }
+			for (Text text : info) {
+				context.getPlayer().sendMessage(text, false);
+			}
 
-            return ActionResult.SUCCESS;
-        }
+			return ActionResult.SUCCESS;
+		}
 
-        return super.useOnBlock(context);
-    }
+		return super.useOnBlock(context);
+	}
 }

@@ -28,13 +28,13 @@ import net.minecraft.item.ItemStack;
 
 public class InventoryUtils {
 
-    public static boolean canStack(ItemStack stack, ItemStack query) {
-        if (stack.isEmpty() || query.isEmpty()) {
-            return true;
-        } else if (stack.getItem() != query.getItem()) {
-            return false;
-        } else {
-            return stack.getCount() + query.getCount() <= stack.getMaxCount();
-        }
-    }
+	public static boolean canStack(ItemStack stack, ItemStack query) {
+		if (stack.isEmpty() || query.isEmpty()) {
+			return true;
+		} else if (stack.getItem() != query.getItem()) {
+			return false;
+		} else {
+			return stack.getCount() + query.getCount() <= stack.getMaxCount();
+		}
+	}
 }

@@ -29,53 +29,54 @@ import com.google.gson.JsonElement;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import io.github.jamalam360.honk.HonkInit;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.Map.Entry;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.quiltmc.qsl.resource.loader.api.reloader.SimpleSynchronousResourceReloader;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.Map.Entry;
+
 public class HonkTypeResourceReloadListener implements SimpleSynchronousResourceReloader {
 
-    public static final HonkTypeResourceReloadListener INSTANCE = new HonkTypeResourceReloadListener();
-    private static final Gson GSON = new Gson();
+	public static final HonkTypeResourceReloadListener INSTANCE = new HonkTypeResourceReloadListener();
+	private static final Gson GSON = new Gson();
 
-    @Override
-    public void reload(ResourceManager manager) {
-        for (Entry<Identifier, Resource> entry : manager.findResources("honk_types", identifier -> identifier.getPath().endsWith(".json")).entrySet()) {
-            Identifier resourceId = entry.getKey();
-            Resource resource = entry.getValue();
+	@Override
+	public void reload(ResourceManager manager) {
+		for (Entry<Identifier, Resource> entry : manager.findResources("honk_types", identifier -> identifier.getPath().endsWith(".json")).entrySet()) {
+			Identifier resourceId = entry.getKey();
+			Resource resource = entry.getValue();
 
-            try (InputStream stream = resource.open()) {
-                DataResult<HonkType> parseResult = HonkType.CODEC.codec().parse(JsonOps.INSTANCE, GSON.fromJson(new InputStreamReader(stream), JsonElement.class));
+			try (InputStream stream = resource.open()) {
+				DataResult<HonkType> parseResult = HonkType.CODEC.codec().parse(JsonOps.INSTANCE, GSON.fromJson(new InputStreamReader(stream), JsonElement.class));
 
-                if (parseResult.error().isEmpty()) {
-                    String path = resourceId.getPath();
-                    path = path.substring("honk_types/".length());
-                    path = path.substring(0, path.length() - ".json".length());
-                    HonkType.ENTRIES.put(
-                          new Identifier(
-                                resourceId.getNamespace(),
-                                path
-                          ).toString(),
-                          parseResult.result().get()
-                    );
-                } else {
-                    HonkInit.LOGGER.error("Failed to load type at path " + resourceId.toString() + " - " + parseResult.error().get().message());
-                }
-            } catch (Exception e) {
-                HonkInit.LOGGER.error("Failed to load type at path " + resourceId.toString());
-            }
-        }
+				if (parseResult.error().isEmpty()) {
+					String path = resourceId.getPath();
+					path = path.substring("honk_types/".length());
+					path = path.substring(0, path.length() - ".json".length());
+					HonkType.ENTRIES.put(
+							new Identifier(
+									resourceId.getNamespace(),
+									path
+							).toString(),
+							parseResult.result().get()
+					);
+				} else {
+					HonkInit.LOGGER.error("Failed to load type at path " + resourceId.toString() + " - " + parseResult.error().get().message());
+				}
+			} catch (Exception e) {
+				HonkInit.LOGGER.error("Failed to load type at path " + resourceId.toString());
+			}
+		}
 
-        HonkInit.LOGGER.info(String.format("Loaded %d types.", HonkType.ENTRIES.size()));
-    }
+		HonkInit.LOGGER.info(String.format("Loaded %d types.", HonkType.ENTRIES.size()));
+	}
 
-    @Override
-    public @NotNull Identifier getQuiltId() {
-        return HonkInit.idOf("honk_type");
-    }
+	@Override
+	public @NotNull Identifier getQuiltId() {
+		return HonkInit.idOf("honk_type");
+	}
 }

@@ -26,39 +26,27 @@ package io.github.jamalam360.honk.block;
 
 import io.github.jamalam360.honk.api.PowerProvider;
 import io.github.jamalam360.honk.api.TickingBlockEntity;
-import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.SidedInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.Text;
-import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 
-public abstract class AbstractProcessingBlockEntity extends BlockEntity implements PowerProvider, SidedInventory, TickingBlockEntity, NamedScreenHandlerFactory {
+public abstract class AbstractProcessingBlockEntity extends AbstractBlockEntityWithInventory implements PowerProvider, TickingBlockEntity, NamedScreenHandlerFactory {
 
-	public final DefaultedList<ItemStack> inventory;
-	public final InventoryStorage storage;
 	private final RecipeType<? extends Recipe<Inventory>> recipeType;
 	public int processingTime = 0;
 	private int processingSoundTicks = 0;
 	private Recipe<Inventory> currentRecipe = null;
 
 	public AbstractProcessingBlockEntity(BlockEntityType<?> type, RecipeType<? extends Recipe<Inventory>> recipeType, int inventorySize, BlockPos pos, BlockState state) {
-		super(type, pos, state);
-		this.inventory = DefaultedList.ofSize(inventorySize, ItemStack.EMPTY);
-		this.storage = InventoryStorage.of(this, Direction.UP);
+		super(type, inventorySize, pos, state);
 		this.recipeType = recipeType;
 	}
 
@@ -131,71 +119,11 @@ public abstract class AbstractProcessingBlockEntity extends BlockEntity implemen
 	public void cancelCurrentRecipe() {
 		this.processingTime = 0;
 		this.currentRecipe = null;
+		this.markDirty();
 	}
 
 	@Override
 	public Text getDisplayName() {
 		return Text.translatable(this.getCachedState().getBlock().getTranslationKey());
-	}
-
-	@Override
-	public int size() {
-		return this.inventory.size();
-	}
-
-	@Override
-	public boolean isEmpty() {
-		return this.inventory.isEmpty();
-	}
-
-	@Override
-	public ItemStack getStack(int slot) {
-		return this.inventory.get(slot);
-	}
-
-	@Override
-	public ItemStack removeStack(int slot, int count) {
-		ItemStack result = Inventories.splitStack(this.inventory, slot, count);
-
-		if (!result.isEmpty()) {
-			markDirty();
-		}
-
-		return result;
-	}
-
-	@Override
-	public ItemStack removeStack(int slot) {
-		return Inventories.removeStack(this.inventory, slot);
-	}
-
-	@Override
-	public void setStack(int slot, ItemStack stack) {
-		this.inventory.set(slot, stack);
-		if (stack.getCount() > getMaxCountPerStack()) {
-			stack.setCount(getMaxCountPerStack());
-		}
-	}
-
-	@Override
-	public void clear() {
-		this.inventory.clear();
-	}
-
-	@Override
-	public boolean canPlayerUse(PlayerEntity player) {
-		return true;
-	}
-
-	@Override
-	public void readNbt(NbtCompound nbt) {
-		super.readNbt(nbt);
-		Inventories.readNbt(nbt, this.inventory);
-	}
-
-	@Override
-	public void writeNbt(NbtCompound nbt) {
-		super.writeNbt(nbt);
-		Inventories.writeNbt(nbt, this.inventory);
 	}
 }

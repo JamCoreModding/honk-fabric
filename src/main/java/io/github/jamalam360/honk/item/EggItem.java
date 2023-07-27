@@ -28,7 +28,6 @@ import io.github.jamalam360.honk.data.DnaData;
 import io.github.jamalam360.honk.data.NbtKeys;
 import io.github.jamalam360.honk.entity.egg.EggEntity;
 import io.github.jamalam360.honk.registry.HonkEntities;
-import java.util.List;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -41,50 +40,52 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 import org.quiltmc.qsl.item.setting.api.QuiltItemSettings;
 
+import java.util.List;
+
 public class EggItem extends Item {
 
-    public EggItem() {
-        super(new QuiltItemSettings().maxCount(1));
-    }
+	public EggItem() {
+		super(new QuiltItemSettings().maxCount(1));
+	}
 
-    public static void initializeFrom(ItemStack stack, EggEntity entity) {
-        NbtCompound nbt = stack.getOrCreateNbt();
-        entity.writeCustomDataToNbt(nbt);
-        stack.setNbt(nbt);
-    }
+	public static void initializeFrom(ItemStack stack, EggEntity entity) {
+		NbtCompound nbt = stack.getOrCreateNbt();
+		entity.writeCustomDataToNbt(nbt);
+		stack.setNbt(nbt);
+	}
 
-    @Override
-    public ActionResult useOnBlock(ItemUsageContext context) {
-        if (!context.getWorld().isClient) {
-            EggEntity egg = new EggEntity(HonkEntities.EGG, context.getWorld());
-            NbtCompound attributes = context.getStack().getOrCreateNbt();
+	@Override
+	public ActionResult useOnBlock(ItemUsageContext context) {
+		if (!context.getWorld().isClient) {
+			EggEntity egg = new EggEntity(HonkEntities.EGG, context.getWorld());
+			NbtCompound attributes = context.getStack().getOrCreateNbt();
 
-            if (attributes == null || !attributes.contains(NbtKeys.DNA)) {
-                egg.initializeBaseType();
-            } else {
-                egg.readCustomDataFromNbt(attributes);
-            }
+			if (attributes == null || !attributes.contains(NbtKeys.DNA)) {
+				egg.initializeBaseType();
+			} else {
+				egg.readCustomDataFromNbt(attributes);
+			}
 
-            egg.setPosition(context.getHitPos());
-            context.getWorld().spawnEntity(egg);
-            context.getPlayer().getStackInHand(context.getHand()).decrement(1);
-        }
+			egg.setPosition(context.getHitPos());
+			context.getWorld().spawnEntity(egg);
+			context.getPlayer().getStackInHand(context.getHand()).decrement(1);
+		}
 
-        return ActionResult.SUCCESS;
-    }
+		return ActionResult.SUCCESS;
+	}
 
-    @Override
-    public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
-        super.appendTooltip(stack, world, tooltip, context);
-        NbtCompound nbt = stack.getNbt();
+	@Override
+	public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
+		super.appendTooltip(stack, world, tooltip, context);
+		NbtCompound nbt = stack.getNbt();
 
-        if (nbt == null || !nbt.contains(NbtKeys.DNA)) {
-            tooltip.add(Text.literal("???").styled(s -> s.withItalic(true).withColor(Formatting.GRAY)));
-            return;
-        }
+		if (nbt == null || !nbt.contains(NbtKeys.DNA)) {
+			tooltip.add(Text.literal("???").styled(s -> s.withItalic(true).withColor(Formatting.GRAY)));
+			return;
+		}
 
-        DnaData data = DnaData.fromNbt(nbt);
-        tooltip.addAll(data.getInformation());
-        tooltip.add(Text.translatable("text.honk.info_age", nbt.getInt(NbtKeys.AGE)).styled(s -> s.withColor(Formatting.GRAY)));
-    }
+		DnaData data = DnaData.fromNbt(nbt);
+		tooltip.addAll(data.getInformation());
+		tooltip.add(Text.translatable("text.honk.info_age", nbt.getInt(NbtKeys.AGE)).styled(s -> s.withColor(Formatting.GRAY)));
+	}
 }

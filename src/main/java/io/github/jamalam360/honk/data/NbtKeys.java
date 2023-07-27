@@ -26,14 +26,14 @@ package io.github.jamalam360.honk.data;
 
 public class NbtKeys {
 
-    public static final String AGE = "age";
-    public static final String COLD_TICKS = "cold_ticks";
-    public static final String DNA = "dna";
-    public static final String FOOD_LEVEL = "food_level";
-    public static final String GROWTH = "growth";
-    public static final String INSTABILITY = "instability";
-    public static final String PARENT = "parent";
-    public static final String PRODUCTIVITY = "productivity";
-    public static final String REPRODUCTIVITY = "reproductivity";
-    public static final String TYPE = "type";
+	public static final String AGE = "age";
+	public static final String COLD_TICKS = "cold_ticks";
+	public static final String DNA = "dna";
+	public static final String FOOD_LEVEL = "food_level";
+	public static final String GROWTH = "growth";
+	public static final String INSTABILITY = "instability";
+	public static final String PARENT = "parent";
+	public static final String PRODUCTIVITY = "productivity";
+	public static final String REPRODUCTIVITY = "reproductivity";
+	public static final String TYPE = "type";
 }

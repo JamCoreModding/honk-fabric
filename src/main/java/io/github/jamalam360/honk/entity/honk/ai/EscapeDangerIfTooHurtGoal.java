@@ -29,12 +29,12 @@ import net.minecraft.entity.mob.PathAwareEntity;
 
 public class EscapeDangerIfTooHurtGoal extends EscapeDangerGoal {
 
-    public EscapeDangerIfTooHurtGoal(PathAwareEntity mob, double speed) {
-        super(mob, speed);
-    }
+	public EscapeDangerIfTooHurtGoal(PathAwareEntity mob, double speed) {
+		super(mob, speed);
+	}
 
-    @Override
-    protected boolean shouldEscape() {
-        return super.shouldEscape() && this.mob.getHealth() < this.mob.getMaxHealth() / 3;
-    }
+	@Override
+	protected boolean shouldEscape() {
+		return super.shouldEscape() && this.mob.getHealth() < this.mob.getMaxHealth() / 3;
+	}
 }

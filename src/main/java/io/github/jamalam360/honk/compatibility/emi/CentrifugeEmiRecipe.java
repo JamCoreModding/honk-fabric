@@ -35,31 +35,31 @@ import net.minecraft.item.Item;
 
 public class CentrifugeEmiRecipe extends BasicEmiRecipe {
 
-    private static final EmiTexture EMPTY_ARROW = new EmiTexture(EmiCompatibility.SPRITE_SHEET, 32, 0, 36, 29);
-    private static final EmiTexture FULL_ARROW = new EmiTexture(EmiCompatibility.SPRITE_SHEET, 32, 29, 36, 29);
+	private static final EmiTexture EMPTY_ARROW = new EmiTexture(EmiCompatibility.SPRITE_SHEET, 32, 0, 36, 29);
+	private static final EmiTexture FULL_ARROW = new EmiTexture(EmiCompatibility.SPRITE_SHEET, 32, 29, 36, 29);
 
-    public CentrifugeEmiRecipe(CentrifugeRecipe recipe) {
-        super(EmiCompatibility.CENTRIFUGE_CATEGORY, recipe.getId(), 80, 31);
-        this.inputs.add(EmiIngredient.of(recipe.getIngredients().get(0)));
+	public CentrifugeEmiRecipe(CentrifugeRecipe recipe) {
+		super(EmiCompatibility.CENTRIFUGE_CATEGORY, recipe.getId(), 80, 31);
+		this.inputs.add(EmiIngredient.of(recipe.getIngredients().get(0)));
 
-        for (EmiIngredient emiIngredient : this.inputs) {
-            for (EmiStack emiStack : emiIngredient.getEmiStacks()) {
-                Item item = emiStack.getItemStack().getItem();
+		for (EmiIngredient emiIngredient : this.inputs) {
+			for (EmiStack emiStack : emiIngredient.getEmiStacks()) {
+				Item item = emiStack.getItemStack().getItem();
 
-                if (item.hasRecipeRemainder()) {
-                    emiStack.setRemainder(EmiStack.of(item.getRecipeRemainder()));
-                }
-            }
-        }
+				if (item.hasRecipeRemainder()) {
+					emiStack.setRemainder(EmiStack.of(item.getRecipeRemainder()));
+				}
+			}
+		}
 
-        this.outputs.add(EmiStack.of(recipe.getOutput()));
-    }
+		this.outputs.add(EmiStack.of(recipe.getOutput()));
+	}
 
-    @Override
-    public void addWidgets(WidgetHolder widgets) {
-        widgets.addTexture(EMPTY_ARROW, 22, 1);
-        widgets.addAnimatedTexture(FULL_ARROW, 22, 1, (CentrifugeBlockEntity.getCentrifugeProcessingTime() / 20) * 1000, true, false, false);
-        widgets.addSlot(inputs.get(0), 0, 7);
-        widgets.addSlot(outputs.get(0), 62, 7).recipeContext(this);
-    }
+	@Override
+	public void addWidgets(WidgetHolder widgets) {
+		widgets.addTexture(EMPTY_ARROW, 22, 1);
+		widgets.addAnimatedTexture(FULL_ARROW, 22, 1, (CentrifugeBlockEntity.getCentrifugeProcessingTime() / 20) * 1000, true, false, false);
+		widgets.addSlot(inputs.get(0), 0, 7);
+		widgets.addSlot(outputs.get(0), 62, 7).recipeContext(this);
+	}
 }

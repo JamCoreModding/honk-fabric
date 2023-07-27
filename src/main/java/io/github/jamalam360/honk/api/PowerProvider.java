@@ -26,8 +26,8 @@ package io.github.jamalam360.honk.api;
 
 public interface PowerProvider {
 
-    boolean isPowered();
+	boolean isPowered();
 
-    default void onBeginProcessing() {
-    }
+	default void onBeginProcessing() {
+	}
 }

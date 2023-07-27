@@ -24,7 +24,6 @@
 
 package io.github.jamalam360.honk.registry;
 
-import java.util.List;
 import net.minecraft.registry.HolderProvider;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
@@ -47,22 +46,24 @@ import net.minecraft.world.gen.feature.util.PlacedFeatureUtil;
 import org.quiltmc.qsl.worldgen.biome.api.BiomeModifications;
 import org.quiltmc.qsl.worldgen.biome.api.BiomeSelectors;
 
+import java.util.List;
+
 public class HonkWorldGen {
 
-    public static final RegistryKey<ConfiguredFeature<?, ?>> AMBER_ORE_CONFIGURED_FEATURE_KEY = ConfiguredFeatureUtil.getRegistryKey("honk_ore_amber");
-    public static final OreFeatureConfig AMBER_ORE_CONFIG = new OreFeatureConfig(List.of(OreFeatureConfig.createTarget(new TagMatchRuleTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES), HonkBlocks.DEEPSLATE_AMBER_ORE.getDefaultState())), 1);
-    public static final RegistryKey<PlacedFeature> AMBER_ORE_PLACED_FEATURE_KEY = PlacedFeatureUtil.createRegistryKey("honk_ore_amber");
+	public static final RegistryKey<ConfiguredFeature<?, ?>> AMBER_ORE_CONFIGURED_FEATURE_KEY = ConfiguredFeatureUtil.getRegistryKey("honk_ore_amber");
+	public static final OreFeatureConfig AMBER_ORE_CONFIG = new OreFeatureConfig(List.of(OreFeatureConfig.createTarget(new TagMatchRuleTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES), HonkBlocks.DEEPSLATE_AMBER_ORE.getDefaultState())), 1);
+	public static final RegistryKey<PlacedFeature> AMBER_ORE_PLACED_FEATURE_KEY = PlacedFeatureUtil.createRegistryKey("honk_ore_amber");
 
-    public static void init() {
-        BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(), GenerationStep.Feature.UNDERGROUND_ORES, AMBER_ORE_PLACED_FEATURE_KEY);
-    }
+	public static void init() {
+		BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(), GenerationStep.Feature.UNDERGROUND_ORES, AMBER_ORE_PLACED_FEATURE_KEY);
+	}
 
-    public static void getConfiguredFeatures(BootstrapContext<ConfiguredFeature<?, ?>> bootstrap) {
-        bootstrap.register(AMBER_ORE_CONFIGURED_FEATURE_KEY, new ConfiguredFeature<>(Feature.ORE, AMBER_ORE_CONFIG));
-    }
+	public static void getConfiguredFeatures(BootstrapContext<ConfiguredFeature<?, ?>> bootstrap) {
+		bootstrap.register(AMBER_ORE_CONFIGURED_FEATURE_KEY, new ConfiguredFeature<>(Feature.ORE, AMBER_ORE_CONFIG));
+	}
 
-    public static void getPlacedFeatures(BootstrapContext<PlacedFeature> bootstrap) {
-        HolderProvider<ConfiguredFeature<?, ?>> provider = bootstrap.lookup(RegistryKeys.CONFIGURED_FEATURE);
-        bootstrap.register(AMBER_ORE_PLACED_FEATURE_KEY, new PlacedFeature(provider.getHolderOrThrow(AMBER_ORE_CONFIGURED_FEATURE_KEY), List.of(CountPlacementModifier.create(UniformIntProvider.create(99, 100)), InSquarePlacementModifier.getInstance(), HeightRangePlacementModifier.trapezoid(YOffset.fixed(-64), YOffset.fixed(-48)), BiomePlacementModifier.getInstance())));
-    }
+	public static void getPlacedFeatures(BootstrapContext<PlacedFeature> bootstrap) {
+		HolderProvider<ConfiguredFeature<?, ?>> provider = bootstrap.lookup(RegistryKeys.CONFIGURED_FEATURE);
+		bootstrap.register(AMBER_ORE_PLACED_FEATURE_KEY, new PlacedFeature(provider.getHolderOrThrow(AMBER_ORE_CONFIGURED_FEATURE_KEY), List.of(CountPlacementModifier.create(UniformIntProvider.create(99, 100)), InSquarePlacementModifier.getInstance(), HeightRangePlacementModifier.trapezoid(YOffset.fixed(-64), YOffset.fixed(-48)), BiomePlacementModifier.getInstance())));
+	}
 }

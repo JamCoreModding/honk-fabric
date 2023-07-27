@@ -43,64 +43,64 @@ import net.minecraft.world.World;
 
 public class CentrifugeRecipe extends AutoSerializedRecipe<Inventory> {
 
-    public static RecipeType<CentrifugeRecipe> TYPE;
-    @RecipeVar
-    private Ingredient input;
-    @RecipeVar
-    private ItemStack output;
+	public static RecipeType<CentrifugeRecipe> TYPE;
+	@RecipeVar
+	private Ingredient input;
+	@RecipeVar
+	private ItemStack output;
 
-    public static void init() {
-        TYPE = AutoRecipeRegistry.registerRecipeSerializer(HonkInit.idOf("centrifuge"), CentrifugeRecipe::new);
-    }
+	public static void init() {
+		TYPE = AutoRecipeRegistry.registerRecipeSerializer(HonkInit.idOf("centrifuge"), CentrifugeRecipe::new);
+	}
 
-    @Override
-    public boolean matches(Inventory inventory, World world) {
-        ItemStack input = inventory.getStack(CentrifugeBlockEntity.INPUT_SLOT);
-        ItemStack remainder = input.getItem().getRecipeRemainder(input);
-        return this.input.test(input) && InventoryUtils.canStack(inventory.getStack(CentrifugeBlockEntity.OUTPUT_SLOT), this.getResult(world.getRegistryManager())) && InventoryUtils.canStack(inventory.getStack(CentrifugeBlockEntity.REMAINDER_SLOT), remainder);
-    }
+	@Override
+	public boolean matches(Inventory inventory, World world) {
+		ItemStack input = inventory.getStack(CentrifugeBlockEntity.INPUT_SLOT);
+		ItemStack remainder = input.getItem().getRecipeRemainder(input);
+		return this.input.test(input) && InventoryUtils.canStack(inventory.getStack(CentrifugeBlockEntity.OUTPUT_SLOT), this.getResult(world.getRegistryManager())) && InventoryUtils.canStack(inventory.getStack(CentrifugeBlockEntity.REMAINDER_SLOT), remainder);
+	}
 
-    @Override
-    public ItemStack craft(Inventory inventory, DynamicRegistryManager manager) {
-        ItemStack input = inventory.getStack(CentrifugeBlockEntity.INPUT_SLOT);
-        ItemStack inputCopy = input.copy();
-        ItemStack remainder = input.getItem().getRecipeRemainder(input);
-        inventory.setStack(CentrifugeBlockEntity.REMAINDER_SLOT, remainder.copy());
-        input.decrement(1);
+	@Override
+	public ItemStack craft(Inventory inventory, DynamicRegistryManager manager) {
+		ItemStack input = inventory.getStack(CentrifugeBlockEntity.INPUT_SLOT);
+		ItemStack inputCopy = input.copy();
+		ItemStack remainder = input.getItem().getRecipeRemainder(input);
+		inventory.setStack(CentrifugeBlockEntity.REMAINDER_SLOT, remainder.copy());
+		input.decrement(1);
 
-        ItemStack output = this.output.copy();
+		ItemStack output = this.output.copy();
 
-        // Special Cases
-        if (inputCopy.getItem() == HonkItems.BLOOD_SYRINGE && output.getItem() == HonkItems.DNA) {
-            // Initialize the DNA with the blood syringes DNA NBT
-            if (inputCopy.getOrCreateNbt().contains(NbtKeys.DNA)) {
-                output.setNbt(DnaData.fromNbt(inputCopy.getOrCreateNbt()).writeNbt(output.getOrCreateNbt()));
-            } else {
-                output.setNbt(DnaData.createRandomData().writeNbt(output.getOrCreateNbt()));
-            }
-        }
+		// Special Cases
+		if (inputCopy.getItem() == HonkItems.BLOOD_SYRINGE && output.getItem() == HonkItems.DNA) {
+			// Initialize the DNA with the blood syringes DNA NBT
+			if (inputCopy.getOrCreateNbt().contains(NbtKeys.DNA)) {
+				output.setNbt(DnaData.fromNbt(inputCopy.getOrCreateNbt()).writeNbt(output.getOrCreateNbt()));
+			} else {
+				output.setNbt(DnaData.createRandomData().writeNbt(output.getOrCreateNbt()));
+			}
+		}
 
-        return output;
-    }
+		return output;
+	}
 
-    @Override
-    public DefaultedList<Ingredient> getIngredients() {
-        DefaultedList<Ingredient> defaultedList = DefaultedList.of();
-        defaultedList.add(this.input);
-        return defaultedList;
-    }
+	@Override
+	public DefaultedList<Ingredient> getIngredients() {
+		DefaultedList<Ingredient> defaultedList = DefaultedList.of();
+		defaultedList.add(this.input);
+		return defaultedList;
+	}
 
-    public ItemStack getOutput() {
-        return this.output;
-    }
+	public ItemStack getOutput() {
+		return this.output;
+	}
 
-    @Override
-    public ItemStack getResult(DynamicRegistryManager manager) {
-        return this.output;
-    }
+	@Override
+	public ItemStack getResult(DynamicRegistryManager manager) {
+		return this.output;
+	}
 
-    @Override
-    public boolean isIgnoredInRecipeBook() {
-        return true;
-    }
+	@Override
+	public boolean isIgnoredInRecipeBook() {
+		return true;
+	}
 }

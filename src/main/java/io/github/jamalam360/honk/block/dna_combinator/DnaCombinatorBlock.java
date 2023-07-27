@@ -37,24 +37,24 @@ import org.jetbrains.annotations.Nullable;
 
 public class DnaCombinatorBlock extends FuelBurningProcessingBlock {
 
-    private static final VoxelShape[] SHAPES = new VoxelShape[]{
-          VoxelShapes.union(VoxelShapes.cuboid(1 / 16F, 0, 1 / 16F, 15 / 16F, 8 / 16F, 15 / 16F), VoxelShapes.cuboid(1 / 16F, 0, 1 / 16F, 7 / 16F, 12 / 16F, 15 / 16F)),
-          VoxelShapes.union(VoxelShapes.cuboid(1 / 16F, 0, 1 / 16F, 15 / 16F, 8 / 16F, 15 / 16F), VoxelShapes.cuboid(9 / 16F, 0, 1 / 16F, 15 / 16F, 12 / 16F, 15 / 16F)),
-          VoxelShapes.union(VoxelShapes.cuboid(1 / 16F, 0, 1 / 16F, 15 / 16F, 8 / 16F, 9 / 16F), VoxelShapes.cuboid(1 / 16F, 0, 9 / 16F, 15 / 16F, 12 / 16F, 15 / 16F)),
-          VoxelShapes.union(VoxelShapes.cuboid(1 / 16F, 0, 7 / 16F, 15 / 16F, 8 / 16F, 15 / 16F), VoxelShapes.cuboid(1 / 16F, 0, 1 / 16F, 15 / 16F, 12 / 16F, 7 / 16F))};
+	private static final VoxelShape[] SHAPES = new VoxelShape[]{
+			VoxelShapes.union(VoxelShapes.cuboid(1 / 16F, 0, 1 / 16F, 15 / 16F, 8 / 16F, 15 / 16F), VoxelShapes.cuboid(1 / 16F, 0, 1 / 16F, 7 / 16F, 12 / 16F, 15 / 16F)),
+			VoxelShapes.union(VoxelShapes.cuboid(1 / 16F, 0, 1 / 16F, 15 / 16F, 8 / 16F, 15 / 16F), VoxelShapes.cuboid(9 / 16F, 0, 1 / 16F, 15 / 16F, 12 / 16F, 15 / 16F)),
+			VoxelShapes.union(VoxelShapes.cuboid(1 / 16F, 0, 1 / 16F, 15 / 16F, 8 / 16F, 9 / 16F), VoxelShapes.cuboid(1 / 16F, 0, 9 / 16F, 15 / 16F, 12 / 16F, 15 / 16F)),
+			VoxelShapes.union(VoxelShapes.cuboid(1 / 16F, 0, 7 / 16F, 15 / 16F, 8 / 16F, 15 / 16F), VoxelShapes.cuboid(1 / 16F, 0, 1 / 16F, 15 / 16F, 12 / 16F, 7 / 16F))};
 
-    public DnaCombinatorBlock() {
-        super(Settings.copy(Blocks.IRON_BLOCK));
-    }
+	public DnaCombinatorBlock() {
+		super(Settings.copy(Blocks.IRON_BLOCK));
+	}
 
-    @Nullable
-    @Override
-    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
-        return new DnaCombinatorBlockEntity(pos, state);
-    }
+	@Nullable
+	@Override
+	public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+		return new DnaCombinatorBlockEntity(pos, state);
+	}
 
-    @Override
-    public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        return SHAPES[state.get(FACING).ordinal() - 2];
-    }
+	@Override
+	public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+		return SHAPES[state.get(FACING).ordinal() - 2];
+	}
 }

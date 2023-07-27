@@ -40,17 +40,17 @@ import org.spongepowered.asm.mixin.injection.At;
 @Mixin(Entity.class)
 public abstract class EntityMixin {
 
-    @WrapWithCondition(method = "fall", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;onLandedUpon(Lnet/minecraft/world/World;Lnet/minecraft/block/BlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/entity/Entity;F)V"))
-    private boolean honk$breakEggs(Block instance, World world, BlockState state, BlockPos pos, Entity lander, float fallDistance) {
-        if (lander instanceof LivingEntity) {
-            LivingEntity entity = world.getClosestEntity(LivingEntity.class, TargetPredicate.DEFAULT, null, pos.getX(), pos.getY(), pos.getZ(), Box.of(pos.ofCenter(), 0.75F, 1.5F, 0.75F));
+	@WrapWithCondition(method = "fall", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;onLandedUpon(Lnet/minecraft/world/World;Lnet/minecraft/block/BlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/entity/Entity;F)V"))
+	private boolean honk$breakEggs(Block instance, World world, BlockState state, BlockPos pos, Entity lander, float fallDistance) {
+		if (lander instanceof LivingEntity) {
+			LivingEntity entity = world.getClosestEntity(LivingEntity.class, TargetPredicate.DEFAULT, null, pos.getX(), pos.getY(), pos.getZ(), Box.of(pos.ofCenter(), 0.75F, 1.5F, 0.75F));
 
-            if (entity instanceof EggEntity) {
-                entity.damage(entity.getDamageSources().fallingBlock(lander), 1.0F);
-                return false;
-            }
-        }
+			if (entity instanceof EggEntity) {
+				entity.damage(entity.getDamageSources().fallingBlock(lander), 1.0F);
+				return false;
+			}
+		}
 
-        return true;
-    }
+		return true;
+	}
 }

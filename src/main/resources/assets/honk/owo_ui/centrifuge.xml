@@ -23,40 +23,40 @@
 -->
 
 <owo-ui xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/wisp-forest/owo-lib/1.19/owo-ui.xsd">
-  <components>
-    <flow-layout direction="vertical">
-      <children>
+        xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/wisp-forest/owo-lib/1.19/owo-ui.xsd">
+    <components>
         <flow-layout direction="vertical">
-          <children>
-            <texture region-height="165" region-width="176"
-              texture="honk:textures/gui/centrifuge.png"/>
+            <children>
+                <flow-layout direction="vertical">
+                    <children>
+                        <texture region-height="165" region-width="176"
+                                 texture="honk:textures/gui/centrifuge.png"/>
 
-            <texture id="burning-indicator" region-height="13" region-width="13"
-              texture="honk:textures/gui/centrifuge.png" u="176" v="0">
-              <positioning type="absolute">9,28</positioning>
-              <visible-area>
-                <height>0</height>
-              </visible-area>
-            </texture>
+                        <texture id="burning-indicator" region-height="13" region-width="13"
+                                 texture="honk:textures/gui/centrifuge.png" u="176" v="0">
+                            <positioning type="absolute">9,28</positioning>
+                            <visible-area>
+                                <height>0</height>
+                            </visible-area>
+                        </texture>
 
-            <texture id="progress-indicator" region-height="30" region-width="37"
-              texture="honk:textures/gui/centrifuge.png" u="176" v="14">
-              <positioning type="absolute">70,27</positioning>
-              <visible-area>
-                <height>0</height>
-              </visible-area>
-            </texture>
-          </children>
+                        <texture id="progress-indicator" region-height="30" region-width="37"
+                                 texture="honk:textures/gui/centrifuge.png" u="176" v="14">
+                            <positioning type="absolute">70,27</positioning>
+                            <visible-area>
+                                <height>0</height>
+                            </visible-area>
+                        </texture>
+                    </children>
+                </flow-layout>
+            </children>
+
+            <horizontal-alignment>center</horizontal-alignment>
+            <surface>
+                <vanilla-translucent/>
+            </surface>
+
+            <vertical-alignment>center</vertical-alignment>
         </flow-layout>
-      </children>
-
-      <horizontal-alignment>center</horizontal-alignment>
-      <surface>
-        <vanilla-translucent/>
-      </surface>
-
-      <vertical-alignment>center</vertical-alignment>
-    </flow-layout>
-  </components>
+    </components>
 </owo-ui>

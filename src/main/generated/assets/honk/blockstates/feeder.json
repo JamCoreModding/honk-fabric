@@ -1,0 +1,49 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "honk:block/feeder"
+      }
+    },
+    {
+      "apply": {
+        "model": "honk:block/feeder_contents1"
+      },
+      "when": {
+        "level": "1"
+      }
+    },
+    {
+      "apply": {
+        "model": "honk:block/feeder_contents2"
+      },
+      "when": {
+        "level": "2"
+      }
+    },
+    {
+      "apply": {
+        "model": "honk:block/feeder_contents3"
+      },
+      "when": {
+        "level": "3"
+      }
+    },
+    {
+      "apply": {
+        "model": "honk:block/feeder_contents4"
+      },
+      "when": {
+        "level": "4"
+      }
+    },
+    {
+      "apply": {
+        "model": "honk:block/feeder_contents5"
+      },
+      "when": {
+        "level": "5"
+      }
+    }
+  ]
+}

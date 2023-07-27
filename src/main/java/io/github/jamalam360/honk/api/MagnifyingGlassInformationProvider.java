@@ -24,11 +24,12 @@
 
 package io.github.jamalam360.honk.api;
 
-import java.util.List;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.Text;
 
+import java.util.List;
+
 public interface MagnifyingGlassInformationProvider {
 
-    List<Text> getMagnifyingGlassInformation(PlayerEntity user);
+	List<Text> getMagnifyingGlassInformation(PlayerEntity user);
 }

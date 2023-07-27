@@ -38,66 +38,67 @@ import io.github.jamalam360.honk.data.recipe.DnaInjectorExtractorRecipe;
 import io.github.jamalam360.honk.data.type.HonkType;
 import io.github.jamalam360.honk.registry.HonkBlocks;
 import io.github.jamalam360.honk.registry.HonkItems;
-import java.util.List;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.RecipeManager;
 import net.minecraft.util.Identifier;
 
+import java.util.List;
+
 public class EmiCompatibility implements EmiPlugin {
 
-    public static final Identifier SPRITE_SHEET = HonkInit.idOf("textures/gui/emi_textures.png");
-    public static final EmiStack CENTRIFUGE = EmiStack.of(HonkBlocks.CENTRIFUGE);
-    public static final EmiStack DNA_INJECTOR_EXTRACTOR = EmiStack.of(HonkBlocks.DNA_INJECTOR_EXTRACTOR);
-    public static final EmiStack DNA_COMBINATOR = EmiStack.of(HonkBlocks.DNA_COMBINATOR);
-    public static final EmiRecipeCategory CENTRIFUGE_CATEGORY
-          = new EmiRecipeCategory(HonkInit.idOf("centrifuge"), CENTRIFUGE, new EmiTexture(SPRITE_SHEET, 0, 0, 16, 16));
-    public static final EmiRecipeCategory DNA_INJECTOR_EXTRACTOR_CATEGORY
-          = new EmiRecipeCategory(HonkInit.idOf("dna_injector_extractor"), DNA_INJECTOR_EXTRACTOR, new EmiTexture(SPRITE_SHEET, 16, 0, 16, 16));
-    public static final EmiRecipeCategory DNA_COMBINATOR_CATEGORY
-          = new EmiRecipeCategory(HonkInit.idOf("dna_combinator"), DNA_COMBINATOR, new EmiTexture(SPRITE_SHEET, 0, 16, 16, 16));
+	public static final Identifier SPRITE_SHEET = HonkInit.idOf("textures/gui/emi_textures.png");
+	public static final EmiStack CENTRIFUGE = EmiStack.of(HonkBlocks.CENTRIFUGE);
+	public static final EmiStack DNA_INJECTOR_EXTRACTOR = EmiStack.of(HonkBlocks.DNA_INJECTOR_EXTRACTOR);
+	public static final EmiStack DNA_COMBINATOR = EmiStack.of(HonkBlocks.DNA_COMBINATOR);
+	public static final EmiRecipeCategory CENTRIFUGE_CATEGORY
+			= new EmiRecipeCategory(HonkInit.idOf("centrifuge"), CENTRIFUGE, new EmiTexture(SPRITE_SHEET, 0, 0, 16, 16));
+	public static final EmiRecipeCategory DNA_INJECTOR_EXTRACTOR_CATEGORY
+			= new EmiRecipeCategory(HonkInit.idOf("dna_injector_extractor"), DNA_INJECTOR_EXTRACTOR, new EmiTexture(SPRITE_SHEET, 16, 0, 16, 16));
+	public static final EmiRecipeCategory DNA_COMBINATOR_CATEGORY
+			= new EmiRecipeCategory(HonkInit.idOf("dna_combinator"), DNA_COMBINATOR, new EmiTexture(SPRITE_SHEET, 0, 16, 16, 16));
 
 
-    @Override
-    public void register(EmiRegistry registry) {
-        HonkInit.LOGGER.info("Initializing Honk compatibility module for EMI");
+	@Override
+	public void register(EmiRegistry registry) {
+		HonkInit.LOGGER.info("Initializing Honk compatibility module for EMI");
 
-        registry.addCategory(CENTRIFUGE_CATEGORY);
-        registry.addWorkstation(CENTRIFUGE_CATEGORY, CENTRIFUGE);
-        registry.addCategory(DNA_INJECTOR_EXTRACTOR_CATEGORY);
-        registry.addWorkstation(DNA_INJECTOR_EXTRACTOR_CATEGORY, DNA_INJECTOR_EXTRACTOR);
-        registry.addCategory(DNA_COMBINATOR_CATEGORY);
-        registry.addWorkstation(DNA_COMBINATOR_CATEGORY, DNA_COMBINATOR);
+		registry.addCategory(CENTRIFUGE_CATEGORY);
+		registry.addWorkstation(CENTRIFUGE_CATEGORY, CENTRIFUGE);
+		registry.addCategory(DNA_INJECTOR_EXTRACTOR_CATEGORY);
+		registry.addWorkstation(DNA_INJECTOR_EXTRACTOR_CATEGORY, DNA_INJECTOR_EXTRACTOR);
+		registry.addCategory(DNA_COMBINATOR_CATEGORY);
+		registry.addWorkstation(DNA_COMBINATOR_CATEGORY, DNA_COMBINATOR);
 
-        RecipeManager manager = registry.getRecipeManager();
+		RecipeManager manager = registry.getRecipeManager();
 
-        for (CentrifugeRecipe recipe : manager.listAllOfType(CentrifugeRecipe.TYPE)) {
-            registry.addRecipe(new CentrifugeEmiRecipe(recipe));
-        }
+		for (CentrifugeRecipe recipe : manager.listAllOfType(CentrifugeRecipe.TYPE)) {
+			registry.addRecipe(new CentrifugeEmiRecipe(recipe));
+		}
 
-        for (DnaInjectorExtractorRecipe recipe : manager.listAllOfType(DnaInjectorExtractorRecipe.TYPE)) {
-            registry.addRecipe(new DnaInjectorExtractorEmiRecipe(recipe));
-        }
+		for (DnaInjectorExtractorRecipe recipe : manager.listAllOfType(DnaInjectorExtractorRecipe.TYPE)) {
+			registry.addRecipe(new DnaInjectorExtractorEmiRecipe(recipe));
+		}
 
-        for (DnaCombinatorRecipe recipe : manager.listAllOfType(DnaCombinatorRecipe.TYPE)) {
-            if (recipe.getFirstInput().test(HonkItems.DNA.getDefaultStack()) && recipe.getSecondInput().test(HonkItems.DNA.getDefaultStack())) {
-                for (HonkType potentialResult : HonkType.ENTRIES.values()) {
-                    List<List<Identifier>> potentialParents = Lists.newArrayList(potentialResult.parents());
-                    potentialParents.add(List.of(new Identifier(potentialResult.id()), new Identifier(potentialResult.id())));
+		for (DnaCombinatorRecipe recipe : manager.listAllOfType(DnaCombinatorRecipe.TYPE)) {
+			if (recipe.getFirstInput().test(HonkItems.DNA.getDefaultStack()) && recipe.getSecondInput().test(HonkItems.DNA.getDefaultStack())) {
+				for (HonkType potentialResult : HonkType.ENTRIES.values()) {
+					List<List<Identifier>> potentialParents = Lists.newArrayList(potentialResult.parents());
+					potentialParents.add(List.of(new Identifier(potentialResult.id()), new Identifier(potentialResult.id())));
 
-                    for (List<Identifier> parents : potentialParents) {
-                        Identifier finalId = HonkInit.idOf(new Identifier(potentialResult.id()).getPath() + "_from_" + parents.get(0).getPath() + "_and_" + parents.get(1).getPath());
-                        ItemStack firstInput = new ItemStack(HonkItems.DNA);
-                        new DnaData(HonkType.ENTRIES.get(parents.get(0).toString()), 1, 1, 1, 1).writeNbt(firstInput.getOrCreateNbt());
-                        ItemStack secondInput = new ItemStack(HonkItems.DNA);
-                        new DnaData(HonkType.ENTRIES.get(parents.get(1).toString()), 1, 1, 1, 1).writeNbt(secondInput.getOrCreateNbt());
-                        ItemStack output = new ItemStack(HonkItems.DNA);
-                        new DnaData(potentialResult, 1, 1, 1, 1).writeNbt(output.getOrCreateNbt());
-                        registry.addRecipe(new DnaCombinatorEmiRecipe(finalId, firstInput, secondInput, output));
-                    }
-                }
-            } else {
-                registry.addRecipe(new DnaCombinatorEmiRecipe(recipe));
-            }
-        }
-    }
+					for (List<Identifier> parents : potentialParents) {
+						Identifier finalId = HonkInit.idOf(new Identifier(potentialResult.id()).getPath() + "_from_" + parents.get(0).getPath() + "_and_" + parents.get(1).getPath());
+						ItemStack firstInput = new ItemStack(HonkItems.DNA);
+						new DnaData(HonkType.ENTRIES.get(parents.get(0).toString()), 1, 1, 1, 1).writeNbt(firstInput.getOrCreateNbt());
+						ItemStack secondInput = new ItemStack(HonkItems.DNA);
+						new DnaData(HonkType.ENTRIES.get(parents.get(1).toString()), 1, 1, 1, 1).writeNbt(secondInput.getOrCreateNbt());
+						ItemStack output = new ItemStack(HonkItems.DNA);
+						new DnaData(potentialResult, 1, 1, 1, 1).writeNbt(output.getOrCreateNbt());
+						registry.addRecipe(new DnaCombinatorEmiRecipe(finalId, firstInput, secondInput, output));
+					}
+				}
+			} else {
+				registry.addRecipe(new DnaCombinatorEmiRecipe(recipe));
+			}
+		}
+	}
 }

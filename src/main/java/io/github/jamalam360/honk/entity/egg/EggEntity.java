@@ -37,6 +37,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
@@ -46,10 +47,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -73,7 +71,10 @@ public class EggEntity extends MobEntity implements MagnifyingGlassInformationPr
 
 	public EggEntity(EntityType<EggEntity> type, World world) {
 		super(type, world);
-		this.initializeBaseType();
+
+		if (!world.isClient) {
+			this.initializeBaseType();
+		}
 	}
 
 	public static DefaultAttributeContainer.Builder createAttributes() {
@@ -172,6 +173,15 @@ public class EggEntity extends MobEntity implements MagnifyingGlassInformationPr
 			spawned.setBaby(true);
 			this.getWorld().spawnEntity(spawned);
 			this.remove(RemovalReason.DISCARDED);
+		}
+	}
+
+	@Override
+	public void onDeath(DamageSource source) {
+		super.onDeath(source);
+
+		if (source.isType(DamageTypes.IN_FIRE) || source.isType(DamageTypes.ON_FIRE)) {
+			ItemScatterer.spawn(this.getWorld(), this.getX(), this.getY(), this.getZ(), HonkItems.FRIED_EGG.getDefaultStack());
 		}
 	}
 
