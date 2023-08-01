@@ -49,13 +49,13 @@ public class DnaInjectorExtractorRecipe extends AutoSerializedRecipe<Inventory> 
 	private static final Random RANDOM = new Random();
 	public static RecipeType<DnaInjectorExtractorRecipe> TYPE;
 	@RecipeVar
-	private float successChance;
+	public float successChance;
 	@RecipeVar
-	private Ingredient input;
+	public Ingredient input;
 	@RecipeVar(required = false)
-	private Ingredient auxiliaryInput;
+	public Ingredient auxiliaryInput;
 	@RecipeVar
-	private ItemStack output;
+	public ItemStack output;
 
 	public static void init() {
 		TYPE = AutoRecipeRegistry.registerRecipeSerializer(HonkInit.idOf("dna_injector_extractor"), DnaInjectorExtractorRecipe::new);

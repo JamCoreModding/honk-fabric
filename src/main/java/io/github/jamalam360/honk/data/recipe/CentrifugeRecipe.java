@@ -45,9 +45,9 @@ public class CentrifugeRecipe extends AutoSerializedRecipe<Inventory> {
 
 	public static RecipeType<CentrifugeRecipe> TYPE;
 	@RecipeVar
-	private Ingredient input;
+	public Ingredient input;
 	@RecipeVar
-	private ItemStack output;
+	public ItemStack output;
 
 	public static void init() {
 		TYPE = AutoRecipeRegistry.registerRecipeSerializer(HonkInit.idOf("centrifuge"), CentrifugeRecipe::new);

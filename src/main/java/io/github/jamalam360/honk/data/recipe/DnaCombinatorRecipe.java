@@ -49,11 +49,11 @@ public class DnaCombinatorRecipe extends AutoSerializedRecipe<Inventory> {
 
 	public static RecipeType<DnaCombinatorRecipe> TYPE;
 	@RecipeVar
-	private Ingredient firstInput;
+	public Ingredient firstInput;
 	@RecipeVar
-	private Ingredient secondInput;
+	public Ingredient secondInput;
 	@RecipeVar
-	private ItemStack output;
+	public ItemStack output;
 
 	public static void init() {
 		TYPE = AutoRecipeRegistry.registerRecipeSerializer(HonkInit.idOf("dna_combinator"), DnaCombinatorRecipe::new);
