@@ -49,6 +49,6 @@ public class HonkItems implements JamLibContentRegistry {
 
 	@Override
 	public RegistryKey<ItemGroup> getItemGroup(Item item) {
-		return HonkInit.GROUP_KEY;
+		return HonkInit.MAIN_GROUP_KEY;
 	}
 }

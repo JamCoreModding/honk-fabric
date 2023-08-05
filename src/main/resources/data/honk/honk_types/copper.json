@@ -7,6 +7,5 @@
       "honk:brown"
     ]
   ],
-  "texture": "honk:textures/entity/honk/copper.png",
   "output": "minecraft:copper_ingot"
 }

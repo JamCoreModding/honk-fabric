@@ -7,6 +7,5 @@
       "honk:gray"
     ]
   ],
-  "texture": "honk:textures/entity/honk/iron.png",
   "output": "minecraft:iron_ingot"
 }

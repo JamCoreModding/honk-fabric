@@ -7,6 +7,5 @@
       "honk:red"
     ]
   ],
-  "texture": "honk:textures/entity/honk/lava.png",
   "output": "minecraft:lava_bucket"
 }

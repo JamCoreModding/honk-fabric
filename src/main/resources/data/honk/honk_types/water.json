@@ -7,6 +7,5 @@
       "honk:blue"
     ]
   ],
-  "texture": "honk:textures/entity/honk/water.png",
   "output": "minecraft:water_bucket"
 }

@@ -2,6 +2,5 @@
   "tier": 1,
   "name": "honk_type.honk.black",
   "parents": [],
-  "texture": "honk:textures/entity/honk/black.png",
   "output": "minecraft:black_dye"
 }

@@ -7,6 +7,5 @@
       "honk:white"
     ]
   ],
-  "texture": "honk:textures/entity/honk/quartz.png",
   "output": "minecraft:quartz"
 }

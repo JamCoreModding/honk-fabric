@@ -45,6 +45,7 @@ public class HonkOverride implements IEntityComponentProvider {
 			data = honk.createDnaData();
 		} else if (accessor.getEntity() instanceof EggEntity egg) {
 			data = egg.createDnaData();
+			tooltip.addLine(Text.translatable("text.honk.waila.type", Text.translatable(data.type().name())));
 		}
 
 		if (data != null && config.getBoolean(WailaCompatibility.SHOW_GENES)) {

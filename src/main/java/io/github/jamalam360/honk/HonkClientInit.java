@@ -27,14 +27,17 @@ package io.github.jamalam360.honk;
 import io.github.jamalam360.honk.block.centrifuge.CentrifugeScreen;
 import io.github.jamalam360.honk.block.dna_combinator.DnaCombinatorScreen;
 import io.github.jamalam360.honk.block.dna_injector_extractor.DnaInjectorExtractorScreen;
+import io.github.jamalam360.honk.data.type.HonkType;
 import io.github.jamalam360.honk.entity.egg.EggEntityModel;
 import io.github.jamalam360.honk.entity.egg.EggEntityRenderer;
 import io.github.jamalam360.honk.entity.honk.HonkEntityModel;
 import io.github.jamalam360.honk.entity.honk.HonkEntityRenderer;
 import io.github.jamalam360.honk.registry.HonkC2SNetwork;
 import io.github.jamalam360.honk.registry.HonkEntities;
+import io.github.jamalam360.honk.registry.HonkS2CNetwork;
 import io.github.jamalam360.honk.registry.HonkScreens;
 import io.github.jamalam360.jamlib.keybind.JamLibKeybinds;
+import io.github.jamalam360.jamlib.network.JamLibClientNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.gui.screen.ingame.HandledScreens;
@@ -42,6 +45,10 @@ import net.minecraft.client.render.entity.model.EntityModelLayer;
 import org.lwjgl.glfw.GLFW;
 import org.quiltmc.loader.api.ModContainer;
 import org.quiltmc.qsl.base.api.entrypoint.client.ClientModInitializer;
+import org.quiltmc.qsl.networking.api.client.ClientPlayConnectionEvents;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class HonkClientInit implements ClientModInitializer {
 
@@ -61,5 +68,29 @@ public class HonkClientInit implements ClientModInitializer {
 		HandledScreens.register(HonkScreens.DNA_COMBINATOR, DnaCombinatorScreen::new);
 
 		JamLibKeybinds.register(new JamLibKeybinds.JamLibKeybind(HonkInit.MOD_ID, "honk", GLFW.GLFW_KEY_SLASH, (client) -> HonkC2SNetwork.HONK.send()));
+
+		HonkS2CNetwork.HONK_TYPES.setHandler(((client, handler, buf, responseSender) -> {
+			int size = buf.readInt();
+			Map<String, HonkType> newTypes = new HashMap<>();
+
+			for (int i = 0; i < size; i++) {
+				newTypes.put(buf.readString(), HonkType.fromPacket(buf));
+			}
+
+			client.execute(() -> {
+				HonkType.ENTRIES.clear();
+				HonkType.ENTRIES.putAll(newTypes);
+
+				HonkInit.LOGGER.info("Received " + size + " honk types from server");
+			});
+		}));
+		JamLibClientNetworking.registerHandlers(HonkInit.MOD_ID);
+
+		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
+			client.execute(() -> {
+				HonkInit.LOGGER.info("Disconnected from server, clearing honk types");
+				HonkType.ENTRIES.clear();
+			});
+		});
 	}
 }

@@ -46,6 +46,8 @@ public class HonkTypeResourceReloadListener implements SimpleSynchronousResource
 
 	@Override
 	public void reload(ResourceManager manager) {
+		HonkType.ENTRIES.clear();
+
 		for (Entry<Identifier, Resource> entry : manager.findResources("honk_types", identifier -> identifier.getPath().endsWith(".json")).entrySet()) {
 			Identifier resourceId = entry.getKey();
 			Resource resource = entry.getValue();

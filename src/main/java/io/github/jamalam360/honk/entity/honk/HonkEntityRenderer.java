@@ -41,7 +41,7 @@ public class HonkEntityRenderer extends MobEntityRenderer<HonkEntity, HonkEntity
 
 	@Override
 	public Identifier getTexture(HonkEntity entity) {
-		return entity.getHonkType().texture();
+		return entity.getHonkType().getTexture();
 	}
 
 	@Override

@@ -29,11 +29,13 @@ import io.github.jamalam360.honk.data.recipe.DnaCombinatorRecipe;
 import io.github.jamalam360.honk.data.recipe.DnaInjectorExtractorRecipe;
 import io.github.jamalam360.honk.data.type.HonkTypeResourceReloadListener;
 import io.github.jamalam360.honk.registry.*;
+import io.github.jamalam360.honk.util.DatapackDependantItems;
 import io.github.jamalam360.jamlib.compatibility.JamLibCompatibilityModuleHandler;
 import io.github.jamalam360.jamlib.log.JamLibLogger;
 import io.github.jamalam360.jamlib.network.JamLibServerNetworking;
 import io.github.jamalam360.jamlib.registry.JamLibRegistry;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
@@ -50,8 +52,10 @@ public class HonkInit implements ModInitializer {
 
 	public static final String MOD_ID = "honk";
 	public static final JamLibLogger LOGGER = JamLibLogger.getLogger(MOD_ID);
-	public static final ItemGroup GROUP = FabricItemGroup.builder().icon(HonkItems.BLOOD_SYRINGE::getDefaultStack).name(Text.translatable("group.honk.main")).build();
-	public static RegistryKey<ItemGroup> GROUP_KEY;
+	public static final ItemGroup MAIN_GROUP = FabricItemGroup.builder().icon(HonkItems.BLOOD_SYRINGE::getDefaultStack).name(Text.translatable("group.honk.main")).build();
+	public static final ItemGroup DNA_GROUP = FabricItemGroup.builder().icon(HonkItems.DNA::getDefaultStack).name(Text.translatable("group.honk.dna")).build();
+	public static RegistryKey<ItemGroup> MAIN_GROUP_KEY;
+	public static RegistryKey<ItemGroup> DNA_GROUP_KEY;
 
 	public static Identifier idOf(String path) {
 		return new Identifier(MOD_ID, path);
@@ -59,8 +63,14 @@ public class HonkInit implements ModInitializer {
 
 	@Override
 	public void onInitialize(ModContainer mod) {
-		Registry.register(Registries.ITEM_GROUP, idOf("group"), GROUP);
-		GROUP_KEY = Registries.ITEM_GROUP.getKey(GROUP).get();
+		Registry.register(Registries.ITEM_GROUP, idOf("main"), MAIN_GROUP);
+		Registry.register(Registries.ITEM_GROUP, idOf("dna"), DNA_GROUP);
+		MAIN_GROUP_KEY = Registries.ITEM_GROUP.getKey(MAIN_GROUP).get();
+		DNA_GROUP_KEY = Registries.ITEM_GROUP.getKey(DNA_GROUP).get();
+
+		ItemGroupEvents.modifyEntriesEvent(DNA_GROUP_KEY).register((entries -> {
+			DatapackDependantItems.createDnaGroupStacks().forEach(entries::addStack);
+		}));
 
 		JamLibRegistry.register(HonkBlocks.class, HonkEntities.class, HonkItems.class, HonkScreens.class, HonkSounds.class);
 		HonkWorldGen.init();

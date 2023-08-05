@@ -7,6 +7,5 @@
       "honk:lava"
     ]
   ],
-  "texture": "honk:textures/entity/honk/diamond.png",
   "output": "minecraft:diamond"
 }

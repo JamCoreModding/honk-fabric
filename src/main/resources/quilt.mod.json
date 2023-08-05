@@ -22,6 +22,7 @@
     "entrypoints": {
       "init": "io.github.jamalam360.honk.HonkInit",
       "client_init": "io.github.jamalam360.honk.HonkClientInit",
+      "server_init": "io.github.jamalam360.honk.HonkServerInit",
       "fabric-datagen": "io.github.jamalam360.honk.Datagen",
       "emi": "io.github.jamalam360.honk.compatibility.emi.EmiCompatibility"
     },

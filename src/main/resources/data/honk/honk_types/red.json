@@ -2,6 +2,5 @@
   "tier": 1,
   "name": "honk_type.honk.red",
   "parents": [],
-  "texture": "honk:textures/entity/honk/red.png",
   "output": "minecraft:red_dye"
 }
