@@ -104,13 +104,15 @@ public record DnaData(HonkType type, int growth, int productivity, int reproduct
 
 	public List<Text> getInformation() {
 		List<Text> result = new ArrayList<>();
-		result.add(Text.translatable("text.honk.info_dna", this.type().name()).styled(s -> s.withBold(true)));
-		result.add(Text.translatable("text.honk.info_type", Text.translatable(this.type().output().getTranslationKey()), Integer.toString(this.type().tier())).styled(s -> s.withItalic(true).withColor(Formatting.AQUA)));
-		result.add(Text.literal(""));
-		result.add(Text.translatable("text.honk.info_growth", this.growth()).styled(s -> s.withColor(Formatting.GRAY)));
-		result.add(Text.translatable("text.honk.info_productivity", this.productivity()).styled(s -> s.withColor(Formatting.GRAY)));
-		result.add(Text.translatable("text.honk.info_reproductivity", this.reproductivity()).styled(s -> s.withColor(Formatting.GRAY)));
-		result.add(Text.translatable("text.honk.info_instability", this.instability()).styled(s -> s.withColor(Formatting.GRAY)));
+		if (this.type() != null) {
+			result.add(Text.translatable("text.honk.info_type", Text.translatable(this.type().output().getTranslationKey()), Integer.toString(this.type().tier())).styled(s -> s.withItalic(true).withColor(Formatting.AQUA)));
+			result.add(Text.literal(""));
+			result.add(Text.translatable("text.honk.info_growth", this.growth()).styled(s -> s.withColor(Formatting.GRAY)));
+			result.add(Text.translatable("text.honk.info_productivity", this.productivity()).styled(s -> s.withColor(Formatting.GRAY)));
+			result.add(Text.translatable("text.honk.info_reproductivity", this.reproductivity()).styled(s -> s.withColor(Formatting.GRAY)));
+			result.add(Text.translatable("text.honk.info_instability", this.instability()).styled(s -> s.withColor(Formatting.GRAY)));
+		}
+
 		return result;
 	}
 }

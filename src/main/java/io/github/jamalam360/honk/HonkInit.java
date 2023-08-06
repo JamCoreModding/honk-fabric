@@ -30,12 +30,14 @@ import io.github.jamalam360.honk.data.recipe.DnaInjectorExtractorRecipe;
 import io.github.jamalam360.honk.data.type.HonkTypeResourceReloadListener;
 import io.github.jamalam360.honk.registry.*;
 import io.github.jamalam360.honk.util.DatapackDependantItems;
+import io.github.jamalam360.honk.util.HatchHonkCriterion;
 import io.github.jamalam360.jamlib.compatibility.JamLibCompatibilityModuleHandler;
 import io.github.jamalam360.jamlib.log.JamLibLogger;
 import io.github.jamalam360.jamlib.network.JamLibServerNetworking;
 import io.github.jamalam360.jamlib.registry.JamLibRegistry;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
@@ -78,6 +80,7 @@ public class HonkInit implements ModInitializer {
 		CentrifugeRecipe.init();
 		DnaInjectorExtractorRecipe.init();
 		DnaCombinatorRecipe.init();
+		Criteria.register(HatchHonkCriterion.INSTANCE);
 		ResourceLoader.get(ResourceType.SERVER_DATA).registerReloader(HonkTypeResourceReloadListener.INSTANCE);
 		JamLibCompatibilityModuleHandler.initialize(MOD_ID);
 

@@ -32,7 +32,9 @@ import io.github.jamalam360.honk.entity.honk.HonkEntity;
 import io.github.jamalam360.honk.item.EggItem;
 import io.github.jamalam360.honk.registry.HonkEntities;
 import io.github.jamalam360.honk.registry.HonkItems;
+import io.github.jamalam360.honk.util.HatchHonkCriterion;
 import io.github.jamalam360.honk.util.Warmth;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -45,6 +47,7 @@ import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.*;
@@ -56,6 +59,7 @@ import java.util.Optional;
 public class EggEntity extends MobEntity implements MagnifyingGlassInformationProvider {
 
 	public static final TrackedData<String> TYPE = DataTracker.registerData(EggEntity.class, TrackedDataHandlerRegistry.STRING);
+	public static final TrackedData<Optional<Integer>> PLACER = DataTracker.registerData(EggEntity.class, HonkEntities.OPTIONAL_INTEGER);
 	public static final TrackedData<Optional<Integer>> PARENT = DataTracker.registerData(EggEntity.class, HonkEntities.OPTIONAL_INTEGER);
 	public static final TrackedData<Integer> GROWTH = DataTracker.registerData(EggEntity.class, TrackedDataHandlerRegistry.INTEGER);
 	public static final TrackedData<Integer> PRODUCTIVITY = DataTracker.registerData(EggEntity.class, TrackedDataHandlerRegistry.INTEGER);
@@ -87,6 +91,7 @@ public class EggEntity extends MobEntity implements MagnifyingGlassInformationPr
 		this.dataTracker.startTracking(AGE, 0);
 		this.dataTracker.startTracking(COLD_TICKS, 0);
 		this.dataTracker.startTracking(TYPE, new Identifier("honk", "white").toString());
+		this.dataTracker.startTracking(PLACER, Optional.empty());
 		this.dataTracker.startTracking(PARENT, Optional.empty());
 		this.dataTracker.startTracking(GROWTH, 0);
 		this.dataTracker.startTracking(PRODUCTIVITY, 0);
@@ -153,7 +158,8 @@ public class EggEntity extends MobEntity implements MagnifyingGlassInformationPr
 	}
 
 	public int getMinimumHatchingAge() {
-		return -100 * this.dataTracker.get(GROWTH) + 4000;
+//		return -100 * this.dataTracker.get(GROWTH) + 4000;
+		return 20;
 	}
 
 	public float getHatchingChance() {
@@ -172,6 +178,14 @@ public class EggEntity extends MobEntity implements MagnifyingGlassInformationPr
 			spawned.getDataTracker().set(HonkEntity.INSTABILITY, this.dataTracker.get(INSTABILITY));
 			spawned.setBaby(true);
 			this.getWorld().spawnEntity(spawned);
+
+			if (this.getDataTracker().get(PLACER).isPresent()) {
+				Entity entity = this.getWorld().getEntityById(this.getDataTracker().get(PLACER).get());
+				if (entity instanceof ServerPlayerEntity player) {
+					HatchHonkCriterion.INSTANCE.trigger(player);
+				}
+			}
+
 			this.remove(RemovalReason.DISCARDED);
 		}
 	}

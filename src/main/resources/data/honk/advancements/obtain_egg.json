@@ -1,0 +1,40 @@
+{
+  "parent": "honk:obtain_dna",
+  "display": {
+    "icon": {
+      "item": "honk:egg"
+    },
+    "title": {
+      "translate": "honk.advancements.egg.title"
+    },
+    "description": {
+      "translate": "honk.advancements.egg.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "rewards": {
+    "experience": 30
+  },
+  "criteria": {
+    "obtain": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "honk:egg"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "obtain"
+    ]
+  ]
+}

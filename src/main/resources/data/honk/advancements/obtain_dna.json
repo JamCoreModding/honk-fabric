@@ -1,0 +1,40 @@
+{
+  "parent": "honk:obtain_amber",
+  "display": {
+    "icon": {
+      "item": "honk:dna"
+    },
+    "title": {
+      "translate": "honk.advancements.dna.title"
+    },
+    "description": {
+      "translate": "honk.advancements.dna.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "rewards": {
+    "experience": 30
+  },
+  "criteria": {
+    "obtain": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "honk:dna"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "obtain"
+    ]
+  ]
+}

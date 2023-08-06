@@ -57,7 +57,7 @@ public class Datagen implements DataGeneratorEntrypoint {
 	public void onInitializeDataGenerator(FabricDataGenerator dg) {
 		FabricDataGenerator.Pack pack = dg.createPack();
 		pack.addProvider(ModelProvider::new);
-		pack.addProvider(LootTableProvider::new);
+		pack.addProvider(BlockLootTableProvider::new);
 		pack.addProvider(TagProvider::new);
 		pack.addProvider(WorldGenProvider::new);
 	}
@@ -164,9 +164,9 @@ public class Datagen implements DataGeneratorEntrypoint {
 		}
 	}
 
-	private static class LootTableProvider extends FabricBlockLootTableProvider {
+	private static class BlockLootTableProvider extends FabricBlockLootTableProvider {
 
-		protected LootTableProvider(FabricDataOutput output) {
+		protected BlockLootTableProvider(FabricDataOutput output) {
 			super(output);
 		}
 

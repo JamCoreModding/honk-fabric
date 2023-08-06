@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "PWW",
+    "SSS"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:iron_block"
+    },
+    "W": {
+      "item": "honk:empty_syringe"
+    },
+    "P": {
+      "item": "honk:screen"
+    },
+    "S": {
+      "item": "minecraft:stone"
+    }
+  },
+  "result": {
+    "item": "honk:dna_injector_extractor",
+    "count": 1
+  }
+}

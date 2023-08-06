@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#W#",
+    "PWI",
+    "#D#"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:iron_block"
+    },
+    "W": {
+      "item": "honk:empty_syringe"
+    },
+    "P": {
+      "item": "honk:screen"
+    },
+    "I": {
+      "item": "minecraft:stone_button"
+    },
+    "D": {
+      "item": "minecraft:deepslate_tiles"
+    }
+  },
+  "result": {
+    "item": "honk:dna_combinator",
+    "count": 1
+  }
+}

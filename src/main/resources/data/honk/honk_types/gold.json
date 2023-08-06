@@ -1,0 +1,11 @@
+{
+  "tier": 3,
+  "name": "honk_type.honk.gold",
+  "parents": [
+    [
+      "honk:yellow",
+      "honk:iron"
+    ]
+  ],
+  "output": "minecraft:gold_nugget"
+}

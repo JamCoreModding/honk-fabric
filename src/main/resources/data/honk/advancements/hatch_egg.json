@@ -1,0 +1,31 @@
+{
+  "parent": "honk:obtain_egg",
+  "display": {
+    "icon": {
+      "item": "honk:egg"
+    },
+    "title": {
+      "translate": "honk.advancements.hatch.title"
+    },
+    "description": {
+      "translate": "honk.advancements.hatch.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "rewards": {
+    "experience": 100
+  },
+  "criteria": {
+    "hatch": {
+      "trigger": "honk:hatch_honk"
+    }
+  },
+  "requirements": [
+    [
+      "hatch"
+    ]
+  ]
+}

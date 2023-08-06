@@ -64,6 +64,8 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.TimeHelper;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.int_provider.BiasedToBottomIntProvider;
+import net.minecraft.util.math.int_provider.IntProvider;
 import net.minecraft.util.math.int_provider.UniformIntProvider;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
@@ -86,6 +88,7 @@ public class HonkEntity extends AnimalEntity implements MagnifyingGlassInformati
 	public static final TrackedData<Integer> REPRODUCTIVITY = DataTracker.registerData(HonkEntity.class, TrackedDataHandlerRegistry.INTEGER);
 	public static final TrackedData<Integer> INSTABILITY = DataTracker.registerData(HonkEntity.class, TrackedDataHandlerRegistry.INTEGER);
 	private static final UniformIntProvider ANGER_TIME_RANGE = TimeHelper.betweenSeconds(20, 39);
+	private static final IntProvider DROP_COUNT = BiasedToBottomIntProvider.create(1, 3);
 	public float flapProgress;
 	public float prevFlapProgress;
 	public float maxWingDeviation;
@@ -471,6 +474,19 @@ public class HonkEntity extends AnimalEntity implements MagnifyingGlassInformati
 	public void setBaby(boolean baby) {
 		this.setBreedingAge(baby ? (900 * this.getGrowth() - 24000) : 0);
 	}
+
+	@Override
+	protected void dropLoot(DamageSource source, boolean causedByPlayer) {
+		super.dropLoot(source, causedByPlayer);
+
+		if (this.getHonkType() != null) {
+			int count = DROP_COUNT.get(this.getWorld().random);
+			ItemStack stack = this.getHonkType().output().copy();
+			stack.setCount(count);
+			this.dropStack(stack);
+		}
+	}
+
 	//endregion
 
 	//region DataTracker

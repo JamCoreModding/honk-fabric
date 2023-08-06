@@ -41,6 +41,7 @@ import org.jetbrains.annotations.Nullable;
 import org.quiltmc.qsl.item.setting.api.QuiltItemSettings;
 
 import java.util.List;
+import java.util.Optional;
 
 public class EggItem extends Item {
 
@@ -66,6 +67,7 @@ public class EggItem extends Item {
 				egg.readCustomDataFromNbt(attributes);
 			}
 
+			egg.getDataTracker().set(EggEntity.PLACER, Optional.of(context.getPlayer().getId()));
 			egg.setPosition(context.getHitPos());
 			context.getWorld().spawnEntity(egg);
 			context.getPlayer().getStackInHand(context.getHand()).decrement(1);

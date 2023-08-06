@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#B#",
+    "S/B",
+    "#B#"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:iron_block"
+    },
+    "B": {
+      "item": "minecraft:bucket"
+    },
+    "/": {
+      "item": "minecraft:blaze_rod"
+    },
+    "S": {
+      "item": "honk:screen"
+    }
+  },
+  "result": {
+    "item": "honk:centrifuge",
+    "count": 1
+  }
+}
