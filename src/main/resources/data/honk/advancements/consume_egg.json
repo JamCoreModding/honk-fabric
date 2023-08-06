@@ -22,7 +22,7 @@
     "consume": {
       "trigger": "minecraft:consume_item",
       "conditions": {
-        "items": [
+        "item": [
           {
             "items": [
               "honk:fried_egg"
