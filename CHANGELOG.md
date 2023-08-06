@@ -1,9 +1,1 @@
-## Changelog
-
-### Features
-
-### Fixes
-
-Closed issues: None.
-
-[Full Changelog](https://github.com/JamCoreModding/Honk/compare/...)
+Fix annoying advancement triggering whenever you eat anything
