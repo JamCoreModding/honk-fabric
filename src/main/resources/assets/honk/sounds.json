@@ -9,6 +9,11 @@
       "honk:dna_injector_extractor"
     ]
   },
+  "dna_combinator": {
+    "sounds": [
+      "honk:dna_combinator"
+    ]
+  },
   "honk_hurt": {
     "sounds": [
       "honk:honk_hurt"

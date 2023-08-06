@@ -123,7 +123,12 @@ public class DnaCombinatorBlockEntity extends FuelBurningProcessingBlockEntity {
 
 	@Override
 	public SoundEvent getProcessingSound() {
-		return HonkSounds.DNA_INJECTOR_EXTRACTOR;
+		return HonkSounds.DNA_COMBINATOR;
+	}
+
+	@Override
+	public int getProcessingSoundLength() {
+		return (int) (1.142f * 20);
 	}
 
 	@Override

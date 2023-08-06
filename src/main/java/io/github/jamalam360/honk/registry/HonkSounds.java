@@ -33,6 +33,7 @@ public class HonkSounds {
 
 	public static final SoundEvent CENTRIFUGE = SoundEvent.createVariableRangeEvent(HonkInit.idOf("centrifuge"));
 	public static final SoundEvent DNA_INJECTOR_EXTRACTOR = SoundEvent.createVariableRangeEvent(HonkInit.idOf("dna_injector_extractor"));
+	public static final SoundEvent DNA_COMBINATOR = SoundEvent.createVariableRangeEvent(HonkInit.idOf("dna_combinator"));
 	public static final SoundEvent HONK_HURT = SoundEvent.createVariableRangeEvent(HonkInit.idOf("honk_hurt"));
 	public static final SoundEvent HONK_AMBIENT = SoundEvent.createVariableRangeEvent(HonkInit.idOf("honk_ambient"));
 	public static final SoundEvent APOLGY_FOR_BAD_ENGLISH_WHERE_WERE_U_WEN_HONK_DIE_I_WAS_AT_HOUSE_EATING_DORITO_WHEN_PHONE_RING_HONK_IS_KILL_NO = SoundEvent.createVariableRangeEvent(HonkInit.idOf("apolgy_for_bad_english_where_were_u_wen_honk_die_i_was_at_house_eating_dorito_when_phone_ring_honk_is_kill_no"));

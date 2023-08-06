@@ -61,9 +61,9 @@ public class HonkBlocks implements JamLibContentRegistry {
 	@Override
 	public RegistryKey<ItemGroup> getItemGroup(Item item) {
 		return HonkInit.MAIN_GROUP_KEY;
-	}	public static final BlockEntityType<CentrifugeBlockEntity> CENTRIFUGE_ENTITY = QuiltBlockEntityTypeBuilder.create(CentrifugeBlockEntity::new, CENTRIFUGE).build();
+	}
 
-
+	public static final BlockEntityType<CentrifugeBlockEntity> CENTRIFUGE_ENTITY = QuiltBlockEntityTypeBuilder.create(CentrifugeBlockEntity::new, CENTRIFUGE).build();
 
 
 	public static final BlockEntityType<DnaInjectorExtractorBlockEntity> DNA_INJECTOR_EXTRACTOR_ENTITY = QuiltBlockEntityTypeBuilder.create(DnaInjectorExtractorBlockEntity::new, DNA_INJECTOR_EXTRACTOR).build();
