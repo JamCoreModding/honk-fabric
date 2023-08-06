@@ -38,6 +38,12 @@ public class FeederBlockEntity extends AbstractBlockEntityWithInventory {
 	}
 
 	@Override
+	public void markDirty() {
+		super.markDirty();
+		FeederBlock.updateState(this.world.getBlockState(this.getPos()), this.world, this.getPos());
+	}
+
+	@Override
 	public int[] getAvailableSlots(Direction side) {
 		if (side == Direction.UP) {
 			return new int[0];

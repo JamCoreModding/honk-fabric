@@ -85,11 +85,15 @@ public class FeederBlock extends BlockWithEntity {
 
 	@Override
 	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+		if (!player.getAbilities().allowModifyWorld) {
+			return ActionResult.PASS;
+		}
+
 		if (!world.isClient) {
 			FeederBlockEntity feeder = (FeederBlockEntity) world.getBlockEntity(pos);
 
 			if (feeder == null) {
-				return ActionResult.FAIL;
+				return ActionResult.PASS;
 			}
 
 			if (player.isSneaking() && player.getStackInHand(hand).isEmpty()) {
@@ -119,19 +123,18 @@ public class FeederBlock extends BlockWithEntity {
 							player.getStackInHand(hand).decrement(1);
 						}
 					} else {
-						return ActionResult.FAIL;
+						return ActionResult.PASS;
 					}
 				} else {
-					return ActionResult.FAIL;
+					return ActionResult.PASS;
 				}
 
 				feeder.setStack(0, resultStack);
-				updateState(state, world, pos);
 				return ActionResult.SUCCESS;
 			}
 		}
 
-		return super.onUse(state, world, pos, player, hand, hit);
+		return ActionResult.SUCCESS;
 	}
 
 	@Override
