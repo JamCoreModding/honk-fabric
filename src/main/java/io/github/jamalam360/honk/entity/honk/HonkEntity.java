@@ -150,7 +150,7 @@ public class HonkEntity extends AnimalEntity implements MagnifyingGlassInformati
 
 		if (this.getFoodLevel() > 0 && this.getWorld().random.nextFloat() < (0.005F) * this.getHonkType().tier()) {
 			this.setFoodLevel(this.getFoodLevel() - 1);
-		} else if (this.getFoodLevel() == 0 && this.getWorld().random.nextFloat() < 0.005F) {
+		} else if (this.getFoodLevel() == 0 && this.getWorld().random.nextFloat() < 0.01F) {
 			this.damage(this.getDamageSources().starve(), 1);
 		}
 

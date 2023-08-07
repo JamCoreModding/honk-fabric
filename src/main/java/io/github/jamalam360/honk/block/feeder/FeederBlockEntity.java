@@ -33,6 +33,7 @@ import net.minecraft.util.math.Direction;
 import org.jetbrains.annotations.Nullable;
 
 public class FeederBlockEntity extends AbstractBlockEntityWithInventory {
+
 	public FeederBlockEntity(BlockPos pos, BlockState state) {
 		super(HonkBlocks.FEEDER_ENTITY, 1, pos, state);
 	}

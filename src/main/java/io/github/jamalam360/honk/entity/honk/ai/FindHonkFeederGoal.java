@@ -24,6 +24,7 @@
 
 package io.github.jamalam360.honk.entity.honk.ai;
 
+import io.github.jamalam360.honk.block.feeder.FeederBlock;
 import io.github.jamalam360.honk.block.feeder.FeederBlockEntity;
 import io.github.jamalam360.honk.entity.honk.HonkEntity;
 import net.minecraft.entity.ai.goal.Goal;
@@ -34,8 +35,6 @@ import net.minecraft.util.math.Vec3d;
 
 import java.util.EnumSet;
 import java.util.Optional;
-
-import static io.github.jamalam360.honk.block.feeder.FeederBlock.updateState;
 
 public class FindHonkFeederGoal extends Goal {
 	protected final HonkEntity honk;
@@ -78,7 +77,7 @@ public class FindHonkFeederGoal extends Goal {
 				return true;
 			} else {
 				Vec3d posAsV3d = Vec3d.ofBottomCenter(this.target);
-				return this.honk.squaredDistanceTo(posAsV3d.getX(), posAsV3d.getY(), posAsV3d.getZ()) < 1.0D;
+				return this.honk.squaredDistanceTo(posAsV3d.getX(), posAsV3d.getY(), posAsV3d.getZ()) < 1.4D;
 			}
 		}
 	}
@@ -125,8 +124,11 @@ public class FindHonkFeederGoal extends Goal {
 				--this.cooldown;
 			} else if (this.honk.getWorld().getBlockEntity(this.target) instanceof FeederBlockEntity entity && this.canEatFrom(this.target)) {
 				ItemStack stack = entity.getStack(0).copy().withCount(1);
-				entity.inventory.get(0).decrement(1);
-				updateState(this.honk.getWorld().getBlockState(this.target), this.honk.getWorld(), this.target);
+
+				if (!((FeederBlock) entity.getWorld().getBlockState(entity.getPos()).getBlock()).unlimited) {
+					entity.inventory.get(0).decrement(1);
+				}
+
 				this.cooldown = 20 + this.honk.getRandom().nextInt(7);
 				this.honk.eatHonkFood(stack);
 			}

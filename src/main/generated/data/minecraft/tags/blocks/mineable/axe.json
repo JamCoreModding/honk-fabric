@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "honk:feeder"
+    "honk:feeder",
+    "honk:creative_feeder"
   ]
 }

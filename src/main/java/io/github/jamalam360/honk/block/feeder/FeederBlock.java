@@ -64,10 +64,12 @@ public class FeederBlock extends BlockWithEntity {
 				}
 			}
 	);
+	public final boolean unlimited;
 
-	public FeederBlock() {
+	public FeederBlock(boolean unlimited) {
 		super(QuiltBlockSettings.copy(Blocks.COMPOSTER));
 		this.setDefaultState(this.stateManager.getDefaultState().with(LEVEL, 0));
+		this.unlimited = unlimited;
 	}
 
 	public static void updateState(BlockState state, World world, BlockPos pos) {

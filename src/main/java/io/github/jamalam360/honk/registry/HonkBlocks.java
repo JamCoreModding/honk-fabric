@@ -56,7 +56,8 @@ public class HonkBlocks implements JamLibContentRegistry {
 	public static final Block CENTRIFUGE = new CentrifugeBlock();
 	public static final Block DNA_INJECTOR_EXTRACTOR = new DnaInjectorExtractorBlock();
 	public static final Block DNA_COMBINATOR = new DnaCombinatorBlock();
-	public static final Block FEEDER = new FeederBlock();
+	public static final Block FEEDER = new FeederBlock(false);
+	public static final Block CREATIVE_FEEDER = new FeederBlock(true);
 
 	@Override
 	public RegistryKey<ItemGroup> getItemGroup(Item item) {
@@ -71,7 +72,7 @@ public class HonkBlocks implements JamLibContentRegistry {
 
 	public static final BlockEntityType<DnaCombinatorBlockEntity> DNA_COMBINATOR_ENTITY = QuiltBlockEntityTypeBuilder.create(DnaCombinatorBlockEntity::new, DNA_COMBINATOR).build();
 
-	public static final BlockEntityType<FeederBlockEntity> FEEDER_ENTITY = QuiltBlockEntityTypeBuilder.create(FeederBlockEntity::new, FEEDER).build();
+	public static final BlockEntityType<FeederBlockEntity> FEEDER_ENTITY = QuiltBlockEntityTypeBuilder.create(FeederBlockEntity::new, FEEDER, CREATIVE_FEEDER).build();
 
 
 }

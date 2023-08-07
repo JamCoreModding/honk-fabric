@@ -100,6 +100,7 @@ public class Datagen implements DataGeneratorEntrypoint {
 			registerOrientableMachineWithBottom(gen, HonkBlocks.DNA_INJECTOR_EXTRACTOR);
 			registerCombinator(gen, HonkBlocks.DNA_COMBINATOR);
 			registerFeeder(gen, HonkBlocks.FEEDER);
+			registerFeeder(gen, HonkBlocks.CREATIVE_FEEDER);
 			gen.registerSimpleCubeAll(HonkBlocks.DEEPSLATE_AMBER_ORE);
 			gen.registerSimpleCubeAll(HonkBlocks.MOD_LOGO);
 		}
@@ -127,14 +128,14 @@ public class Datagen implements DataGeneratorEntrypoint {
 					);
 
 			for (int i = 1; i <= 5; i++) {
-				registerFeederContentsModel(gen, i);
+				registerFeederContentsModel(gen, feeder, i);
 			}
 		}
 
-		public final void registerFeederContentsModel(BlockStateModelGenerator gen, int level) {
+		public final void registerFeederContentsModel(BlockStateModelGenerator gen, Block feeder, int level) {
 			// We have datagen at home!
 			// datagen at home:
-			gen.modelCollector.accept(Texture.getSubId(HonkBlocks.FEEDER, "_contents" + level), () -> {
+			gen.modelCollector.accept(Texture.getSubId(feeder, "_contents" + level), () -> {
 				JsonObject textures = new JsonObject();
 				textures.addProperty("particle", "honk:block/feeder_contents");
 				textures.addProperty("inside", "honk:block/feeder_contents");
@@ -177,6 +178,7 @@ public class Datagen implements DataGeneratorEntrypoint {
 			this.addDrop(HonkBlocks.DNA_COMBINATOR);
 			this.addDrop(HonkBlocks.MOD_LOGO);
 			this.addDrop(HonkBlocks.FEEDER);
+			this.addDrop(HonkBlocks.CREATIVE_FEEDER);
 			this.addDrop(HonkBlocks.DEEPSLATE_AMBER_ORE, HonkItems.AMBER);
 		}
 	}
@@ -195,6 +197,7 @@ public class Datagen implements DataGeneratorEntrypoint {
 					.add(HonkBlocks.DNA_COMBINATOR)
 					.add(HonkBlocks.CENTRIFUGE);
 			this.getOrCreateTagBuilder(BlockTags.AXE_MINEABLE).add(HonkBlocks.FEEDER);
+			this.getOrCreateTagBuilder(BlockTags.AXE_MINEABLE).add(HonkBlocks.CREATIVE_FEEDER);
 
 			this.getOrCreateTagBuilder(BlockTags.NEEDS_IRON_TOOL)
 					.add(HonkBlocks.DNA_INJECTOR_EXTRACTOR)
