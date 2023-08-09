@@ -134,7 +134,8 @@ public class HonkEntity extends AnimalEntity implements MagnifyingGlassInformati
 		this.goalSelector.add(3, new FindHonkFeederGoal(this, 1.1F));
 		this.goalSelector.add(4, new FollowHonkParentGoal(this, 1.4F));
 		this.goalSelector.add(4, new WanderAroundFarGoal(this, 1.0F));
-		this.goalSelector.add(4, new MoveIntoWaterGoal(this));
+		this.goalSelector.add(4, new HonkMoveIntoWaterGoal(this));
+		this.goalSelector.add(4, new HonkMoveOnTopOfWarmBlockGoal(this));
 		this.goalSelector.add(5, new MoveTowardsOtherHonksOfSameTypeGoal(this, 0.8F));
 		this.goalSelector.add(6, new LookAtEntityGoal(this, PlayerEntity.class, 6.0F));
 		this.goalSelector.add(7, new LookAroundGoal(this));
