@@ -50,7 +50,7 @@ public class MoveTowardsOtherHonksOfSameTypeGoal extends Goal {
 
 		if (others.size() > 0) {
 			this.other = others.get(this.honk.getWorld().getRandom().nextInt(others.size()));
-			return true;
+			return this.honk.getWorld().getRandom().nextFloat() < 0.3F;
 		} else {
 			return false;
 		}

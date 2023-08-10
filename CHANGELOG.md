@@ -1,2 +1,1 @@
-- Honks will now more reliable go paddling.
-- Honks will now sit on top of warm blocks (but not campfires).
+- Decrease chance that `MoveTowardsOtherHonksOfSameTypeGoal` will start.
