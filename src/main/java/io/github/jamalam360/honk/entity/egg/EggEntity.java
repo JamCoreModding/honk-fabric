@@ -158,8 +158,7 @@ public class EggEntity extends MobEntity implements MagnifyingGlassInformationPr
 	}
 
 	public int getMinimumHatchingAge() {
-//		return -100 * this.dataTracker.get(GROWTH) + 4000;
-		return 20;
+		return -100 * this.dataTracker.get(GROWTH) + 4000;
 	}
 
 	public float getHatchingChance() {
@@ -252,7 +251,7 @@ public class EggEntity extends MobEntity implements MagnifyingGlassInformationPr
 	}
 
 	public void readDnaData(DnaData data) {
-		if (data != null) {
+		if (data != null && data.type() != null) {
 			this.dataTracker.set(TYPE, data.type().id());
 			this.dataTracker.set(GROWTH, data.growth());
 			this.dataTracker.set(PRODUCTIVITY, data.productivity());

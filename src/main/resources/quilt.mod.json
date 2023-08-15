@@ -58,6 +58,7 @@
     ]
   },
   "jamlib:compatibility_modules": {
+    "polydex2": "io.github.jamalam360.honk.compatibility.polydex.PolydexCompatibility"
   },
   "mixin": "honk.mixins.json"
 }

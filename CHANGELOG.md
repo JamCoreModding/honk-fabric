@@ -1,1 +1,3 @@
-- Decrease chance that `MoveTowardsOtherHonksOfSameTypeGoal` will start.
+- Hopefully cover all remaining NPEs.
+- Polydex support.
+- WAILA plugin no longer shows genes - use the magnifying glass.

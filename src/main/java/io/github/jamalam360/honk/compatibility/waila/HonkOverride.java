@@ -24,14 +24,13 @@
 
 package io.github.jamalam360.honk.compatibility.waila;
 
-import io.github.jamalam360.honk.data.DnaData;
+import io.github.jamalam360.honk.compatibility.WailaLike;
 import io.github.jamalam360.honk.entity.egg.EggEntity;
 import io.github.jamalam360.honk.entity.honk.HonkEntity;
 import mcp.mobius.waila.api.IEntityAccessor;
 import mcp.mobius.waila.api.IEntityComponentProvider;
 import mcp.mobius.waila.api.IPluginConfig;
 import mcp.mobius.waila.api.ITooltip;
-import net.minecraft.text.Text;
 
 public class HonkOverride implements IEntityComponentProvider {
 
@@ -39,29 +38,11 @@ public class HonkOverride implements IEntityComponentProvider {
 
 	@Override
 	public void appendBody(ITooltip tooltip, IEntityAccessor accessor, IPluginConfig config) {
-		DnaData data = null;
-
 		if (accessor.getEntity() instanceof HonkEntity honk) {
-			data = honk.createDnaData();
+			tooltip.addLine(WailaLike.getFoodLevelTooltip(honk));
 		} else if (accessor.getEntity() instanceof EggEntity egg) {
-			data = egg.createDnaData();
-			tooltip.addLine(Text.translatable("text.honk.waila.type", Text.translatable(data.type().name())));
-		}
-
-		if (data != null && config.getBoolean(WailaCompatibility.SHOW_GENES)) {
-			if (accessor.getEntity() instanceof HonkEntity honk) {
-				tooltip.addLine(Text.translatable("text.honk.waila.food", honk.getFoodLevel()));
-			} else if (accessor.getEntity() instanceof EggEntity egg) {
-				tooltip.addLine(Text.translatable("text.honk.waila.age", egg.getAge() / 20));
-				tooltip.addLine(Text.translatable("text.honk.waila.warm_" + (egg.isWarm() ? "yes" : "no")));
-			}
-
-			if (!config.getBoolean(WailaCompatibility.ONLY_SHOW_GENES_ON_SNEAK) || accessor.getPlayer().isSneaking()) {
-				tooltip.addLine(Text.translatable("text.honk.waila.productivity", data.productivity()));
-				tooltip.addLine(Text.translatable("text.honk.waila.reproductivity", data.reproductivity()));
-				tooltip.addLine(Text.translatable("text.honk.waila.growth", data.growth()));
-				tooltip.addLine(Text.translatable("text.honk.waila.instability", data.instability()));
-			}
+			tooltip.addLine(WailaLike.getEggAgeTooltip(egg));
+			tooltip.addLine(WailaLike.getEggWarmthTooltip(egg));
 		}
 	}
 }

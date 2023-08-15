@@ -46,7 +46,7 @@ public class MoveTowardsOtherHonksOfSameTypeGoal extends Goal {
 
 	@Override
 	public boolean canStart() {
-		List<HonkEntity> others = this.honk.getWorld().getEntitiesByClass(HonkEntity.class, this.createBox(), (honk) -> honk != this.honk && honk.getHonkType().id().equals(this.honk.getHonkType().id()));
+		List<HonkEntity> others = this.honk.getWorld().getEntitiesByClass(HonkEntity.class, this.createBox(), (honk) -> honk != this.honk && honk.getHonkType() == this.honk.getHonkType());
 
 		if (others.size() > 0) {
 			this.other = others.get(this.honk.getWorld().getRandom().nextInt(others.size()));

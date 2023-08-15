@@ -25,6 +25,7 @@
 package io.github.jamalam360.honk.entity.honk;
 
 import com.mojang.datafixers.util.Pair;
+import io.github.jamalam360.honk.HonkInit;
 import io.github.jamalam360.honk.api.MagnifyingGlassInformationProvider;
 import io.github.jamalam360.honk.data.DnaData;
 import io.github.jamalam360.honk.data.NbtKeys;
@@ -149,15 +150,17 @@ public class HonkEntity extends AnimalEntity implements MagnifyingGlassInformati
 	protected void mobTick() {
 		super.mobTick();
 
-		if (this.getFoodLevel() > 0 && this.getWorld().random.nextFloat() < (0.005F) * this.getHonkType().tier()) {
-			this.setFoodLevel(this.getFoodLevel() - 1);
-		} else if (this.getFoodLevel() == 0 && this.getWorld().random.nextFloat() < 0.01F) {
-			this.damage(this.getDamageSources().starve(), 1);
-		}
+		if (!this.isAiDisabled()) {
+			if (this.getFoodLevel() > 0 && this.getWorld().random.nextFloat() < (0.005F) * this.getTierOrDefault()) {
+				this.setFoodLevel(this.getFoodLevel() - 1);
+			} else if (this.getFoodLevel() == 0 && this.getWorld().random.nextFloat() < 0.01F) {
+				this.damage(this.getDamageSources().starve(), 1);
+			}
 
-		if (this.getFoodLevel() > 0 && this.getHealth() < this.getMaxHealth() && this.age % 50 == 0) {
-			this.heal(1.0F);
-			this.setFoodLevel(this.getFoodLevel() - 1);
+			if (this.getFoodLevel() > 0 && this.getHealth() < this.getMaxHealth() && this.age % 50 == 0) {
+				this.heal(1.0F);
+				this.setFoodLevel(this.getFoodLevel() - 1);
+			}
 		}
 	}
 
@@ -186,7 +189,10 @@ public class HonkEntity extends AnimalEntity implements MagnifyingGlassInformati
 	//region Eating & Breeding
 	@Override
 	public ActionResult interactMob(PlayerEntity player, Hand hand) {
+		if (this.isAiDisabled()) return ActionResult.PASS;
+
 		ItemStack itemStack = player.getStackInHand(hand);
+
 		if (this.isBreedingItem(itemStack)) {
 			int i = this.getBreedingAge();
 			if (!this.getWorld().isClient && this.canEat()) {
@@ -256,7 +262,7 @@ public class HonkEntity extends AnimalEntity implements MagnifyingGlassInformati
 		EggEntity egg = HonkEntities.EGG.create(world);
 		egg.setPos(this.getX(), this.getY() + 1, this.getZ());
 		egg.setParent(this);
-		DnaCombinator.combine(world.getRandom(), this.createDnaData(), other.createDnaData()).writeEntity(egg);
+		Objects.requireNonNull(DnaCombinator.combine(world.getRandom(), this.createDnaData(), other.createDnaData())).writeEntity(egg);
 		egg.refreshPositionAndAngles(this.getX(), this.getY(), this.getZ(), 0.0F, 0.0F);
 
 		this.setBreedingAge(-400 * this.getReproductivity() + 6400);
@@ -363,6 +369,10 @@ public class HonkEntity extends AnimalEntity implements MagnifyingGlassInformati
 	}
 
 	public DnaData createDnaData() {
+		if (this.getHonkType() == null) {
+			HonkInit.LOGGER.warn("Creating DNA data with a null type; this is concerning.");
+		}
+
 		return new DnaData(this.getHonkType(), this.dataTracker.get(GROWTH), this.dataTracker.get(PRODUCTIVITY), this.dataTracker.get(REPRODUCTIVITY), this.dataTracker.get(INSTABILITY));
 	}
 
@@ -452,7 +462,7 @@ public class HonkEntity extends AnimalEntity implements MagnifyingGlassInformati
 	public float getScaleFactor() {
 		float growthFactor = (this.dataTracker.get(GROWTH) - 5) / 30F;
 		float productivityFactor = (this.dataTracker.get(PRODUCTIVITY) - 5) / 30F;
-		float tierFactor = this.getHonkType().tier() / 10F;
+		float tierFactor = this.getTierOrDefault() / 10F;
 		return (this.isBaby() ? 0.4F : 1.0F) + growthFactor + productivityFactor + tierFactor;
 	}
 
@@ -463,7 +473,7 @@ public class HonkEntity extends AnimalEntity implements MagnifyingGlassInformati
 
 	@Override
 	public int getXpToDrop() {
-		return super.getXpToDrop() * this.getHonkType().tier();
+		return super.getXpToDrop() * this.getTierOrDefault();
 	}
 
 	@Override
@@ -491,12 +501,17 @@ public class HonkEntity extends AnimalEntity implements MagnifyingGlassInformati
 	//endregion
 
 	//region DataTracker
+	@Nullable
 	public HonkType getHonkType() {
 		return HonkType.ENTRIES.get(this.dataTracker.get(TYPE));
 	}
 
 	public void setHonkType(HonkType type) {
 		this.dataTracker.set(TYPE, Objects.requireNonNull(type.id()));
+	}
+
+	public int getTierOrDefault() {
+		return this.getHonkType() == null ? 0 : this.getHonkType().tier();
 	}
 
 	public Optional<Integer> getParent() {

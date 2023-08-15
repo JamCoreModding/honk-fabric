@@ -33,6 +33,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
 public class HonkEntityRenderer extends MobEntityRenderer<HonkEntity, HonkEntityModel> {
+	public static final Identifier DEFAULT_TEXTURE = new Identifier("honk", "textures/entity/honk.png");
 
 	public HonkEntityRenderer(EntityRendererFactory.Context context) {
 		super(context, new HonkEntityModel(context.getPart(HonkClientInit.HONK_LAYER)), 0.5f);
@@ -41,7 +42,11 @@ public class HonkEntityRenderer extends MobEntityRenderer<HonkEntity, HonkEntity
 
 	@Override
 	public Identifier getTexture(HonkEntity entity) {
-		return entity.getHonkType().getTexture();
+		if (entity.getHonkType() != null) {
+			return entity.getHonkType().getTexture();
+		} else {
+			return DEFAULT_TEXTURE;
+		}
 	}
 
 	@Override
