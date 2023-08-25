@@ -85,18 +85,18 @@ public class HonkInit implements ModInitializer {
 		JamLibCompatibilityModuleHandler.initialize(MOD_ID);
 
 		HonkC2SNetwork.HONK.setHandler(((server, player, handler, buf, responseSender) -> {
-			int rand = player.getRandom().nextInt(3);
-			SoundEvent ev = switch (rand) {
-				case 0 -> HonkSounds.HONK_AMBIENT;
-				case 1 -> HonkSounds.HONK_HURT;
-				case 2 ->
-						HonkSounds.APOLGY_FOR_BAD_ENGLISH_WHERE_WERE_U_WEN_HONK_DIE_I_WAS_AT_HOUSE_EATING_DORITO_WHEN_PHONE_RING_HONK_IS_KILL_NO;
-				default -> null;
-			};
+			// int rand = player.getRandom().nextInt(3);
+			// SoundEvent ev = switch (rand) {
+			// 	case 0 -> HonkSounds.HONK_AMBIENT;
+			// 	case 1 -> HonkSounds.HONK_HURT;
+			// 	case 2 ->
+			// 			HonkSounds.APOLGY_FOR_BAD_ENGLISH_WHERE_WERE_U_WEN_HONK_DIE_I_WAS_AT_HOUSE_EATING_DORITO_WHEN_PHONE_RING_HONK_IS_KILL_NO;
+			// 	default -> null;
+			// };
 
-			float pitch = 1.0F + (player.getRandom().nextFloat() - player.getRandom().nextFloat()) * 0.2F;
+			// float pitch = 1.0F + (player.getRandom().nextFloat() - player.getRandom().nextFloat()) * 0.2F;
 
-			player.getWorld().playSound(null, player.getBlockPos(), ev, player.getSoundCategory(), 1.0F, pitch);
+			// player.getWorld().playSound(null, player.getBlockPos(), ev, player.getSoundCategory(), 1.0F, pitch);
 		}));
 		JamLibServerNetworking.registerHandlers(MOD_ID);
 
