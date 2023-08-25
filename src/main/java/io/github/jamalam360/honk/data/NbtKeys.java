@@ -30,6 +30,7 @@ public class NbtKeys {
 	public static final String COLD_TICKS = "cold_ticks";
 	public static final String DNA = "dna";
 	public static final String FOOD_LEVEL = "food_level";
+	public static final String NO_HUNGER = "no_hunger";
 	public static final String GROWTH = "growth";
 	public static final String INSTABILITY = "instability";
 	public static final String PARENT = "parent";

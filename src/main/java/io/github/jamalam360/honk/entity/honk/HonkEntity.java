@@ -88,6 +88,7 @@ public class HonkEntity extends AnimalEntity implements MagnifyingGlassInformati
 	public static final TrackedData<Integer> PRODUCTIVITY = DataTracker.registerData(HonkEntity.class, TrackedDataHandlerRegistry.INTEGER);
 	public static final TrackedData<Integer> REPRODUCTIVITY = DataTracker.registerData(HonkEntity.class, TrackedDataHandlerRegistry.INTEGER);
 	public static final TrackedData<Integer> INSTABILITY = DataTracker.registerData(HonkEntity.class, TrackedDataHandlerRegistry.INTEGER);
+	public static final TrackedData<Boolean> HUNGER_DISABLED = DataTracker.registerData(HonkEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
 	private static final UniformIntProvider ANGER_TIME_RANGE = TimeHelper.betweenSeconds(20, 39);
 	private static final IntProvider DROP_COUNT = BiasedToBottomIntProvider.create(1, 3);
 	public float flapProgress;
@@ -121,6 +122,7 @@ public class HonkEntity extends AnimalEntity implements MagnifyingGlassInformati
 		this.dataTracker.startTracking(PRODUCTIVITY, 1);
 		this.dataTracker.startTracking(REPRODUCTIVITY, 1);
 		this.dataTracker.startTracking(INSTABILITY, 1);
+		this.dataTracker.startTracking(HUNGER_DISABLED, false);
 	}
 
 	@Override
@@ -150,7 +152,7 @@ public class HonkEntity extends AnimalEntity implements MagnifyingGlassInformati
 	protected void mobTick() {
 		super.mobTick();
 
-		if (!this.isAiDisabled()) {
+		if (!this.isAiDisabled() && !this.dataTracker.get(HUNGER_DISABLED)) {
 			if (this.getFoodLevel() > 0 && this.getWorld().random.nextFloat() < (0.005F) * this.getTierOrDefault()) {
 				this.setFoodLevel(this.getFoodLevel() - 1);
 			} else if (this.getFoodLevel() == 0 && this.getWorld().random.nextFloat() < 0.01F) {
@@ -350,6 +352,7 @@ public class HonkEntity extends AnimalEntity implements MagnifyingGlassInformati
 	@Override
 	public void writeCustomDataToNbt(NbtCompound nbt) {
 		nbt.putInt(NbtKeys.FOOD_LEVEL, this.dataTracker.get(FOOD_LEVEL));
+		nbt.putBoolean(NbtKeys.NO_HUNGER, this.dataTracker.get(HUNGER_DISABLED));
 		this.dataTracker.get(PARENT).ifPresent((p) -> nbt.putInt(NbtKeys.PARENT, p));
 		DnaData data = this.createDnaData();
 		data.writeNbt(nbt);
@@ -359,6 +362,7 @@ public class HonkEntity extends AnimalEntity implements MagnifyingGlassInformati
 	@Override
 	public void readCustomDataFromNbt(NbtCompound nbt) {
 		this.dataTracker.set(FOOD_LEVEL, nbt.getInt(NbtKeys.FOOD_LEVEL));
+		this.dataTracker.set(HUNGER_DISABLED, nbt.getBoolean(NbtKeys.NO_HUNGER));
 		this.readDnaData(DnaData.fromNbt(nbt));
 
 		if (nbt.contains(NbtKeys.PARENT)) {

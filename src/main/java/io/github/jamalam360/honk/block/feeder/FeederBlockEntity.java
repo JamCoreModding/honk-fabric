@@ -38,6 +38,13 @@ public class FeederBlockEntity extends AbstractBlockEntityWithInventory {
 		super(HonkBlocks.FEEDER_ENTITY, 1, pos, state);
 	}
 
+	public void decrement() {
+		if (!((FeederBlock) this.getCachedState().getBlock()).unlimited) {
+			this.getStack(0).decrement(1);
+			FeederBlock.updateState(this.world.getBlockState(this.getPos()), this.world, this.getPos());
+		}
+	}
+
 	@Override
 	public void markDirty() {
 		super.markDirty();
