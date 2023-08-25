@@ -1,2 +1,9 @@
-- Add `no_hunger` NBT tag as a just-in-case-hotfix for the creative feeder sometimes not being creative.
-- Potentially fix the creative feeder not being creative.
+## Changelog
+
+### Features
+
+### Fixes
+
+Closed issues: None.
+
+[Full Changelog](https://github.com/JamCoreModding/Honk/compare/...)

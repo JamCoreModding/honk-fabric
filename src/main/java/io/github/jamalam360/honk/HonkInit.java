@@ -89,8 +89,7 @@ public class HonkInit implements ModInitializer {
 			SoundEvent ev = switch (rand) {
 				case 0 -> HonkSounds.HONK_AMBIENT;
 				case 1 -> HonkSounds.HONK_HURT;
-				case 2 ->
-						HonkSounds.APOLGY_FOR_BAD_ENGLISH_WHERE_WERE_U_WEN_HONK_DIE_I_WAS_AT_HOUSE_EATING_DORITO_WHEN_PHONE_RING_HONK_IS_KILL_NO;
+				case 2 -> HonkSounds.HONK_DEATH;
 				default -> null;
 			};
 

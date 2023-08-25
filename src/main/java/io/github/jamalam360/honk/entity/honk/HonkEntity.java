@@ -310,7 +310,7 @@ public class HonkEntity extends AnimalEntity implements MagnifyingGlassInformati
 	@Nullable
 	@Override
 	protected SoundEvent getDeathSound() {
-		return HonkSounds.APOLGY_FOR_BAD_ENGLISH_WHERE_WERE_U_WEN_HONK_DIE_I_WAS_AT_HOUSE_EATING_DORITO_WHEN_PHONE_RING_HONK_IS_KILL_NO;
+		return HonkSounds.HONK_DEATH;
 	}
 
 	@Nullable
